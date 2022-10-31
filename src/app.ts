@@ -1,10 +1,10 @@
-import "reflect-metadata"
+import 'reflect-metadata';
 
-import express from "express"
-import handleErrorMiddleware from "./middlewares/handleError.middleware"
+import express from 'express';
+import handleErrorMiddleware from './middlewares/handleError.middleware';
 
-const app = express()
+const app = express();
 
-app.use(handleErrorMiddleware)
+app.use(handleErrorMiddleware);
 
-export default app
+export default app;
