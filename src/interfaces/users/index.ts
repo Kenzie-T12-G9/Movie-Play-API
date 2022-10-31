@@ -11,8 +11,12 @@ export interface IUserRequest {
     email: string;
     password: string;
     isAdm: boolean;
+    paymentInfo: IPaymentInfo;
+}
+
+export interface IUserCreate {
+    user: IUserRequest;
     paymentId: string;
-    // paymentInfo: IPaymentInfo;
 }
 
 export interface IUserLogin {
@@ -24,5 +28,5 @@ export interface IUserUpdate {
     name?: string;
     email?: string;
     password?: string;
-    // paymentInfo?: IPaymentInfo;
+    paymentInfo?: IPaymentInfo;
 }   
