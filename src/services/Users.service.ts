@@ -7,7 +7,7 @@ export default class UsersService {
 
   static readById(id: string) {}
 
-  static update(body: IUserRequestBody) {}
+  static update(id: string, updates: IUserRequestBody) {}
 
-  static delete() {}
+  static delete(id: string) {}
 }
