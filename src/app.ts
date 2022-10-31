@@ -3,10 +3,14 @@ import 'reflect-metadata';
 import express from 'express';
 import handleErrorMiddleware from './middlewares/handleError.middleware';
 import { userRouter } from './routes/Users.routes';
+import { ratingsRouter } from './routes/Ratings.routes';
+import { historyRouter } from './routes/History.routes';
 
 const app = express();
 
 app.use('/users', userRouter)
+app.use('/ratings', ratingsRouter)
+app.use('/history', historyRouter)
 
 app.use(handleErrorMiddleware);
 

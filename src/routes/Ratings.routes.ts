@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-const ratingsRouter = Router()
+export const ratingsRouter = Router()
 
 ratingsRouter.post('',)
 ratingsRouter.get('',)
