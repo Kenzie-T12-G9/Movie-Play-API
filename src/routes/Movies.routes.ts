@@ -4,5 +4,5 @@ export const moviesRouter = Router()
 
 moviesRouter.post('',)
 moviesRouter.get('',)
-moviesRouter.patch('',)
+moviesRouter.get('/:id',)
 moviesRouter.delete('',)

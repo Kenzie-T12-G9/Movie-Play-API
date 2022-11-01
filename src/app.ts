@@ -14,7 +14,6 @@ app.use(express.json());
 
 app.use('/users', userRouter)
 app.use('/login', sessionRouter)
-
 app.use('/ratings', ratingsRouter)
 app.use('/history', historyRouter)
 app.use('/movies', moviesRouter)
