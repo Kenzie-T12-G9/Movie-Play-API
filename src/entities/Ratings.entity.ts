@@ -15,13 +15,13 @@ class Ratings {
     @Column()
     comment: string;
 
-    @ManyToOne(()=> Users, {eager: true})
+    @ManyToOne(()=>Users)
     userId: Users
 
-    @ManyToOne(()=>Movies, {eager: true})
+    @ManyToOne(()=>Movies)
     movieId: Movies
 
-    @ManyToOne(()=>Series, {eager: true})   
+    @ManyToOne(()=>Series)   
     seriesId:Series
 }
 
