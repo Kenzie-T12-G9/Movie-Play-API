@@ -1,4 +1,4 @@
 export interface IRatingRequest {
-    rate: number;
-    comment: string;
+  rate: number;
+  comment: string;
 }

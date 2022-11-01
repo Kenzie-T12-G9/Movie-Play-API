@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class createTable1667271832151 implements MigrationInterface {
-  name = 'createTable1667271832151';
+export class alterUser1667310402703 implements MigrationInterface {
+  name = 'alterUser1667310402703';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -27,17 +27,6 @@ export class createTable1667271832151 implements MigrationInterface {
       )`
     );
     await queryRunner.query(
-      `CREATE TABLE "Series" (
-        "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
-        "name" character varying NOT NULL, 
-        "year" TIMESTAMP NOT NULL, 
-        "description" character varying NOT NULL, 
-        "direction" character varying NOT NULL, 
-        "espisodeIdId" uuid, 
-        CONSTRAINT "PK_c2b16b9595c21f34d4f31067d10" PRIMARY KEY ("id")
-      )`
-    );
-    await queryRunner.query(
       `CREATE TABLE "PaymentMethods" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
         "name" character varying(45) NOT NULL, 
@@ -49,11 +38,22 @@ export class createTable1667271832151 implements MigrationInterface {
       )`
     );
     await queryRunner.query(
+      `CREATE TABLE "Series" (
+        "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
+        "name" character varying NOT NULL, 
+        "year" TIMESTAMP NOT NULL, 
+        "description" character varying NOT NULL, 
+        "direction" character varying NOT NULL, 
+        "espisodeId" uuid, CONSTRAINT "PK_c2b16b9595c21f34d4f31067d10" PRIMARY KEY ("id")
+      )`
+    );
+    await queryRunner.query(
       `CREATE TABLE "Users" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
         "name" character varying NOT NULL, 
         "email" character varying NOT NULL, 
         "password" character varying NOT NULL, 
+        "isAdm" boolean NOT NULL, 
         "createdAt" TIMESTAMP NOT NULL DEFAULT now(), 
         "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), 
         "paymentMethodsId" uuid, 
@@ -62,33 +62,31 @@ export class createTable1667271832151 implements MigrationInterface {
       )`
     );
     await queryRunner.query(
-      `CREATE TABLE "History" (
-        "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
-        "watchedAt" TIMESTAMP NOT NULL DEFAULT now(), 
-        "comment" character varying NOT NULL, 
-        "seriesIdId" uuid, 
-        "movieIdId" uuid, 
-        CONSTRAINT "PK_ba2fff4418f12dffa3d21157008" PRIMARY KEY ("id")
-      )`
-    );
-    await queryRunner.query(
       `CREATE TABLE "Ratings" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
         "rate" integer NOT NULL, 
         "comment" character varying NOT NULL, 
-        "userIdId" uuid, 
-        "movieIdId" uuid, 
-        "seriesIdId" uuid, 
+        "userIdId" uuid, "movieId" uuid, 
+        "seriesId" uuid, 
         CONSTRAINT "PK_ee6436ff188c9bb00cc70fc447a" PRIMARY KEY ("id")
+      )`
+    );
+    await queryRunner.query(
+      `CREATE TABLE "History" (
+        "id" uuid NOT NULL DEFAULT uuid_generate_v4(), 
+        "watchedAt" TIMESTAMP NOT NULL DEFAULT now(), 
+        "comment" character varying NOT NULL, 
+        "seriesId" uuid, "movieId" uuid, 
+        CONSTRAINT "PK_ba2fff4418f12dffa3d21157008" PRIMARY KEY ("id")
       )`
     );
     await queryRunner.query(
       `ALTER TABLE 
         "Series" 
       ADD CONSTRAINT 
-        "FK_d6e190b2ede433b4d35616b578a" 
+        "FK_aa069dfd280cce81f84c570838e" 
       FOREIGN KEY 
-        ("espisodeIdId") 
+        ("espisodeId") 
       REFERENCES 
         "Episodes"("id") 
       ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -106,28 +104,6 @@ export class createTable1667271832151 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE 
-        "History" 
-      ADD CONSTRAINT 
-        "FK_7e24232b9c7cce577a32f6a448f" 
-      FOREIGN KEY 
-        ("seriesIdId") 
-      REFERENCES 
-        "Series"("id") 
-      ON DELETE NO ACTION ON UPDATE NO ACTION`
-    );
-    await queryRunner.query(
-      `ALTER TABLE 
-        "History" 
-      ADD CONSTRAINT 
-        "FK_092665fbc05e71cca1d98efa80a" 
-      FOREIGN KEY 
-        ("movieIdId") 
-      REFERENCES 
-        "Movies"("id") 
-      ON DELETE NO ACTION ON UPDATE NO ACTION`
-    );
-    await queryRunner.query(
-      `ALTER TABLE 
         "Ratings" 
       ADD CONSTRAINT 
         "FK_f110e3733bb157d5b18852aecbe" 
@@ -141,9 +117,9 @@ export class createTable1667271832151 implements MigrationInterface {
       `ALTER TABLE 
         "Ratings" 
       ADD CONSTRAINT 
-        "FK_9b5c4f05673c2d2c18acdf7dbad" 
+        "FK_dbb171faf3d444f292782b1b04b" 
       FOREIGN KEY 
-        ("movieIdId") 
+        ("movieId") 
       REFERENCES 
         "Movies"("id") 
       ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -152,42 +128,64 @@ export class createTable1667271832151 implements MigrationInterface {
       `ALTER TABLE 
         "Ratings" 
       ADD CONSTRAINT 
-        "FK_6580d0c2925178f54504799a9c1" 
+        "FK_9fa5e778675177ac79215c3d766" 
       FOREIGN KEY 
-        ("seriesIdId") 
+        ("seriesId") 
       REFERENCES 
         "Series"("id") 
+      ON DELETE NO ACTION ON UPDATE NO ACTION`
+    );
+    await queryRunner.query(
+      `ALTER TABLE 
+        "History" 
+      ADD CONSTRAINT 
+        "FK_36d62dba95bdc2365a8d5d2ce95" 
+      FOREIGN KEY 
+        ("seriesId") 
+      REFERENCES 
+        "Series"("id") 
+      ON DELETE NO ACTION ON UPDATE NO ACTION`
+    );
+    await queryRunner.query(
+      `ALTER TABLE 
+        "History" 
+      ADD CONSTRAINT 
+        "FK_c0e7d44e42763e2e3452977809b" 
+      FOREIGN KEY 
+        ("movieId") 
+      REFERENCES 
+        "Movies"("id") 
       ON DELETE NO ACTION ON UPDATE NO ACTION`
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "Ratings" DROP CONSTRAINT "FK_6580d0c2925178f54504799a9c1"`
+      `ALTER TABLE "History" DROP CONSTRAINT "FK_c0e7d44e42763e2e3452977809b"`
     );
     await queryRunner.query(
-      `ALTER TABLE "Ratings" DROP CONSTRAINT "FK_9b5c4f05673c2d2c18acdf7dbad"`
+      `ALTER TABLE "History" DROP CONSTRAINT "FK_36d62dba95bdc2365a8d5d2ce95"`
+    );
+    await queryRunner.query(
+      `ALTER TABLE "Ratings" DROP CONSTRAINT "FK_9fa5e778675177ac79215c3d766"`
+    );
+    await queryRunner.query(
+      `ALTER TABLE "Ratings" DROP CONSTRAINT "FK_dbb171faf3d444f292782b1b04b"`
     );
     await queryRunner.query(
       `ALTER TABLE "Ratings" DROP CONSTRAINT "FK_f110e3733bb157d5b18852aecbe"`
     );
     await queryRunner.query(
-      `ALTER TABLE "History" DROP CONSTRAINT "FK_092665fbc05e71cca1d98efa80a"`
-    );
-    await queryRunner.query(
-      `ALTER TABLE "History" DROP CONSTRAINT "FK_7e24232b9c7cce577a32f6a448f"`
-    );
-    await queryRunner.query(
       `ALTER TABLE "Users" DROP CONSTRAINT "FK_9393640c776c8917f188b42a8d3"`
     );
     await queryRunner.query(
-      `ALTER TABLE "Series" DROP CONSTRAINT "FK_d6e190b2ede433b4d35616b578a"`
+      `ALTER TABLE "Series" DROP CONSTRAINT "FK_aa069dfd280cce81f84c570838e"`
     );
-    await queryRunner.query(`DROP TABLE "Ratings"`);
     await queryRunner.query(`DROP TABLE "History"`);
+    await queryRunner.query(`DROP TABLE "Ratings"`);
     await queryRunner.query(`DROP TABLE "Users"`);
-    await queryRunner.query(`DROP TABLE "PaymentMethods"`);
     await queryRunner.query(`DROP TABLE "Series"`);
+    await queryRunner.query(`DROP TABLE "PaymentMethods"`);
     await queryRunner.query(`DROP TABLE "Movies"`);
     await queryRunner.query(`DROP TABLE "Episodes"`);
   }
