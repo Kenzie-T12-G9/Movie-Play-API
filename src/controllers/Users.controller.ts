@@ -1,9 +1,10 @@
 import { Request } from 'express';
 // prettier-ignore
 import { IUserList, IUserRequest, IUserResponse, IUserUpdate } from '../interfaces/users';
+import service from '../services/Users.service';
 
 export default class UsersController {
-  static create(req: IUserRequest, res: IUserResponse) {}
+  static async create(req: IUserRequest, res: IUserResponse) {}
 
   static read(_: Request, res: IUserList) {}
 
