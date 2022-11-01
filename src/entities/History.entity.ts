@@ -1,29 +1,34 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToOne,
+  ManyToOne,
+} from 'typeorm';
 import { Movies } from './Movies.entity';
 import { Series } from './Series.entity';
 import { Users } from './Users.entity';
 
 @Entity('History')
 class History {
-    
-    @PrimaryGeneratedColumn('uuid')
-    readonly id: string;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-    @CreateDateColumn()
-    watchedAt: Date;
+  @CreateDateColumn()
+  watchedAt: Date;
 
-    @Column()
-    comment: string;
+  @Column()
+  comment: string;
 
-    @OneToOne((type)=>Users, (users)=>users.id)
-    userId: Users
+  @OneToOne(() => Users, (users) => users.id)
+  user: Users;
 
-    @ManyToOne((type)=>Series, (series)=>series.id)
-    seriesId: Series
+  @ManyToOne(() => Series, (series) => series.id)
+  series: Series;
 
-    @ManyToOne((type)=>Movies, (movies)=>movies.id)
-    movieId: Movies
-
+  @ManyToOne(() => Movies, (movies) => movies.id)
+  movie: Movies;
 }
 
-export {History}
+export { History };
