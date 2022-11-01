@@ -16,7 +16,6 @@ export default class UsersService {
     if(emailAlreadyExists){
       throw new AppError('Email already exists 😭',400)
     }
-
     if(!password){
       throw new AppError('Password is a required field',400)
     }
@@ -37,9 +36,25 @@ export default class UsersService {
     return user
   }
 
-  static read() {}
+  static async read() {
+    const users = await this.repository.find()
+    return users
+  }
 
-  static readById(id: string) {}
+  static async readById(id: string) {
+    const usersPayment = await this.repository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        PaymentMethods: true,
+      }
+    })
+    if(!usersPayment){
+      throw new AppError('User not found!',404)
+    }
+    return usersPayment
+  }
 
   static update(id: string, updates: IUserRequestBody) {}
 
