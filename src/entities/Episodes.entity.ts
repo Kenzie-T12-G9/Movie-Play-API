@@ -2,25 +2,23 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('Episodes')
 class Episodes {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    readonly id: string;
+  @Column()
+  season: number;
 
-    @Column()
-    season: number;
+  @Column()
+  episode: number;
 
-    @Column()
-    episode: number;
+  @Column()
+  name: string;
 
-    @Column()
-    name: string;
+  @Column()
+  duration: number;
 
-    @Column()
-    duration: number;
-
-    @Column()
-    description: string;
-
+  @Column()
+  description: string;
 }
 
-export {Episodes}
+export { Episodes };

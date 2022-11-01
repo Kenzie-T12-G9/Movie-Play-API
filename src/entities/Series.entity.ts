@@ -3,25 +3,23 @@ import { Episodes } from './Episodes.entity';
 
 @Entity('Series')
 class Series {
-    
-    @PrimaryGeneratedColumn('uuid')
-    readonly id: string;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @Column()
-    year: Date;
-    
-    @Column()
-    description: string;
+  @Column()
+  year: Date;
 
-    @Column()
-    direction: string;
+  @Column()
+  description: string;
 
-    @ManyToOne((type)=>Episodes, (episodes)=>episodes.id)
-    espisodeId: Episodes
+  @Column()
+  direction: string;
 
+  @ManyToOne(() => Episodes, (episodes) => episodes.id)
+  espisode: Episodes;
 }
 
-export {Series}
+export { Series };
