@@ -7,3 +7,5 @@ COPY "package.json" .
 RUN yarn
 
 COPY . .
+
+VOLUME /app

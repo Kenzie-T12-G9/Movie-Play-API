@@ -5,24 +5,23 @@ import { Users } from './Users.entity';
 
 @Entity('Ratings')
 class Ratings {
-    
-    @PrimaryGeneratedColumn('uuid')
-    readonly id: string;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-    @Column()
-    rate: number;
+  @Column()
+  rate: number;
 
-    @Column()
-    comment: string;
+  @Column()
+  comment: string;
 
-    @ManyToOne(()=> Users, {eager: true})
-    userId: Users
+  @ManyToOne(() => Users)
+  userId: Users;
 
-    @ManyToOne(()=>Movies, {eager: true})
-    movieId: Movies
+  @ManyToOne(() => Movies)
+  movie: Movies;
 
-    @ManyToOne(()=>Series, {eager: true})   
-    seriesId:Series
+  @ManyToOne(() => Series)
+  series: Series;
 }
 
-export {Ratings}
+export { Ratings };
