@@ -1,6 +1,7 @@
 // prettier-ignore
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 import { PaymentMethods } from './PaymentMethods.entity';
+import { Exclude } from 'class-transformer'
 
 @Entity('Users')
 class Users {
@@ -14,6 +15,7 @@ class Users {
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column()
@@ -27,7 +29,7 @@ class Users {
 
   @OneToOne(() => PaymentMethods, { eager: true })
   @JoinColumn()
-  PaymentMethods: PaymentMethods;
+  paymentMethods: PaymentMethods;
 }
 
 export { Users };
