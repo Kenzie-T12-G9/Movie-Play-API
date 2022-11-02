@@ -7,5 +7,5 @@ export const schemaIinitSession = yup.object().shape({
         .required("Email is required"),
     password:yup   
         .string()
-        .required("Email is required"),
+        .required("Password is required"),
 })

@@ -62,4 +62,15 @@ export default class Ensuraces {
 
     return next()
   }
+
+  static async removeEmptyProperties(request: Request, response: Response, next: NextFunction){
+
+      const data = request.body
+
+      const remove = Object.fromEntries(Object.entries(data).filter( prop => prop[1] ))
+
+      request.body = remove
+
+      next()
+  }
 };

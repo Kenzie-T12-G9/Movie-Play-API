@@ -29,7 +29,7 @@ class Users {
 
   @OneToOne(() => PaymentMethods, { eager: true })
   @JoinColumn()
-  PaymentMethods: PaymentMethods;
+  paymentMethods: PaymentMethods;
 }
 
 export { Users };
