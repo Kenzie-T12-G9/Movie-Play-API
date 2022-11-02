@@ -8,8 +8,8 @@ import service from '../services/Users.service';
 export default class UsersController {
   static async create(req: Request, res: Response) {
 
-    const createUser: IUserRequestBody = req.body
-    const newUser = await UsersService.create(createUser)
+    const data: IUserRequestBody = req.body
+    const newUser = await UsersService.create(data)
     return res.status(201).json(instanceToPlain(newUser))
 
   }

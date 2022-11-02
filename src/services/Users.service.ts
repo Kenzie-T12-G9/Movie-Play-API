@@ -9,31 +9,31 @@ export default class UsersService {
   static repository = AppDataSource.getRepository(Users)
   static paymentRepo = AppDataSource.getRepository(PaymentMethods)
 
-  static async create({ name, email, password, paymentInfo }: IUserRequestBody) {
+  static async create(data: IUserRequestBody) {
 
-    const emailAlreadyExists = await this.repository.findOneBy({email})
+    const emailAlreadyExists = await this.repository.findOne({
+      where:{
+        email:data.email
+      }
+    })
 
     if(emailAlreadyExists){
       throw new AppError('Email already exists 😭',400)
     }
-    if(!password){
-      throw new AppError('Password is a required field',400)
-    }
-    const hashedPassword = await hash(password, 10)
+
+    const { paymentInfo, ...userCreate } = data
 
     const newPayment = this.paymentRepo.create(paymentInfo)
     await this.paymentRepo.save(newPayment)
 
     const newUser = this.repository.create({
-      name,
-      email,
-      password: hashedPassword,
-      PaymentMethods: newPayment
+        paymentMethods:newPayment,
+        ...userCreate
     })
 
-    const user = await this.repository.save(newUser)
+    await this.repository.save(newUser)
 
-    return user
+    return newUser
   }
 
   static async read() {
@@ -47,6 +47,7 @@ export default class UsersService {
         id,
       },
       relations: {
+        // @ts-ignore ou // @ts-expect-error
         PaymentMethods: true,
       }
     })
