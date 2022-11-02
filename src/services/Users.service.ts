@@ -1,4 +1,4 @@
-import { hash } from 'bcryptjs'
+import { hash } from 'bcryptjs';
 import AppDataSource from '../data-source';
 import { PaymentMethods } from '../entities/PaymentMethods.entity';
 import { Users } from '../entities/Users.entity';
@@ -6,39 +6,38 @@ import { AppError } from '../error/AppError';
 import { IUserRequestBody } from '../interfaces/users';
 
 export default class UsersService {
-  static repository = AppDataSource.getRepository(Users)
-  static paymentRepo = AppDataSource.getRepository(PaymentMethods)
+  static repository = AppDataSource.getRepository(Users);
+  static paymentRepo = AppDataSource.getRepository(PaymentMethods);
 
   static async create(data: IUserRequestBody) {
-
     const emailAlreadyExists = await this.repository.findOne({
-      where:{
-        email:data.email
-      }
-    })
+      where: {
+        email: data.email,
+      },
+    });
 
-    if(emailAlreadyExists){
-      throw new AppError('Email already exists 😭',400)
+    if (emailAlreadyExists) {
+      throw new AppError('Email already exists 😭', 400);
     }
 
-    const { paymentInfo, ...userCreate } = data
+    const { paymentMethods, ...userCreate } = data;
 
-    const newPayment = this.paymentRepo.create(paymentInfo)
-    await this.paymentRepo.save(newPayment)
+    const newPayment = this.paymentRepo.create(paymentMethods);
+    await this.paymentRepo.save(newPayment);
 
     const newUser = this.repository.create({
-        paymentMethods:newPayment,
-        ...userCreate
-    })
+      paymentMethods: newPayment,
+      ...userCreate,
+    });
 
-    await this.repository.save(newUser)
+    await this.repository.save(newUser);
 
-    return newUser
+    return newUser;
   }
 
   static async read() {
-    const users = await this.repository.find()
-    return users
+    const users = await this.repository.find();
+    return users;
   }
 
   static async readById(id: string) {
@@ -47,14 +46,13 @@ export default class UsersService {
         id,
       },
       relations: {
-        // @ts-ignore ou // @ts-expect-error
-        PaymentMethods: true,
-      }
-    })
-    if(!usersPayment){
-      throw new AppError('User not found!',404)
+        paymentMethods: true,
+      },
+    });
+    if (!usersPayment) {
+      throw new AppError('User not found!', 404);
     }
-    return usersPayment
+    return usersPayment;
   }
 
   static update(id: string, updates: IUserRequestBody) {}
