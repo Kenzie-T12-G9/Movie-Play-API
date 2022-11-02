@@ -1,18 +1,13 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../error/AppError';
 
-class ErrorMiddleware {
+export default class MiddlewareErrors {
   static handler(error: Error, _: Request, res: Response) {
     if (error instanceof AppError) {
-      return res.status(error.status).json({
-        message: error.message,
-      });
+      return res.status(error.status).send({ message: error.message });
     }
+    console.error(error);
 
-    return res.status(500).json({
-      message: 'Internal error',
-    });
+    return res.status(500).send({ message: 'Internal server Error' });
   }
 }
-
-export default ErrorMiddleware;

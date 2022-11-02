@@ -56,7 +56,7 @@ export const shemaCreateUser = yup.object().shape({
         .default(()=>new Date)
         .transform(()=>new Date)
         .required("UpdatedAt is requerid"),
-    paymentInfo:shemaPayment
+    paymentMethod:shemaPayment
 })
 
 

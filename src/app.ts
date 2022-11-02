@@ -1,5 +1,7 @@
 import 'reflect-metadata';
+
 import 'express-async-errors';
+import MiddlewareErrors from './middlewares/handleError.middleware';
 
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
@@ -13,7 +15,6 @@ import { seriesRouter } from './routes/Series.routes';
 import { sessionRouter } from './routes/Session.routes';
 import { episodesRouter } from './routes/Episodes.routes';
 import { authorsPage } from './documentation/authors';
-import ErrorMiddleware from './middlewares/handleError.middleware';
 
 const app = express();
 app.use(express.json());
@@ -29,6 +30,6 @@ app.use('/movies', moviesRouter);
 app.use('/series', seriesRouter);
 app.use('/episodes', episodesRouter);
 
-app.use(ErrorMiddleware.handler);
+app.use(MiddlewareErrors.handler);
 
 export default app;

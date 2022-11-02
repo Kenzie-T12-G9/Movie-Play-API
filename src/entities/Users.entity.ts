@@ -22,10 +22,10 @@ class Users {
   isAdm: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  readonly updatedAt: Date;
 
   @OneToOne(() => PaymentMethods, { eager: true })
   @JoinColumn()
