@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "contributors": [
+    { "name": "Alexandre Borges", "email": "axdborges@outlook.com", "url": "https://github.com/axdborges" },
+    { "name": "Francisco Stenico", "email": "francisco.stenico@gmail.com", "url": "https://github.com/FranciscoStenico" },
+    { "name": "Guilherme Bernardo", "email": "guilhermebernardo@id.uff.br", "url": "https://github.com/guilhermebernar" },
+    { "name": "Kelven Souza", "email": "kelven.souza00@gmail.com" },
+    { "name": "Myke Macedo", "email": "myke.programacao@gmail.com", "url": "https://github.com/myke-vida-de-macedo" },
+    { "name": "Queren Hope", "email": "querenhope@hotmail.com", "url": "https://github.com/QuerenHope" }
+  ],
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
     "typeorm": "typeorm-ts-node-commonjs",

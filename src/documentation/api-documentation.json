@@ -1,0 +1,785 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Movie Play API",
+    "description": "Rest API baseada nos conceitos de CRUD, que tem como objetivo o suporte a criação de uma plataforma de streaming de filmes e séries, através da seguinte `base_url`: [**http://localhost:3000**](http://localhost:3000);",
+    "termsOfService": "http://localhost:3000/authors",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Rotas relacionadas ao perfil de usuários"
+    },
+    {
+      "name": "Login",
+      "description": "Rotas relacionadas ao login de usuários e geração do token de acesso"
+    },
+    {
+      "name": "Ratings",
+      "description": "Rotas relacionadas à avaliação dos títulos disponíveis"
+    },
+    {
+      "name": "History",
+      "description": "Rotas relacionadas ao histórico de acesso do usuário"
+    },
+    {
+      "name": "Movies",
+      "description": "Rotas relacionadas a criação e leitura de filmes dentro do catálogo"
+    },
+    {
+      "name": "Series",
+      "description": "Rotas relacionadas a criação e leitura de séries dentro do catálogo"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Cadastro de um novo usuário",
+        "description": "Esta rota será responsável pelo cadastro de novos usuários na aplicação. Caso sejam passados argumentos inválidos, a resposta retornada será um **400**(Bad Request).",
+        "requestBody": {
+          "description": "O corpo de requisição deve ser passado contendo os seguintes campos:",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUserRequest"
+              },
+              "examples": {
+                "Padrão": {
+                  "value": {
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "password": "1234teste",
+                    "isAdm": true,
+                    "paymentMethods": {
+                      "name": "Francisco C Stenico",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "2026-10-21",
+                      "code": "123"
+                    }
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "password": "1234teste",
+                    "paymentMethods": {
+                      "name": "Francisco C Stenico",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "2026-10-21",
+                      "code": "123"
+                    }
+                  }
+                },
+                "Argumentos Inválidos": {
+                  "value": {
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "password": "1234teste",
+                    "isAdm": true,
+                    "paymentMethods": {
+                      "name": "Francisco C Stenico",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "2026-10-21",
+                      "code": "123"
+                    },
+                    "InvalidArg": null
+                  }
+                },
+                "Cartão com a validade expirada": {
+                  "value": {
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "password": "1234teste",
+                    "isAdm": true,
+                    "paymentMethods": {
+                      "name": "Francisco C Stenico",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "2019-08-29",
+                      "code": "123"
+                    }
+                  }
+                },
+                "Método de pagamento ausente": {
+                  "value": {
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "password": "1234teste",
+                    "isAdm": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED:** Usuário cadastrado!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                  "name": "Francisco Stenico",
+                  "email": "francisco@teste.com",
+                  "isAdm": true,
+                  "paymentMethods": {
+                    "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
+                    "name": "Francisco C Stenico",
+                    "cpf": "12345678900",
+                    "number": "1111222233334444",
+                    "dueDate": "2026-10-21",
+                    "code": "123"
+                  },
+                  "createdAt": "2022-10-22T04:31:36.398Z",
+                  "updatedAt": "2022-10-22T04:31:36.398Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Email em uso": {
+                    "value": {
+                      "message": "This email is already being used"
+                    }
+                  },
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "isAdm is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: unspecifiedArgument"
+                    }
+                  },
+                  "Cartão com a validade expirada": {
+                    "value": {
+                      "message": "The payment card's due date has passed. Please try another method"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "**PAYMENT REQUIRED:** Método de pagamento ausente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Payment method is required"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Listagem de todos os usuários",
+        "description": "Esta rota será responsável pela listagem de todos os usuários cadastrados na aplicação. Somente usuários admnistradores autenticados podem acessar esta rota.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem de todos os usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserList"
+                },
+                "example": [
+                  {
+                    "id": "f7128efb-9455-4b94-85b7-779808584786",
+                    "name": "Guilherme Bernardo",
+                    "email": "guilherme@teste.com",
+                    "isAdm": false,
+                    "paymentMethods": {
+                      "id": "f8cc7ba1-61a3-49d7-9d47-b97ea100814a",
+                      "name": "Guilherme B Nobrega",
+                      "cpf": "98765432100",
+                      "number": "4444333322221111",
+                      "dueDate": "2024-11-06",
+                      "code": "321"
+                    },
+                    "createdAt": "2022-10-22T04:31:36.398Z",
+                    "updatedAt": "2022-10-23T18:42:11.521Z"
+                  },
+                  {
+                    "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
+                    "name": "Myke Macedo",
+                    "email": "myke@teste.com",
+                    "isAdm": true,
+                    "paymentMethods": {
+                      "id": "24481b74-e57a-4453-bada-eed77bc81854",
+                      "name": "Myke V Macedo",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "2029-10-27",
+                      "code": "123"
+                    },
+                    "createdAt": "2021-11-20T04:31:36.398Z",
+                    "updatedAt": "2021-11-20T04:31:36.398Z"
+                  },
+                  {
+                    "id": "f8cc7ba1-61a3-49d7-9d47-b97ea100814a",
+                    "name": "Queren Hope",
+                    "email": "queren@teste.com",
+                    "isAdm": false,
+                    "paymentMethods": {
+                      "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
+                      "name": "Queren Hope S Martuscelli",
+                      "cpf": "15975399923",
+                      "number": "9999888877776666",
+                      "dueDate": "2025-12-05",
+                      "code": "159"
+                    },
+                    "createdAt": "2019-11-27T04:31:17.322Z",
+                    "updatedAt": "2020-01-11T08:32:56.398Z"
+                  },
+                  "..."
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{ userId }": {
+      "get": {
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Listagem de um usuário específico",
+        "description": "Esta rota será responável pela listagem de um único usuário. Apenas administradores poderão fazer a listagem de usuários que não sejam o próprio usuário logado",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser listado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem dos dados de um único usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "f8cc7ba1-61a3-49d7-9d47-b97ea100814a",
+                  "name": "Kelven Souza",
+                  "email": "kelven@teste.com",
+                  "isAdm": true,
+                  "paymentMethods": {
+                    "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
+                    "name": "Kelven S Souza",
+                    "cpf": "12234456677",
+                    "number": "4444555566667777",
+                    "dueDate": "2028-04-25",
+                    "code": "999"
+                  },
+                  "createdAt": "2022-01-12T14:51:27.422Z",
+                  "updatedAt": "2022-11-01T08:12:59.278Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Atualização de usuário",
+        "description": "Esta rota será responsável pela atualização dos dados do usuário da aplicação. O usuário será especificado através do parâmetro `userId`, presente no endpoint da rota. Caso o usuário logado seja um administrador, será possível fazer a atualização de qualquer usuário, caso contrário apenas o perfil do usuário logado poderá ser alterado. Caso sejam passados argumentos inválidos, a resposta que será retornada será um **400**(Bad Request).",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser editado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "Todos os campos presentes no corpo de requisição da criação do usuário estarão disponíveis para atualização, exceto `isAdm`. Nenhum dos campos é obrigatório, permitindo assim uma atualização parcial do usuário.",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  { "$ref": "#/components/schemas/updateUserRequest1" },
+                  { "$ref": "#/components/schemas/updateUserRequest2" }
+                ]
+              },
+              "examples": {
+                "Atualização Completa": {
+                  "value": {
+                    "name": "Alexandre B Albuquerque",
+                    "email": "alexandre@teste.com",
+                    "password": "4321teste",
+                    "paymentMethods": {
+                      "name": "Alexandre Borges",
+                      "cpf": "98765432100",
+                      "number": "4444333322221111",
+                      "dueDate": "2024-11-06",
+                      "code": "321"
+                    }
+                  }
+                },
+                "Atualização Parcial": {
+                  "value": {
+                    "name": "Alexandre B Albuquerque",
+                    "email": "alexandre@teste.com",
+                    "password": "4321teste"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "**OK:** Usuário atualizado!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "f7128efb-9455-4b94-85b7-779808584786",
+                  "name": "Alexandre Borges",
+                  "email": "alexandre@teste.com",
+                  "isAdm": true,
+                  "paymentMethods": {
+                    "id": "f8cc7ba1-61a3-49d7-9d47-b97ea100814a",
+                    "name": "Alexandre B Albuquerque",
+                    "cpf": "98765432100",
+                    "number": "4444333322221111",
+                    "dueDate": "2024-11-06",
+                    "code": "321"
+                  },
+                  "createdAt": "2022-10-22T04:31:36.398Z",
+                  "updatedAt": "2022-10-23T18:42:11.521Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Argumentos inválidos | Tentativa de atualização das permissões de administrador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "this field has unspecified keys: isAdm"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Deleção do perfil de um usuário",
+        "description": "Esta rota será responsável pela deleção do perfil do usuário especificado por seu `id`, no parâmetro `userId`, que deve estar presente no endpoint da rota.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser deletado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "**NO CONTENT:** Usuário excluído com sucesso!"
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Login"],
+        "summary": "Login de usuário",
+        "description": "Rota responsável pelo login de usuário e fornecimento do token de autenticação no formato JWT",
+        "requestBody": {
+          "description": "Chaves nescessárias para a efetuação do login",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              },
+              "examples": {
+                "Usuário existente": {
+                  "value": {
+                    "email": "francisco@teste.com",
+                    "password": "1234teste"
+                  }
+                },
+                "Usuário inexistente": {
+                  "value": {
+                    "email": "inexistente@teste.com",
+                    "password": "1234teste"
+                  }
+                },
+                "Senha incorreta": {
+                  "value": {
+                    "email": "francisco@teste.com",
+                    "password": "senhaIncorreta!"
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "email": "francisco@teste.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "**OK:** Usuário logado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                },
+                "example": {
+                  "user": {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "isAdm": true,
+                    "paymentMethods": {
+                      "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
+                      "name": "Francisco C Stenico",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "2026-10-21",
+                      "code": "123"
+                    },
+                    "createdAt": "2022-10-22T04:31:36.398Z",
+                    "updatedAt": "2022-10-22T04:31:36.398Z"
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbSI6dHJ1ZSwiaWF0IjoxNjY3MzYzMzU3LCJleHAiOjE2Njc0NDk3NTcsInN1YiI6ImY4Y2M3YmExLTYxYTMtNDlkNy05ZDQ3LWI5N2VhMTAwODE0YSJ9.NuU-Vb_dsb0lrC0UeQxIx-pfy367I5hciVdRI772jUg"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Usuário inexistente | Senha incorreta": {
+                    "value": {
+                      "message": "Invalid email or password"
+                    }
+                  },
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "password is a required field"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "createUserRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string", "format": "password" },
+          "isAdm": { "type": "boolean" },
+          "paymentMethods": {
+            "name": { "type": "string" },
+            "cpf": { "type": "string" },
+            "number": { "type": "string" },
+            "dueDate": { "type": "string", "format": "date" },
+            "code": { "type": "string" }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "isAdm": { "type": "boolean" },
+          "paymentMethods": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "cpf": { "type": "string" },
+            "number": { "type": "string" },
+            "dueDate": { "type": "string", "format": "date" },
+            "code": { "type": "string" }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "UserList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/User"
+        }
+      },
+      "updateUserRequest1": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string", "format": "password" },
+          "paymentMethods": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "cpf": { "type": "string" },
+            "number": { "type": "string" },
+            "dueDate": { "type": "string", "format": "date" },
+            "code": { "type": "string" }
+          }
+        }
+      },
+      "updateUserRequest2": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string", "format": "password" }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string", "format": "password" }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "token": { "type": "string" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
