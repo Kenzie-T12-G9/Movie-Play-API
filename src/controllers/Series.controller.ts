@@ -6,7 +6,7 @@ export default class SeriesController {
 
     const data = req.body
     const resData = await service.create( data )
-    return res.status(200).json(resData)
+    return res.status(201).json(resData)
   }
 
   static async list(req: Request, res: Response) {
@@ -29,7 +29,7 @@ export default class SeriesController {
     const { id } = req.params
 
     const resData = await service.delete( id )
-    return res.status(200).json(resData)
+    return res.status(204).json(resData)
   }
 
   static async addEpisodeo(req: Request, res: Response) {
@@ -38,6 +38,6 @@ export default class SeriesController {
     const { id } = req.params
 
     const resData = await service.addEpisodeo( id, data )
-    return res.status(200).json(resData)
+    return res.status(201).json(resData)
   }
 }
