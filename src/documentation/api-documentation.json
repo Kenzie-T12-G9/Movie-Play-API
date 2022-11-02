@@ -682,6 +682,130 @@
           }
         }
       }
+    },
+    "/movies": {
+      "post": {
+        "tags": ["Movies"],
+        "summary": "Adição de novos filmes",
+        "description": "Rota responsável pela adição de novos filmes ao catálogo. Esta rota só pode ser acessada por usuários admnistradores.",
+        "requestBody": {
+          "description": "O corpo de requisição possui os seguintes campos como atributos obrigatórios para ser feita a requisição com sucesso:",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMovieRequest"
+              },
+              "examples": {
+                "Padrão": {
+                  "value": {
+                    "name": "Django Unchained",
+                    "year": 2012,
+                    "duration": 165,
+                    "direction": "Quentin Tarantino",
+                    "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "year": 2012,
+                    "duration": 165,
+                    "direction": "Quentin Tarantino",
+                    "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
+                  }
+                },
+                "Argumentos inválidos": {
+                  "value": {
+                    "InvalidArg": null,
+                    "name": "Django Unchained",
+                    "year": 2012,
+                    "duration": 165,
+                    "direction": "Quentin Tarantino",
+                    "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED**: Filme adicionado ao catálogo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMovieResponse"
+                },
+                "example": {
+                  "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
+                  "name": "Django Unchained",
+                  "year": 2012,
+                  "duration": 165,
+                  "direction": "Quentin Tarantino",
+                  "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "name is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -705,12 +829,12 @@
       "User": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
+          "id": { "type": "string", "format": "uuid" },
           "name": { "type": "string" },
           "email": { "type": "string" },
           "isAdm": { "type": "boolean" },
           "paymentMethods": {
-            "id": { "type": "string" },
+            "id": { "type": "string", "format": "uuid" },
             "name": { "type": "string" },
             "cpf": { "type": "string" },
             "number": { "type": "string" },
@@ -734,7 +858,6 @@
           "email": { "type": "string" },
           "password": { "type": "string", "format": "password" },
           "paymentMethods": {
-            "id": { "type": "string" },
             "name": { "type": "string" },
             "cpf": { "type": "string" },
             "number": { "type": "string" },
@@ -765,6 +888,27 @@
             "$ref": "#/components/schemas/User"
           },
           "token": { "type": "string" }
+        }
+      },
+      "CreateMovieRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "year": { "type": "number" },
+          "duration": { "type": "number" },
+          "description": { "type": "string" },
+          "direction": { "type": "string" }
+        }
+      },
+      "CreateMovieResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "year": { "type": "number" },
+          "duration": { "type": "number" },
+          "description": { "type": "string" },
+          "direction": { "type": "string" }
         }
       },
       "Error": {
