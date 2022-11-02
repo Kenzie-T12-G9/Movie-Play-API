@@ -1,21 +1,39 @@
-import { Request } from 'express';
-import { IMovie } from '../interfaces/Movies';
+import { Request, Response } from 'express';
+import { IMovieBodyReq } from '../interfaces/Movies';
+import MovieService from '../services/Movies.service';
 ;
 
 export default class MoviesController {
-  static async createMovieController(req: IMovie ,res: IMovie ){
+ 
+    static async createMovieController(req: Request ,res: Response ){
+        
+        const data : IMovieBodyReq = req.body
+        const createMovie = MovieService.createMovieService(data)
+        return res.status(201).json(createMovie)
 
-  }
+    }
 
-  static readAllMoviesController(req: Request , res: IMovie){
+    static async readAllMoviesController(req: Request , res: Response){
 
-  }
+        const data = await MovieService.readAllMoviesService()
+        return res.json(data)
 
-  static readMovieController(req: Request , res: IMovie){
+    }
 
-}
+    static async readMovieController(req: Request , res: Response){
 
-  static deleteMovieController(req: IMovie , res: Response){
+        const { id } = req.params
+        const data = await MovieService.readMovieService(id)
+        return res.json(data)
 
-  }
+    }
+
+    static deleteMovieController(req: Request , res: Response){
+
+        const { id } = req.params
+        MovieService.readMovieService(id)
+        return res.status(204)
+
+    }
+
 }
