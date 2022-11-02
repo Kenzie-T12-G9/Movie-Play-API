@@ -28,8 +28,8 @@ class Series {
   @OneToMany(() => Episodes, (ep) => ep.serie)
   ep: Episodes[];
 
-  @ManyToOne(() => WatchLater, { eager: true, nullable: true })
-  watchlater: WatchLater;
+  @OneToMany(() => WatchLater, (watchlater) => watchlater.series)
+  series: WatchLater;
 }
 
 export { Series };

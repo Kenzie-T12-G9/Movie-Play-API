@@ -1,4 +1,10 @@
-import { ManyToOne, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  ManyToOne,
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
 import { WatchLater } from './Watch_later.entity';
 
 @Entity('Movies')
@@ -21,8 +27,8 @@ class Movies {
   @Column()
   direction: string;
 
-  @ManyToOne(() => WatchLater, { eager: true, nullable: true })
-  watchlater: WatchLater;
+  @OneToMany(() => WatchLater, (watchlater) => watchlater.movies)
+  movies: WatchLater;
 }
 
 export { Movies };
