@@ -1,11 +1,61 @@
+import { hash } from 'bcryptjs'
+import AppDataSource from '../data-source';
+import { PaymentMethods } from '../entities/PaymentMethods.entity';
+import { Users } from '../entities/Users.entity';
+import { AppError } from '../error/AppError';
 import { IUserRequestBody } from '../interfaces/users';
 
 export default class UsersService {
-  static create({ name, email, password, isAdm }: IUserRequestBody) {}
+  static repository = AppDataSource.getRepository(Users)
+  static paymentRepo = AppDataSource.getRepository(PaymentMethods)
 
-  static read() {}
+  static async create(data: IUserRequestBody) {
 
-  static readById(id: string) {}
+    const emailAlreadyExists = await this.repository.findOne({
+      where:{
+        email:data.email
+      }
+    })
+
+    if(emailAlreadyExists){
+      throw new AppError('Email already exists 😭',400)
+    }
+
+    const { paymentInfo, ...userCreate } = data
+
+    const newPayment = this.paymentRepo.create(paymentInfo)
+    await this.paymentRepo.save(newPayment)
+
+    const newUser = this.repository.create({
+        paymentMethods:newPayment,
+        ...userCreate
+    })
+
+    await this.repository.save(newUser)
+
+    return newUser
+  }
+
+  static async read() {
+    const users = await this.repository.find()
+    return users
+  }
+
+  static async readById(id: string) {
+    const usersPayment = await this.repository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        // @ts-ignore ou // @ts-expect-error
+        PaymentMethods: true,
+      }
+    })
+    if(!usersPayment){
+      throw new AppError('User not found!',404)
+    }
+    return usersPayment
+  }
 
   static update(id: string, updates: IUserRequestBody) {}
 
