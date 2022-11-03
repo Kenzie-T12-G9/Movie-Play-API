@@ -14,7 +14,7 @@ class PaymentMethods {
   @Column({ length: 16 })
   number: string;
 
-  @Column()
+  @Column({ type: 'date' })
   dueDate: Date;
 
   @Column()

@@ -21,7 +21,7 @@ class Episodes {
   @Column()
   description: string;
 
-  @ManyToOne(() => Series, { onDelete:'CASCADE' })
+  @ManyToOne(() => Series, { onDelete: 'CASCADE' })
   serie: Series;
 }
 
