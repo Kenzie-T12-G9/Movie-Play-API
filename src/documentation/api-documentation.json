@@ -6,6 +6,16 @@
     "termsOfService": "http://localhost:3000/authors",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "description": "Servidor Padrão",
+      "url": "https://api-movie-play.herokuapp.com"
+    },
+    {
+      "description": "Servidor local",
+      "url": "http://localhost:3000"
+    }
+  ],
   "tags": [
     {
       "name": "Users",
@@ -58,6 +68,20 @@
                       "cpf": "12345678900",
                       "number": "1111222233334444",
                       "dueDate": "2026-10-21",
+                      "code": "123"
+                    }
+                  }
+                },
+                "Atributo 'dueDate' fora do formato padrão": {
+                  "value": {
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com",
+                    "password": "1234teste",
+                    "paymentMethods": {
+                      "name": "Francisco C Stenico",
+                      "cpf": "12345678900",
+                      "number": "1111222233334444",
+                      "dueDate": "26-10-21",
                       "code": "123"
                     }
                   }
@@ -157,6 +181,11 @@
                   "Email em uso": {
                     "value": {
                       "message": "This email is already being used"
+                    }
+                  },
+                  "Atributo 'dueDate' fora do formato padrão": {
+                    "value": {
+                      "message": "dueDate attribute must be in the standart Date format (yyyy-mm-dd)"
                     }
                   },
                   "Argumentos ausentes": {
@@ -392,7 +421,7 @@
           }
         ],
         "requestBody": {
-          "description": "Todos os campos presentes no corpo de requisição da criação do usuário estarão disponíveis para atualização, exceto `isAdm`. Nenhum dos campos é obrigatório, permitindo assim uma atualização parcial do usuário.",
+          "description": "Todos os campos presentes no corpo de requisição da criação do usuário estarão disponíveis para atualização, exceto `isAdm`. Nenhum dos campos é obrigatório, permitindo assim uma atualização parcial do usuário. Por outro lado, se for feita a atualização do método de pagamento, esta deverá conter todas as chaves editáveis presentes (name, cpf, number, dueDate & code)",
           "required": false,
           "content": {
             "application/json": {
@@ -462,8 +491,17 @@
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 },
-                "example": {
-                  "message": "this field has unspecified keys: isAdm"
+                "examples": {
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  },
+                  "Atualização Parcial do método de pagamento": {
+                    "value": {
+                      "message": "The update of payment method must contain all the following keys: name | cpf | number | dueDate | code"
+                    }
+                  }
                 }
               }
             }
