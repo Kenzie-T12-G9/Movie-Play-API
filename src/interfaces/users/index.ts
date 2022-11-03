@@ -6,11 +6,13 @@ export type IUserRequest = Request<
   IUserResponseBody,
   IUserRequestBody
 >;
+
 export type IUserUpdate = Request<
   core.ParamsDictionary,
   IUserResponseBody,
   IUserUpdateBody
 >;
+
 export type IUserResponse = Response<IUserResponseBody>;
 export type IUserList = Response<IUserResponseBody[]>;
 
@@ -18,7 +20,7 @@ export interface IPaymentInfo {
   name: string;
   cpf: string;
   number: string;
-  dueDate: string;
+  dueDate: Date;
   code: string;
 }
 
@@ -36,7 +38,7 @@ export interface IUserRequestBody {
   email: string;
   password: string;
   isAdm: boolean;
-  paymentInfo: IPaymentInfo;
+  paymentMethods: IPaymentInfo;
 }
 
 export interface IUserLoginBody {
@@ -48,7 +50,7 @@ export interface IUserUpdateBody {
   name?: string;
   email?: string;
   password?: string;
-  paymentInfo?: IPaymentInfo;
+  paymentMethods?: IPaymentInfo;
 }
 
 export interface IUserResponseBody {
@@ -56,7 +58,7 @@ export interface IUserResponseBody {
   email: string;
   isAdm: boolean;
   id: string;
-  paymentInfo: IPaymentInfoRes;
+  paymentMethods: IPaymentInfoRes;
   createdAt: Date;
   updatedAt: Date;
 }
