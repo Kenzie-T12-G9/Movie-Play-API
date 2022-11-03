@@ -8,4 +8,4 @@ RUN yarn
 
 COPY . .
 
-VOLUME /app
+CMD ["yarn", "dev"]

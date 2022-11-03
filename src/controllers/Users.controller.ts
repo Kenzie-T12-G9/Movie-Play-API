@@ -1,33 +1,13 @@
-import { instanceToPlain } from 'class-transformer';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 // prettier-ignore
-import { IUserList, IUserRequestBody, IUserResponse, IUserUpdate } from '../interfaces/users';
-import UsersService from '../services/Users.service';
-import service from '../services/Users.service';
+import { IUserList, IUserRequest, IUserResponse, IUserUpdate } from '../interfaces/users';
 
 export default class UsersController {
-  static async create(req: Request, res: Response) {
+  static create(req: IUserRequest, res: IUserResponse) {}
 
-    const data: IUserRequestBody = req.body
-    const newUser = await UsersService.create(data)
-    return res.status(201).json(instanceToPlain(newUser))
-
-  }
-
-  static async read(_: Request, res: Response) {
-    const users = await UsersService.read()
-    return res.json(instanceToPlain(users))
-  }
-
-  static async readById(req: Request, res: Response) {
-    const { id } = req.params
-    const users = await UsersService.readById(id)
-    return res.json(users)
-  }
+  static read(_: Request, res: IUserList) {}
 
   static update(req: IUserUpdate, res: IUserResponse) {}
 
-  static delete(req: IUserRequestBody, res: Response) {
-    
-  }
+  static delete(req: IUserRequest, res: Response) {}
 }
