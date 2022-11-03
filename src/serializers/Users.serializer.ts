@@ -7,30 +7,30 @@ export const shemaPayment = yup.object().shape({
         .string()
         .default(()=>uuidv4())
         .transform(()=>uuidv4())
-        .required("Id is requerid"),
+        .required(),
     name:yup
         .string()
-        .required("Name is requerid"),
+        .required(),
     cpf:yup
         .string()
-        .required("CPF is requerid"),
+        .required(),
     number:yup
         .string()
-        .required("Number is requerid"),
+        .required(),
     dueDate:yup
         .date()
-        .required("Date is requerid"),
+        .required(),
     code:yup
         .string()
-        .required("Code is requerid"),
+        .required(),
 })
 
 export const shemaCreateUser = yup.object().shape({
-    id:yup
-        .string()
-        .default(()=>uuidv4())
-        .transform(()=>uuidv4())
-        .required("Id is requerid"),
+    // id:yup
+    //     .string()
+    //     .default(()=>uuidv4())
+    //     .transform(()=>uuidv4())
+    //     .required("Id is requerid"),
     name:yup
         .string()
         .required("Name is requerid"),
@@ -44,19 +44,17 @@ export const shemaCreateUser = yup.object().shape({
         .required("IsAdm is requerid"),
     password:yup
         .string()
-        .transform((pass)=> hashSync(pass, 10))
         .required("Password is requerid"),
-    createdAt:yup
-        .date()
-        .default(()=>new Date)
-        .transform(()=>new Date)
-        .required("CreatedAt is requerid"),
-    updatedAt:yup
-        .date()
-        .default(()=>new Date)
-        .transform(()=>new Date)
-        .required("UpdatedAt is requerid"),
-    paymentMethod:shemaPayment
+    // createdAt:yup
+    //     .date()
+    //     .default(()=>new Date)
+    //     .transform(()=>new Date)
+    //     .required("CreatedAt is requerid"),
+    // updatedAt:yup
+    //     .date()
+    //     .default(()=>new Date)
+    //     .transform(()=>new Date)
+    //     .required("UpdatedAt is requerid"),
+    paymentMethods:shemaPayment
 })
-
 
