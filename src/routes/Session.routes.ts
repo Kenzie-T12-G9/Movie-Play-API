@@ -1,14 +1,8 @@
-import { Router } from "express";
+import { Router } from 'express';
+import session from '../controllers/Session.controller';
+import Ensuraces from '../middlewares/Ensures.middleware';
+import { schemaIinitSession } from '../serializers/Session.serializer';
 
-import controller from "../controllers/Session.controller";
+export const sessionRouter = Router();
 
-import Ensuraces from "../middlewares/Ensures.middleware";
-
-import { schemaIinitSession } from "../serializers/Session.serializer";
-
-export const sessionRouter = Router()
-
-sessionRouter.post('', 
-    Ensuraces.serializerData(schemaIinitSession),
-    controller.init 
-)
+sessionRouter.post('', Ensuraces.serializerData(schemaIinitSession), session.init);
