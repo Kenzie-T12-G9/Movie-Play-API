@@ -25,8 +25,8 @@ class Series {
   @Column()
   direction: string;
 
-  @OneToMany(() => Episodes, (ep) => ep.serie)
-  ep: Episodes[];
+  @OneToMany(() => Episodes, (episodes) => episodes.serie)
+  episodes: Episodes[];
 
   @OneToMany(() => WatchLater, (watchlater) => watchlater.series)
   series: WatchLater;

@@ -27,7 +27,7 @@ export default class SeriesService {
   }
 
   static list = async () => await this.serieRepository.find({ relations:{
-    ep:true
+    episodes:true
   } })
 
   static async update( id:string, data:IUpdateSerie ) {
@@ -45,7 +45,7 @@ export default class SeriesService {
         id
       },
       relations:{
-        ep:true 
+        episodes:true 
       }
     })
   }
@@ -61,7 +61,7 @@ export default class SeriesService {
     await this.serieRepository.delete(id)
   }
 
-  static async addEpisodeo( id:string, data:IAddEpisodeoSerie ) {
+  static async addEpisode( id:string, data:IAddEpisodeoSerie ) {
 
     const serieExist = await this.serieRepository.findOneBy({id})
 
@@ -76,9 +76,9 @@ export default class SeriesService {
     }
 
  // @ts-ignore ou // @ts-expect-error
-    const ep = this.episodeosRepository.create({ ...data, serie:serieExist})
-    await this.episodeosRepository.save(ep)
+    const episode = this.episodeosRepository.create({ ...data, serie:serieExist})
+    await this.episodeosRepository.save(episode)
 
-    return ep
+    return episode
   }
 }
