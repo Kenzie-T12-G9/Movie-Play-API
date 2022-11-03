@@ -1,19 +1,19 @@
 export interface IMovies {
-  name: string;
-  year: Date;
-  duration: number;
-  description: string;
-  direction: string;
+    name: string;
+    year: Date;
+    duration: number;
+    description: string;
+    direction: string;
 }
 
 export interface IEpisodes {
-  season: number;
-  episode: number;
-  name: string;
-  duration: number;
-  description: string;
+    season: number;
+    episode: number;
+    name: string;
+    duration: number;
+    description: string;
 }
 
 export interface ISeries extends IMovies {
-  // episodes: IEpisodes;
+    // episodes: IEpisodes;
 }

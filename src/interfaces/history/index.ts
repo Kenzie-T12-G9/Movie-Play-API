@@ -1,4 +1,4 @@
 export interface IHistoryResponse {
-  watchedAt: Date;
-  comment: string;
+    watchedAt: Date;
+    comment: string;
 }
