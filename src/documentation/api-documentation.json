@@ -1084,18 +1084,7 @@
                   "user": {
                     "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
                     "name": "Francisco Stenico",
-                    "email": "francisco@teste.com",
-                    "isAdm": true,
-                    "paymentMethods": {
-                      "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
-                      "name": "Francisco C Stenico",
-                      "cpf": "12345678900",
-                      "number": "1111222233334444",
-                      "dueDate": "2026-10-21",
-                      "code": "123"
-                    },
-                    "createdAt": "2022-10-22T04:31:36.398Z",
-                    "updatedAt": "2022-10-22T04:31:36.398Z"
+                    "email": "francisco@teste.com"
                   },
                   "movie": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
