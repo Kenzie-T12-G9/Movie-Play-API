@@ -22,6 +22,9 @@ class Movies {
   duration: number;
 
   @Column()
+  isActive: boolean;
+
+  @Column()
   description: string;
 
   @Column()

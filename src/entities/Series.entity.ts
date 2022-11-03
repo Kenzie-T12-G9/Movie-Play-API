@@ -20,6 +20,9 @@ class Series {
   year: Date;
 
   @Column()
+  isActive: boolean;
+
+  @Column()
   description: string;
 
   @Column()
