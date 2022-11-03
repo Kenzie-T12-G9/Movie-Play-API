@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../error/AppError';
 
 export default class MiddlewareErrors {
-  static handler(error: Error, _: Request, res: Response) {
+  static handler(error: Error, _: Request, res: Response, next: NextFunction) {
     if (error instanceof AppError) {
       return res.status(error.status).send({ message: error.message });
     }

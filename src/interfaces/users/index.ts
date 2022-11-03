@@ -41,6 +41,13 @@ export interface IUserRequestBody {
   paymentMethods: IPaymentInfo;
 }
 
+export interface IUserUpdateRequest {
+  name?: string;
+  email?: string;
+  password?: string;
+  paymentMethods?: IPaymentInfo;
+}
+
 export interface IUserLoginBody {
   email: string;
   password: string;
