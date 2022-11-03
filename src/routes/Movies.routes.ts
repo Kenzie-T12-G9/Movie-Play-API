@@ -3,6 +3,7 @@ import { Router } from "express";
 export const moviesRouter = Router()
 
 moviesRouter.post('',)
+moviesRouter.post('/:id/ratings',)
 moviesRouter.get('',)
-moviesRouter.patch('',)
-moviesRouter.delete('',)
+moviesRouter.get('/:id',)
+moviesRouter.delete('/:id',)

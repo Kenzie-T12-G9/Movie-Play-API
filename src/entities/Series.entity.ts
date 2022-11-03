@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import { Episodes } from './Episodes.entity';
+import { WatchLater } from './Watch_later.entity';
 
 @Entity('Series')
 class Series {
@@ -18,8 +25,11 @@ class Series {
   @Column()
   direction: string;
 
-  @ManyToOne(() => Episodes, (episodes) => episodes.id)
-  espisode: Episodes;
+  @OneToMany(() => Episodes, (ep) => ep.serie)
+  ep: Episodes[];
+
+  @OneToMany(() => WatchLater, (watchlater) => watchlater.series)
+  series: WatchLater;
 }
 
 export { Series };

@@ -15,12 +15,12 @@ class Ratings {
   comment: string;
 
   @ManyToOne(() => Users)
-  userId: Users;
+  user: Users;
 
-  @ManyToOne(() => Movies)
+  @ManyToOne(() => Movies, { nullable: true })
   movie: Movies;
 
-  @ManyToOne(() => Series)
+  @ManyToOne(() => Series, { nullable: true })
   series: Series;
 }
 
