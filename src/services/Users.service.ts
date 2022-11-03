@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import AppDataSource from '../data-source';
 import { PaymentMethods } from '../entities/PaymentMethods.entity';
 import { Users } from '../entities/Users.entity';

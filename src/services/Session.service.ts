@@ -4,21 +4,27 @@ import { AppError } from '../error/AppError';
 import { IUserLoginBody } from '../interfaces/users';
 import { compare } from 'bcryptjs';
 
-import { sign } from 'jsonwebtoken';
-import 'dotenv/config';
+import * as bcrypt from 'bcryptjs';
+import { sign } from "jsonwebtoken"
+import { config } from "dotenv";
+config()
 
 export default class SessionService {
   static repository = AppDataSource.getRepository(Users);
 
-  static async init({ email, password }: IUserLoginBody) {
-    const user = await this.repository.findOneBy({ email });
+  static async init( { email, password }: IUserLoginBody) {
 
-    if (!user) {
-      throw new AppError('Email/password is wong', 401);
+      
+    const user = await this.repository.findOneBy({email: email})
+      
+    if(!user){
+      throw new AppError("Email/password is wrong", 401)
     }
 
-    if (!(await compare(password, user.password))) {
-      throw new AppError('Email/password is wong', 401);
+    const hashedPassword = bcrypt.compareSync(password, user.password);
+    
+    if(!hashedPassword ){
+      throw new AppError("Email/password is wrong", 401)
     }
 
     const token = sign(
