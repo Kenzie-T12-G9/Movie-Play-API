@@ -55,7 +55,17 @@ export default class UsersService {
     return usersPayment;
   }
 
-  static update(id: string, updates: IUserRequestBody) {}
+  static update(id: string, updates: IUserRequestBody) {
+    
+  }
 
-  static delete(id: string) {}
+  static async delete(id: string) {
+    const userExists = await this.repository.findOneBy({id})
+
+    if(!userExists){
+      throw new AppError('User does not exist',403)
+    }
+
+    await this.repository.delete(id)
+  }
 }
