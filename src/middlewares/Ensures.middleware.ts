@@ -23,7 +23,7 @@ export default class Ensuraces {
       } catch (error) {
         if (error instanceof Error) {
           // @ts-ignore ou // @ts-expect-error
-          throw new AppError(error.errors, 400);
+          throw new AppError(error.message, 400);
         }
       }
     };

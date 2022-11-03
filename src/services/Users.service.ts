@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import AppDataSource from '../data-source';
 import { PaymentMethods } from '../entities/PaymentMethods.entity';
 import { Users } from '../entities/Users.entity';
@@ -19,15 +20,18 @@ export default class UsersService {
     if (emailAlreadyExists) {
       throw new AppError('Email already exists 😭', 400);
     }
-
+    
     const { paymentMethods, ...userCreate } = data;
-
+    console.log(paymentMethods)
     const newPayment = this.paymentRepo.create(paymentMethods);
     await this.paymentRepo.save(newPayment);
 
+    const { password, ...user } = userCreate
+    const hashedPassword = await hash(password, 10)
     const newUser = this.repository.create({
       paymentMethods: newPayment,
-      ...userCreate,
+      ...user,
+      password: hashedPassword
     });
 
     await this.repository.save(newUser);
