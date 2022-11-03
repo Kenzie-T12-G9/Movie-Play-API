@@ -38,7 +38,7 @@
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
     "typeorm": "typeorm-ts-node-commonjs",
-    "orm:generate": "typeorm-ts-node-commonjs migration:generate",
+    "orm:generate": "typeorm-ts-node-commonjs migration:generate src/migrations/createtables -d src/data-source.ts",
     "orm:run": "typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
     "build": "tsc",
     "start": "node dist/src/server.js",

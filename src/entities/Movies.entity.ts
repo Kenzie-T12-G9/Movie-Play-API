@@ -21,7 +21,7 @@ class Movies {
   @Column()
   duration: number;
 
-  @Column()
+  @Column({default: true})
   isActive: boolean;
 
   @Column()

@@ -19,7 +19,7 @@ class Series {
   @Column()
   year: Date;
 
-  @Column()
+  @Column({default: true})
   isActive: boolean;
 
   @Column()
