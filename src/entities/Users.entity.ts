@@ -1,7 +1,7 @@
 // prettier-ignore
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 import { PaymentMethods } from './PaymentMethods.entity';
-import { Exclude } from 'class-transformer';
+import { Exclude } from 'class-transformer'
 
 @Entity('Users')
 class Users {
@@ -13,6 +13,9 @@ class Users {
 
   @Column()
   email: string;
+
+  @Column()
+  isActive: boolean;
 
   @Column()
   @Exclude()

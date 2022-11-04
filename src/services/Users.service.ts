@@ -42,7 +42,7 @@ export default class UsersService {
   }
 
   static async readById(id: string): Promise<Users> {
-    const specificUser = await this.repository.findOneBy({ id });
+    const specificUser = await this.repository.findOneBy({ id, isActive: true });
     if (!specificUser) {
       throw new AppError('User not found', 404);
     }
@@ -54,7 +54,7 @@ export default class UsersService {
     id: string,
     { name, email, password, paymentMethods }: IUserUpdateRequest
   ): Promise<Users> {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id , isActive: true  });
     if (!user) {
       throw new AppError('User not found', 404);
     } else if (paymentMethods && partialUpdates(paymentMethods)) {
@@ -92,6 +92,10 @@ export default class UsersService {
       throw new AppError('User not found', 404);
     }
 
-    await this.repository.delete(id);
+    await this.repository.update(
+      id,
+      {   
+          isActive: false
+      })
   }
 }

@@ -13,6 +13,9 @@ class Movies {
   year: Date;
 
   @Column()
+  isActive: boolean;
+
+  @Column()
   duration: number;
 
   @Column()
