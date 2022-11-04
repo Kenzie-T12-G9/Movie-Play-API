@@ -1,10 +1,4 @@
-import {
-  ManyToOne,
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { WatchLater } from './Watch_later.entity';
 
 @Entity('Movies')
