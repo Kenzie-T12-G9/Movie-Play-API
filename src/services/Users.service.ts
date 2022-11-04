@@ -41,7 +41,7 @@ export default class UsersService {
     return usersList;
   }
 
-  static async readById(id: string) {
+  static async readById(id: string): Promise<Users> {
     const specificUser = await this.repository.findOneBy({ id });
     if (!specificUser) {
       throw new AppError('User not found', 404);
@@ -59,14 +59,16 @@ export default class UsersService {
       throw new AppError('User not found', 404);
     } else if (paymentMethods && partialUpdates(paymentMethods)) {
       throw new AppError(
-        'The update of payment method must contain all the following keys: name | cpf | number | dueDate | code',
+        'The update of payment method must contain all the following keys: name, cpf, number, dueDate, code',
         400
       );
     }
 
     let newPayment: PaymentMethods | null = null;
     if (paymentMethods) {
-      await this.paymentRepo.delete(user.paymentMethods.id);
+      if (expired(paymentMethods)) {
+        throw new AppError('The payment card\'s due date has passed. Please try another method', 400);
+      }
 
       const updatePayment = this.paymentRepo.create(paymentMethods);
       newPayment = await this.paymentRepo.save(updatePayment);
@@ -78,6 +80,7 @@ export default class UsersService {
       password: password ? await hash(password, 10) : user.password,
       paymentMethods: newPayment ? newPayment : user.paymentMethods,
     });
+    await this.paymentRepo.delete({ id: user.paymentMethods.id });
     const updatedUser = await this.repository.findOneBy({ id });
 
     return updatedUser!;
