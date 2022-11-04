@@ -37,7 +37,7 @@ export default class SeriesController {
     const data = req.body
     const { id } = req.params
 
-    const resData = await service.addEpisodeo( id, data )
+    const resData = await service.addEpisode( id, data )
     return res.status(201).json(resData)
   }
 }
