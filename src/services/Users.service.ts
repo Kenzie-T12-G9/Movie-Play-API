@@ -46,7 +46,7 @@ export default class UsersService {
 
     return specificUser;
   }
-
+  // prettier-ignore
   static async update(
     id: string,
     { name, email, password, paymentMethods }: IUserUpdateRequest

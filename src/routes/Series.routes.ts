@@ -1,38 +1,46 @@
-import { Router } from "express";
-import controller from "../controllers/Series.controller";
-import Ensuraces from "../middlewares/Ensures.middleware";
-import { shemaAddEpisodeoSerie, shemaCreateSerie, shemaUpdateSerie } from "../serializers/Series.serializer";
+import { Router } from 'express';
+import controller from '../controllers/Series.controller';
+import Ensuraces from '../middlewares/Ensures.middleware';
+import {
+  shemaAddEpisodeoSerie,
+  shemaCreateSerie,
+  shemaUpdateSerie,
+} from '../serializers/Series.serializer';
 
-export const seriesRouter = Router()
+export const seriesRouter = Router();
 
-seriesRouter.post('/episodeos/:id',
-    Ensuraces.authentication,
-    Ensuraces.onlyAdm,
-    Ensuraces.serializerData(shemaAddEpisodeoSerie),
-    controller.addEpisodeo
-)
+seriesRouter.post(
+  '/episodeos/:id',
+  Ensuraces.authentication,
+  Ensuraces.onlyAdm,
+  Ensuraces.serializerData(shemaAddEpisodeoSerie),
+  controller.addEpisodeo
+);
 
-seriesRouter.post('',
-    Ensuraces.authentication,
-    Ensuraces.onlyAdm,
-    Ensuraces.serializerData(shemaCreateSerie),
-    controller.create
-)
+seriesRouter.post(
+  '',
+  Ensuraces.authentication,
+  Ensuraces.onlyAdm,
+  Ensuraces.serializerData(shemaCreateSerie),
+  controller.create
+);
 
-seriesRouter.get('',
-    controller.list
-)
+seriesRouter.get('', controller.list);
 
-seriesRouter.patch('/:id',
-    Ensuraces.authentication,
-    Ensuraces.onlyAdm,
-    Ensuraces.removeEmptyProperties,
-    Ensuraces.serializerData(shemaUpdateSerie),
-    controller.update
-)
+seriesRouter.patch(
+  '/:id',
+  Ensuraces.authentication,
+  Ensuraces.onlyAdm,
+  Ensuraces.removeEmptyProperties,
+  Ensuraces.serializerData(shemaUpdateSerie),
+  controller.update
+);
 
-seriesRouter.delete('/:id',
-    Ensuraces.authentication,
-    Ensuraces.onlyAdm,
-    controller.delete
-)
+seriesRouter.delete(
+  '/:id',
+  Ensuraces.authentication,
+  Ensuraces.onlyAdm,
+  controller.delete
+);
+
+seriesRouter.options('', controller.options);

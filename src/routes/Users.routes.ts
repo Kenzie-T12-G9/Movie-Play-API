@@ -10,7 +10,7 @@ userRouter.get('', UsersController.read);
 userRouter.get('/:id', UsersController.readById);
 userRouter.patch('/:id', Ensuraces.serializerData(shemaUpdateUser), UsersController.update);
 userRouter.delete('/:id', UsersController.delete);
-
+userRouter.options('', UsersController.options);
 
 
 
