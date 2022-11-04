@@ -1,14 +1,9 @@
 import { hash } from 'bcryptjs';
-import * as bcrypt from 'bcryptjs';
 import AppDataSource from '../data-source';
 import { PaymentMethods } from '../entities/PaymentMethods.entity';
 import { Users } from '../entities/Users.entity';
 import { AppError } from '../error/AppError';
-import {
-  IPaymentInfo,
-  IUserRequestBody,
-  IUserUpdateRequest,
-} from '../interfaces/users';
+import { IUserRequestBody, IUserUpdateRequest } from '../interfaces/users';
 import { expired, partialUpdates } from '../utils';
 
 export default class UsersService {
@@ -42,7 +37,9 @@ export default class UsersService {
   }
 
   static async readById(id: string): Promise<Users> {
-    const specificUser = await this.repository.findOneBy({ id, isActive: true });
+    const specificUser = await this.repository.findOneBy({
+      id,
+    });
     if (!specificUser) {
       throw new AppError('User not found', 404);
     }
@@ -54,7 +51,7 @@ export default class UsersService {
     id: string,
     { name, email, password, paymentMethods }: IUserUpdateRequest
   ): Promise<Users> {
-    const user = await this.repository.findOneBy({ id , isActive: true  });
+    const user = await this.repository.findOneBy({ id });
     if (!user) {
       throw new AppError('User not found', 404);
     } else if (paymentMethods && partialUpdates(paymentMethods)) {
@@ -67,7 +64,10 @@ export default class UsersService {
     let newPayment: PaymentMethods | null = null;
     if (paymentMethods) {
       if (expired(paymentMethods)) {
-        throw new AppError('The payment card\'s due date has passed. Please try another method', 400);
+        throw new AppError(
+          "The payment card's due date has passed. Please try another method",
+          400
+        );
       }
 
       const updatePayment = this.paymentRepo.create(paymentMethods);
@@ -92,10 +92,6 @@ export default class UsersService {
       throw new AppError('User not found', 404);
     }
 
-    await this.repository.update(
-      id,
-      {   
-          isActive: false
-      })
+    await this.repository.delete(id);
   }
 }

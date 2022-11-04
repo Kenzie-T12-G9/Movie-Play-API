@@ -44,21 +44,6 @@
   ],
   "paths": {
     "/users": {
-      "options": {
-        "tags": ["Users"],
-        "summary": "Rotas disponíveis",
-        "description": "Detalhamento dos métodos possíveis de ser acessados com relação à gestão de usuários.",
-        "responses": {
-          "200": {
-            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/users`",
-            "content": {
-              "text/plain": {
-                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET, PATCH, DELETE\nAccess-Control-Allow-Endpoints: /users, /users/{userId}\nContent-Length: 6\nContent-type: application/json"
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": ["Users"],
         "summary": "Cadastro de um novo usuário",
@@ -641,21 +626,6 @@
       }
     },
     "/login": {
-      "options": {
-        "tags": ["Login"],
-        "summary": "Rotas disponíveis",
-        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de sessão.",
-        "responses": {
-          "200": {
-            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/users`",
-            "content": {
-              "text/plain": {
-                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST\nAccess-Control-Allow-Endpoints: /login\nContent-Length: 2\nContent-type: application/json"
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": ["Login"],
         "summary": "Login de usuário",
@@ -752,21 +722,6 @@
       }
     },
     "/movies": {
-      "options": {
-        "tags": ["Movies"],
-        "summary": "Rotas disponíveis",
-        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de filmes.",
-        "responses": {
-          "200": {
-            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/movies`",
-            "content": {
-              "text/plain": {
-                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET, PATCH, DELETE\nAccess-Control-Allow-Endpoints: /movies, /movies/{movieId}, /movies/{movieId}/ratings\nContent-Length: 6\nContent-type: application/json"
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": ["Movies"],
         "security": [{ "bearerToken": [] }],
@@ -1226,21 +1181,6 @@
       }
     },
     "/series": {
-      "options": {
-        "tags": ["Series"],
-        "summary": "Rotas disponíveis",
-        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de séries.",
-        "responses": {
-          "200": {
-            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/series`",
-            "content": {
-              "text/plain": {
-                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET, DELETE\nAccess-Control-Allow-Endpoints: /series, /series/{seriesId}, /series/{seriesId}/episodes, /series/{seriesId}/ratings\nContent-Length: 7\nContent-type: application/json"
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": ["Series"],
         "security": [{ "bearerToken": [] }],
@@ -1852,21 +1792,6 @@
       }
     },
     "/history": {
-      "options": {
-        "tags": ["History"],
-        "summary": "Rotas disponíveis",
-        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de histórico das atividades. **OBSERVAÇÃO:** Como se trata de um histórico de atividades (log), julgamos não ser necessário implementar uma rota de atualização e/ou deleção.",
-        "responses": {
-          "200": {
-            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/history`",
-            "content": {
-              "text/plain": {
-                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET\nAccess-Control-Allow-Endpoints: /history, /history/movies, /history/series, /history/movies/{movieId}, /history/series/{seriesId}\nContent-Length: 6\nContent-type: application/json"
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": ["History"],
         "security": [{ "bearerToken": [] }],
@@ -2390,23 +2315,6 @@
                 "example": {
                   "message": "Movie register not found"
                 }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ratings": {
-      "options": {
-        "tags": ["Ratings"],
-        "summary": "Rotas disponíveis",
-        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de avaliações.",
-        "responses": {
-          "200": {
-            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/ratings`",
-            "content": {
-              "text/plain": {
-                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, GET, DELETE\nAccess-Control-Allow-Endpoints: /ratings, /ratings/movies, /rating/series, /ratings/{movieId}/{userId}, /ratings/{seriesId}/{userId}\nContent-Length: 5\nContent-type: application/json"
               }
             }
           }
