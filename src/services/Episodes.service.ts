@@ -18,6 +18,7 @@ export default class EpisodesService {
 
     return await this.episodesRepository.findOneBy({ id })
   }
+
   static async delete( id:string ) {
     const episodes = await this.episodesRepository.find()
     

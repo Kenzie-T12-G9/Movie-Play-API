@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      p {
+        margin: 0;
+        padding: 0.1rem;
+      }
+
+      body {
+        background-color: #222;
+        font-family: monospace;
+        font-size: 0.75rem;
+        color: #ddd;
+        font-weight: 500;
+        line-height: 1;
+
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+
+      .protocol {
+        color: #fa5;
+      }
+
+      .res_status {
+        color: #f80;
+        font-weight: 900;
+      }
+
+      .attributes {
+        color: #9d3;
+      }
+
+      .number {
+        color: #87f;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <span class="protocol">HTTP/1.1</span>
+      <span class="res_status">200</span> OK
+    </p>
+    <p><span class="attributes">Date</span>: <span class="date"></span></p>
+    <p>
+      <span class="attributes">Access-Control-Allow-Origin</span>:
+      http://localhost:3000
+    </p>
+    <p>
+      <span class="attributes">Access-Control-Allow-Methods</span>: OPTIONS,
+      POST, GET, DELETE
+    </p>
+    <p>
+      <span class="attributes">Access-Control-Allow-Endpoints</span>: /series,
+      /series/{seriesId}, /series/{seriesId}/episodes,
+      /series/{seriesId}/ratings
+    </p>
+    <p>
+      <span class="attributes">Content-Length</span>:
+      <span class="number">7</span>
+    </p>
+    <p><span class="attributes">Content-type</span>: application/json</p>
+    <script>
+      const now = new Date().toUTCString();
+
+      const row = document.querySelector('.date_row');
+      const date = document.querySelector('.date');
+      date.innerText = now;
+    </script>
+  </body>
+</html>

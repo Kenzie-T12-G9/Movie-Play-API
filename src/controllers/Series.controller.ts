@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import path from 'path';
 import service from '../services/Series.service';
 
 export default class SeriesController {
@@ -39,5 +40,12 @@ export default class SeriesController {
 
     const resData = await service.addEpisodeo( id, data )
     return res.status(201).json(resData)
+  }
+
+  static options(_: Request, res: Response) {
+    return res
+      .status(200)
+      .set({ 'Content-Type': 'text/plain' })
+      .sendFile(path.join(__dirname, '../options/series.html'));
   }
 }

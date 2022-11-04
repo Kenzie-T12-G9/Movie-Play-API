@@ -1,7 +1,8 @@
-import { Router } from "express";
+import { Router } from 'express';
 
-export const ratingsRouter = Router()
+export const ratingsRouter = Router();
 
-ratingsRouter.get('/movies',)
-ratingsRouter.get('/series',)
-ratingsRouter.delete('/:movieId/:userId',)
+ratingsRouter.get('/movies');
+ratingsRouter.get('/series');
+ratingsRouter.delete('/:movieId/:userId');
+ratingsRouter.options('');
