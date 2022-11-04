@@ -23,6 +23,9 @@ class Series {
   description: string;
 
   @Column()
+  isActive: boolean;
+
+  @Column()
   direction: string;
 
   @OneToMany(() => Episodes, (episodes) => episodes.serie)

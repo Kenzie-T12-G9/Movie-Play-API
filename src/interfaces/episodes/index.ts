@@ -1,4 +1,3 @@
-
 export interface IUpdatedEpisodes {
   season: number;
   episode: number;

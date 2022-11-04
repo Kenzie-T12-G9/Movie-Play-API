@@ -14,7 +14,7 @@ export default class SeriesService {
 
   static async create( data:ICreateSerie ) {
       
-    const serieExist = await this.serieRepository.findOneBy({name:data.name})
+    const serieExist = await this.serieRepository.findOneBy({name:data.name, isActive: true})
 
     if( serieExist ){
         throw new AppError("Series already registered", 401)
@@ -26,16 +26,21 @@ export default class SeriesService {
       return serie
   }
 
-  static list = async () => await this.serieRepository.find({ relations:{
-    episodes:true
-  } })
+  static list = async () => {
+    return await this.serieRepository.find(
+     { where: { isActive: true }, 
+       relations: { 
+         episodes:true 
+       } 
+     })
+   }
 
-  static async update( id:string, data:IUpdateSerie ) {
+  static async update( id: string, data: IUpdateSerie ) {
     
-    const serieExist = await this.serieRepository.findOneBy({id})
+    const serieExist = await this.serieRepository.findOneBy({ id, isActive: true })
 
     if( !serieExist ){
-        throw new AppError("Series not registered", 403)
+        throw new AppError("Series not found", 404)
     }
 
     await this.serieRepository.update(id, data)
@@ -47,23 +52,25 @@ export default class SeriesService {
       relations:{
         episodes:true 
       }
-    })
+    });
   }
 
   static delete = async ( id:string ) => {
 
-    const serieExist = await this.serieRepository.findOneBy({id})
+    const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
 
     if( !serieExist ){
         throw new AppError("Series not registered", 403)
     }
 
-    await this.serieRepository.delete(id)
+    await this.serieRepository.update(
+      id,
+      { isActive: false })
   }
 
   static async addEpisode( id:string, data:IAddEpisodeoSerie ) {
 
-    const serieExist = await this.serieRepository.findOneBy({id})
+    const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
 
     if( !serieExist ){
         throw new AppError("Series not registered", 403)
