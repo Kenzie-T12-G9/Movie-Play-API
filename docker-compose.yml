@@ -11,7 +11,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    command: bash -c "yarn typeorm migration:run -d src/data-source && yarn dev"
+    command: bash -c "yarn typeorm migration:generate src/migrations/createTables -d src/data-source && yarn typeorm migration:run -d src/data-source && yarn dev"
     volumes:
       - .:/app
 

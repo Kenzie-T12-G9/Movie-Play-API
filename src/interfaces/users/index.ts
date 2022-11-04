@@ -38,6 +38,7 @@ export interface IUserRequestBody {
   email: string;
   password: string;
   isAdm: boolean;
+  isActive?: boolean;
   paymentMethods: IPaymentInfo;
 }
 
@@ -45,6 +46,7 @@ export interface IUserUpdateRequest {
   name?: string;
   email?: string;
   password?: string;
+  isActive?: boolean;
   paymentMethods?: IPaymentInfo;
 }
 
@@ -65,6 +67,7 @@ export interface IUserResponseBody {
   email: string;
   isAdm: boolean;
   id: string;
+  isActive?: boolean;
   paymentMethods: IPaymentInfoRes;
   createdAt: Date;
   updatedAt: Date;
