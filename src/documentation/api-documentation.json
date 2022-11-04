@@ -9,7 +9,7 @@
   "servers": [
     {
       "description": "Servidor Padrão",
-      "url": "https://api-movie-play.herokuapp.com"
+      "url": "https://movie-play.herokuapp.com"
     },
     {
       "description": "Servidor local",
