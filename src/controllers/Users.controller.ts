@@ -1,6 +1,7 @@
 import { instanceToPlain } from 'class-transformer';
 // import { instanceToPlain } from '../interfaces/users'
 import { Request, Response } from 'express';
+import path from 'path';
 // prettier-ignore
 import { IUserDelete, IUserRequestBody, IUserResponse, IUserUpdate } from '../interfaces/users';
 import UsersService from '../services/Users.service';
@@ -33,5 +34,12 @@ export default class UsersController {
     const { id } = req.params;
     await UsersService.delete(id);
     return res.status(204).send();
+  }
+
+  static options(_: Request, res: Response) {
+    return res
+      .status(200)
+      .set({ 'Content-Type': 'text/plain' })
+      .sendFile(path.join(__dirname, '../options/user.html'));
   }
 }

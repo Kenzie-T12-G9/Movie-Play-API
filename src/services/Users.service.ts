@@ -1,14 +1,9 @@
 import { hash } from 'bcryptjs';
-import * as bcrypt from 'bcryptjs';
 import AppDataSource from '../data-source';
 import { PaymentMethods } from '../entities/PaymentMethods.entity';
 import { Users } from '../entities/Users.entity';
 import { AppError } from '../error/AppError';
-import {
-  IPaymentInfo,
-  IUserRequestBody,
-  IUserUpdateRequest,
-} from '../interfaces/users';
+import { IUserRequestBody, IUserUpdateRequest } from '../interfaces/users';
 import { expired, partialUpdates } from '../utils';
 
 export default class UsersService {
@@ -49,7 +44,7 @@ export default class UsersService {
 
     return specificUser;
   }
-
+  // prettier-ignore
   static async update(
     id: string,
     { name, email, password, paymentMethods }: IUserUpdateRequest
