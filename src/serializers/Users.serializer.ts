@@ -13,5 +13,13 @@ export const shemaCreateUser = yup.object().shape({
   email: yup.string().email().required(),
   isAdm: yup.boolean().required(),
   password: yup.string().required(),
-  paymentMethod: shemaPayment,
+  paymentMethods: shemaPayment,
+}).noUnknown(true).strict();
+
+export const shemaUpdateUser = yup.object().shape({
+  name: yup.string().notRequired(),
+  email: yup.string().email().notRequired(),
+  isAdm: yup.boolean().notRequired(),
+  password: yup.string().notRequired(),
+  paymentMethods: shemaPayment,
 }).noUnknown(true).strict();

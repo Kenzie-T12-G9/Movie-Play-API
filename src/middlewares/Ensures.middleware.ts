@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
-import { SchemaOf } from 'yup';
+import { SchemaOf, ValidationError } from 'yup';
 
 export default class Ensuraces {
   static serializerData =
@@ -21,9 +21,8 @@ export default class Ensuraces {
 
         next();
       } catch (error) {
-        if (error instanceof Error) {
-          // @ts-ignore ou // @ts-expect-error
-          throw new AppError(error.message, 400);
+        if (error instanceof ValidationError) {
+          throw new AppError(error.errors[0], 400);
         }
       }
     };
