@@ -14,7 +14,7 @@ export default class SeriesService {
 
   static async create( data:ICreateSerie ) {
       
-    const serieExist = await this.serieRepository.findOneBy({name:data.name})
+    const serieExist = await this.serieRepository.findOneBy({name:data.name, isActive: true})
 
     if( serieExist ){
         throw new AppError("Series already registered", 401)
@@ -26,13 +26,16 @@ export default class SeriesService {
       return serie
   }
 
-  static list = async () => await this.serieRepository.find({ relations:{
-    ep:true
-  } })
+  static list = async () => {
+    return await this.serieRepository.find(
+      { where:{isActive: true}, 
+        relations:{ep:true} 
+      })
+    }
 
   static async update( id:string, data:IUpdateSerie ) {
     
-    const serieExist = await this.serieRepository.findOneBy({id})
+    const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
 
     if( !serieExist ){
         throw new AppError("Series not registered", 403)
@@ -41,29 +44,27 @@ export default class SeriesService {
     await this.serieRepository.update(id, data)
 
     return await this.serieRepository.findOne({
-      where:{
-        id
-      },
-      relations:{
-        ep:true 
-      }
+      where:{id},
+      relations:{ep:true}
     })
   }
 
   static delete = async ( id:string ) => {
 
-    const serieExist = await this.serieRepository.findOneBy({id})
+    const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
 
     if( !serieExist ){
         throw new AppError("Series not registered", 403)
     }
 
-    await this.serieRepository.delete(id)
+    await this.serieRepository.update(
+      id,
+      { isActive: false })
   }
 
   static async addEpisodeo( id:string, data:IAddEpisodeoSerie ) {
 
-    const serieExist = await this.serieRepository.findOneBy({id})
+    const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
 
     if( !serieExist ){
         throw new AppError("Series not registered", 403)
