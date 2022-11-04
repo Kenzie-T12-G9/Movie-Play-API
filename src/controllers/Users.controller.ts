@@ -25,9 +25,9 @@ export default class UsersController {
     return res.json(users)
   }
 
-  static update(req: IUserUpdate, res: IUserResponse) {}
-
-  static delete(req: IUserRequestBody, res: Response) {
-    
+  static async delete(req: Request, res: Response) {
+    const { id } = req.params
+    const resUser = await UsersService.delete(id)
+    return res.status(204).json(resUser)
   }
 }

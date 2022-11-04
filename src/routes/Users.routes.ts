@@ -12,7 +12,7 @@ userRouter.post('', Ensuraces.serializerData(shemaCreateUser), UsersController.c
 userRouter.get('', UsersController.read);
 userRouter.get('/:id', UsersController.readById);
 userRouter.patch('/:id');
-userRouter.delete('/:id');
+userRouter.delete('/:id',UsersController.delete);
 
 
 

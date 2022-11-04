@@ -10,7 +10,7 @@ export default class MovieService {
     static async createMovieService(data: IMovieBodyReq) {
 
         const movieAlreadyExists = await this.repository.findOne({
-            where:{name: data.name, isActive: true} 
+            where:{ name: data.name, isActive: true} 
           })
       
         if(movieAlreadyExists)
@@ -41,7 +41,6 @@ export default class MovieService {
     static async deleteMovieService(id: string) {
 
         const movie = await this.repository.findOneBy({id: id, isActive: true})
-
         if(!movie)
         {throw new AppError('Movie not found', 404)}
 
@@ -55,6 +54,5 @@ export default class MovieService {
                 isActive: false
             }
         )
-
     }
 }
