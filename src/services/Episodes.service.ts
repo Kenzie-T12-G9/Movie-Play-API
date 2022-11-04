@@ -3,7 +3,7 @@ import { Episodes } from "../entities/Episodes.entity";
 import { AppError } from "../error/AppError";
 import { IUpdatedEpisodes } from "../interfaces/episodes";
 
-export default class EpisodesService {
+export default class EpisodeService {
   static episodesRepository = AppDataSource.getRepository(Episodes)
 
   static async update( id:string, data:IUpdatedEpisodes ) {

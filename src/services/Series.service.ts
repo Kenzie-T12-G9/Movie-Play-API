@@ -28,25 +28,31 @@ export default class SeriesService {
 
   static list = async () => {
     return await this.serieRepository.find(
-      { where:{isActive: true}, 
-        relations:{ep:true} 
-      })
-    }
+     { where: { isActive: true }, 
+       relations: { 
+         episodes:true 
+       } 
+     })
+   }
 
-  static async update( id:string, data:IUpdateSerie ) {
+  static async update( id: string, data: IUpdateSerie ) {
     
-    const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
+    const serieExist = await this.serieRepository.findOneBy({ id, isActive: true })
 
     if( !serieExist ){
-        throw new AppError("Series not registered", 403)
+        throw new AppError("Series not found", 404)
     }
 
     await this.serieRepository.update(id, data)
 
     return await this.serieRepository.findOne({
-      where:{id},
-      relations:{ep:true}
-    })
+      where:{
+        id
+      },
+      relations:{
+        episodes:true 
+      }
+    });
   }
 
   static delete = async ( id:string ) => {
@@ -62,7 +68,7 @@ export default class SeriesService {
       { isActive: false })
   }
 
-  static async addEpisodeo( id:string, data:IAddEpisodeoSerie ) {
+  static async addEpisode( id:string, data:IAddEpisodeoSerie ) {
 
     const serieExist = await this.serieRepository.findOneBy({id, isActive: true})
 
@@ -77,9 +83,9 @@ export default class SeriesService {
     }
 
  // @ts-ignore ou // @ts-expect-error
-    const ep = this.episodeosRepository.create({ ...data, serie:serieExist})
-    await this.episodeosRepository.save(ep)
+    const episode = this.episodeosRepository.create({ ...data, serie:serieExist})
+    await this.episodeosRepository.save(episode)
 
-    return ep
+    return episode
   }
 }

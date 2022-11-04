@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import service from '../services/Episodes.service';
 
-export default class EpisodesController {
+export default class EpisodeController {
   static async update(req: Request, res: Response) {
 
     const data = req.body
