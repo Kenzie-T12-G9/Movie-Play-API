@@ -10,13 +10,11 @@ export default class MovieService {
     static async createMovieService(data: IMovieBodyReq) {
 
         const movieAlreadyExists = await this.repository.findOne({
-            where:{
-              name: data.name
-            }
+            where:{ name: data.name, isActive: true} 
           })
       
         if(movieAlreadyExists)
-        {throw new AppError('Movie already exists 😭',400)}
+        {throw new AppError('Movie already exists.',400)}
           
         const newMovie = this.repository.create(data)
         await this.repository.save(newMovie)
@@ -31,7 +29,7 @@ export default class MovieService {
   
     static async readMovieService(id: string) {
 
-        const movie = await this.repository.findOne({where:{id}})
+        const movie = await this.repository.findOne({where:{id, isActive: true}})
         
         if(!movie)
         {throw new AppError('Movie not found!',404)}
@@ -42,23 +40,19 @@ export default class MovieService {
     
     static async deleteMovieService(id: string) {
 
-        const movie = await this.repository.findOneBy({id: id})
-
+        const movie = await this.repository.findOneBy({id: id, isActive: true})
         if(!movie)
         {throw new AppError('Movie not found', 404)}
 
-        await this.repository.delete(movie)
+        if (movie.isActive === false) {
+            throw new AppError('User not found')
+          }
     
-        // if (movie.isActive === false) {
-        //     throw new AppError('User not found')
-        //   }
-    
-        // await repository.update(
-        //     id,
-        //     {   
-        //         isActive: false
-        //     }
-        // )
-
+        await this.repository.update(
+            id,
+            {   
+                isActive: false
+            }
+        )
     }
 }

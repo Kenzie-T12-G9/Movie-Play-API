@@ -11,7 +11,6 @@ import {
 } from '../interfaces/users';
 import { expired, partialUpdates } from '../utils';
 
-
 export default class UsersService {
   static repository = AppDataSource.getRepository(Users);
   static paymentRepo = AppDataSource.getRepository(PaymentMethods);
@@ -22,7 +21,7 @@ export default class UsersService {
     if (user) {
       throw new AppError('This email is already being used', 400);
     } else if (expired(paymentMethods)) {
-      throw new AppError('The payment cards due date has passed. Please try another method', 400);
+      throw new AppError('The payment card\'s due date has passed. Please try another method', 400);
     } else if (!paymentMethods) {
       throw new AppError('Payment method is required', 402);
     }
@@ -43,7 +42,7 @@ export default class UsersService {
   }
 
   static async readById(id: string) {
-    const specificUser = await this.repository.findOneBy({ id });
+    const specificUser = await this.repository.findOneBy({ id, isActive: true });
     if (!specificUser) {
       throw new AppError('User not found', 404);
     }
@@ -51,22 +50,11 @@ export default class UsersService {
     return specificUser;
   }
 
-
-  static async delete(id: string) {
-    const userExists = await this.repository.findOneBy({id})
-
-    if(!userExists){
-      throw new AppError('User does not exist',403)
-    }
-
-    await this.repository.delete(id)
-  }
-
   static async update(
     id: string,
     { name, email, password, paymentMethods }: IUserUpdateRequest
   ): Promise<Users> {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id , isActive: true  });
     if (!user) {
       throw new AppError('User not found', 404);
     } else if (paymentMethods && partialUpdates(paymentMethods)) {
@@ -95,5 +83,16 @@ export default class UsersService {
     return updatedUser!;
   }
 
+  static async delete(id: string) {
+    const user = await this.repository.findOneBy({ id });
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
 
+    await this.repository.update(
+      id,
+      {   
+          isActive: false
+      })
+  }
 }
