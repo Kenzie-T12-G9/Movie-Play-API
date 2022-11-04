@@ -26,10 +26,6 @@
       "description": "Rotas relacionadas ao login de usuários e geração do token de acesso"
     },
     {
-      "name": "History",
-      "description": "Rotas relacionadas ao histórico de acesso do usuário"
-    },
-    {
       "name": "Movies",
       "description": "Rotas relacionadas a criação e leitura de filmes dentro do catálogo"
     },
@@ -38,12 +34,31 @@
       "description": "Rotas relacionadas a criação e leitura de séries dentro do catálogo"
     },
     {
+      "name": "History",
+      "description": "Rotas relacionadas ao histórico de acesso do usuário"
+    },
+    {
       "name": "Ratings",
       "description": "Rotas relacionadas à listagem e gestão das avaliações dos títulos disponíveis"
     }
   ],
   "paths": {
     "/users": {
+      "options": {
+        "tags": ["Users"],
+        "summary": "Rotas disponíveis",
+        "description": "Detalhamento dos métodos possíveis de ser acessados com relação à gestão de usuários.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/users`",
+            "content": {
+              "text/plain": {
+                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET, PATCH, DELETE\nAccess-Control-Allow-Endpoints: /users, /users/{userId}\nContent-Length: 6\nContent-type: application/json"
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Users"],
         "summary": "Cadastro de um novo usuário",
@@ -626,6 +641,21 @@
       }
     },
     "/login": {
+      "options": {
+        "tags": ["Login"],
+        "summary": "Rotas disponíveis",
+        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de sessão.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/users`",
+            "content": {
+              "text/plain": {
+                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST\nAccess-Control-Allow-Endpoints: /login\nContent-Length: 2\nContent-type: application/json"
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Login"],
         "summary": "Login de usuário",
@@ -722,8 +752,24 @@
       }
     },
     "/movies": {
+      "options": {
+        "tags": ["Movies"],
+        "summary": "Rotas disponíveis",
+        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de filmes.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/movies`",
+            "content": {
+              "text/plain": {
+                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET, PATCH, DELETE\nAccess-Control-Allow-Endpoints: /movies, /movies/{movieId}, /movies/{movieId}/ratings\nContent-Length: 6\nContent-type: application/json"
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Movies"],
+        "security": [{ "bearerToken": [] }],
         "summary": "Adição de novos filmes",
         "description": "Rota responsável pela adição de novos filmes ao catálogo. Esta rota pode ser acessada apenas por usuários admnistradores.",
         "requestBody": {
@@ -847,7 +893,7 @@
       "get": {
         "tags": ["Movies"],
         "summary": "Listagem de todos os filmes",
-        "description": "Método responsavel pela listagem de todos os filmes presentes no catálogo. Todos os usuários, administradores ou não podem acessar esta rota",
+        "description": "Método responsavel pela listagem de todos os filmes presentes no catálogo. Todos os usuários, autenticados ou não podem acessar esta rota",
         "responses": {
           "200": {
             "description": "**OK:** Listagem de todos os filmes",
@@ -885,28 +931,6 @@
                 ]
               }
             }
-          },
-          "401": {
-            "description": "**UNAUTHORIZED:** Erro de autenticação",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Token Ausente": {
-                    "value": {
-                      "message": "Missing Authorization headers"
-                    }
-                  },
-                  "Token Inválido": {
-                    "value": {
-                      "message": "Invalid token"
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -916,7 +940,7 @@
         "tags": ["Movies"],
         "security": [{ "bearerAuth": [] }],
         "summary": "Listagem de um filme específico",
-        "description": "Método responsável pela localização de um filme específico. Todos os usuários, admnistradores ou não, tem acesso a essa rota",
+        "description": "Método responsável pela localização de um filme específico. Todos os usuários, administradores ou não, tem acesso a essa rota",
         "parameters": [
           {
             "name": "movieId",
@@ -941,28 +965,6 @@
                   "duration": 182,
                   "direction": "Anthony Russo, Joe Russo",
                   "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "**UNAUTHORIZED:** Erro de autenticação",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Token Ausente": {
-                    "value": {
-                      "message": "Missing Authorization headers"
-                    }
-                  },
-                  "Token Inválido": {
-                    "value": {
-                      "message": "Invalid token"
-                    }
-                  }
                 }
               }
             }
@@ -1223,6 +1225,1194 @@
         }
       }
     },
+    "/series": {
+      "options": {
+        "tags": ["Series"],
+        "summary": "Rotas disponíveis",
+        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de séries.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/series`",
+            "content": {
+              "text/plain": {
+                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET, DELETE\nAccess-Control-Allow-Endpoints: /series, /series/{seriesId}, /series/{seriesId}/episodes, /series/{seriesId}/ratings\nContent-Length: 7\nContent-type: application/json"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Series"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Adição de novas séries",
+        "description": "Rota responsável pela adição de novas séries ao catálogo. Esta rota pode ser acessada apenas por usuários admnistradores.",
+        "requestBody": {
+          "description": "O corpo de requisição possui os seguintes campos como atributos obrigatórios para ser feita a requisição com sucesso:",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSeriesRequest"
+              },
+              "examples": {
+                "Padrão": {
+                  "value": {
+                    "name": "Bridgetown",
+                    "year": 2020,
+                    "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                    "direction": "Shonda Rhimes, Sarah Dollard"
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "year": 2020,
+                    "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                    "direction": "Shonda Rhimes, Sarah Dollard"
+                  }
+                },
+                "Argumentos inválidos": {
+                  "value": {
+                    "InvalidArg": null,
+                    "name": "Bridgetown",
+                    "year": 2020,
+                    "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                    "direction": "Shonda Rhimes, Sarah Dollard"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED**: Série adicionada ao catálogo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSeriesResponse"
+                },
+                "example": {
+                  "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
+                  "name": "Bridgetown",
+                  "year": 2020,
+                  "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                  "direction": "Shonda Rhimes, Sarah Dollard"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "name is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Series"],
+        "summary": "Listagem de todas as séries",
+        "description": "Rota responsável pela listagem de todos as séries presentes no catálogo. Todos os usuários autenticados ou não tem acesso a esta rota",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem de todas as séries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesList"
+                },
+                "example": [
+                  {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Bridgetown",
+                    "year": 2020,
+                    "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                    "direction": "Shonda Rhimes, Sarah Dollard"
+                  },
+                  {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Jessica Jones",
+                    "year": 2015,
+                    "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                    "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                  },
+                  "..."
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/series/{ seriesId }": {
+      "get": {
+        "tags": ["Series"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Listagem de uma série específica",
+        "description": "Método responsável pela localização de uma série específica. Todos os usuários administradores ou não tem acesso a essa rota",
+        "parameters": [
+          {
+            "name": "seriesId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série específica a ser listada",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem da série específica",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSeriesEpisodes"
+                },
+                "example": {
+                  "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                  "name": "Jessica Jones",
+                  "year": 2015,
+                  "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                  "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others...",
+                  "episodes": [
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "season": 1,
+                      "episode": 1,
+                      "name": "A.K.A Ladies Night",
+                      "duration": 54,
+                      "description": "Dois forasteiros alistam a investigadora Jessica Jones."
+                    },
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "season": 1,
+                      "episode": 2,
+                      "name": "A.K.A Crush Syndrome",
+                      "duration": 53,
+                      "description": "Jessica se aprofunda no caso de Hope."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Série não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Series not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Series"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Remoção de uma série do catálogo",
+        "description": "Este método será responsável pela remoção de uma série específica do catálogo. Rota restringida ao acesso apenas de usuários que são administradores. A remoção da série do catálogo removerá automaticamente todos os episódios referentes a mesma.",
+        "parameters": [
+          {
+            "name": "seriesId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser deletada",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "**NO CONTENT:** Série excluída com sucesso!"
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Series not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/series/{ seriesId }/episodes": {
+      "post": {
+        "tags": ["Series"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Criação de um episódio",
+        "description": "Método responsável pela criação de um episódio. Apenas usuários administradores podem acessar esta rota",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser criado o episódio",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "O corpo de requisição deve ser passado contendo os seguintes campos:",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEpisodeRequest"
+              },
+              "example": {
+                "season": 1,
+                "episode": 2,
+                "name": "A.K.A Crush Syndrome",
+                "duration": 53,
+                "description": "Jessica se aprofunda no caso de Hope.",
+                "seriesId": "q1528a90-34r1-87ad-112p-28skd029845f"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED**: Episódio adicionado ao catálogo da série",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateEpisodeResponse"
+                },
+                "example": {
+                  "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "season": 1,
+                  "episode": 2,
+                  "name": "A.K.A Crush Syndrome",
+                  "duration": 53,
+                  "description": "Jessica se aprofunda no caso de Hope.",
+                  "seriesId": "q1528a90-34r1-87ad-112p-28skd029845f"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "name is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Série não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Series not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/series/{ seriesId }/ratings": {
+      "post": {
+        "tags": ["Series"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Criar uma avaliação sobre uma série",
+        "description": "Método responsável pela criação de uma avaliação. Todos os tipos de usuários podem acessar esta rota. O usuário logado apenas poderá enviar uma única avaliação com o seu id de usuário, sendo administrador ou não. Rota privada, onde um token de autenticação de usuário é solicitado",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser criada uma avaliação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "Todos os campos do exemplo são obrigatórios. O campo `rate` deverá receber um valor numérico inteiro entre 1 e 5",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMovieRating"
+              },
+              "examples": {
+                "Padrão": {
+                  "value": {
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                },
+                "Valor de 'rate' inválido": {
+                  "value": {
+                    "rate": 6,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!"
+                  }
+                },
+                "Argumentos Inválidos": {
+                  "value": {
+                    "InvalidArg": null,
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED:** Avaliação enviada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieRating"
+                },
+                "example": {
+                  "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
+                  "rate": 5,
+                  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                  "user": {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com"
+                  },
+                  "movie": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Avengers: Endgame",
+                    "year": 2019,
+                    "duration": 182,
+                    "direction": "Anthony Russo, Joe Russo",
+                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Valor de 'rate' inválido": {
+                    "value": {
+                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
+                    }
+                  },
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "name is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "This user has already submitted a rating about this movie"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** usuário ou filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Usuário não encontrado": {
+                    "value": {
+                      "message": "User not found"
+                    }
+                  },
+                  "Filme não encontrado": {
+                    "value": {
+                      "message": "Movie not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history": {
+      "options": {
+        "tags": ["History"],
+        "summary": "Rotas disponíveis",
+        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de histórico das atividades. **OBSERVAÇÃO:** Como se trata de um histórico de atividades (log), julgamos não ser necessário implementar uma rota de atualização e/ou deleção.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/history`",
+            "content": {
+              "text/plain": {
+                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, POST, GET\nAccess-Control-Allow-Endpoints: /history, /history/movies, /history/series, /history/movies/{movieId}, /history/series/{seriesId}\nContent-Length: 6\nContent-type: application/json"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Criação de um novo registro no histórico",
+        "description": "Esta método será responsável por criar um novo registro no histórico de atividades da aplicação, ligando o usuário logado e um filme ou série a uma atividade realizada",
+        "requestBody": {
+          "description": "O corpo de requisição deve ser passado contendo os seguintes campos:",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  { "$ref": "#/components/schemas/MovieHistoryRequest" },
+                  { "$ref": "#/components/schemas/SeriesHistoryRequest" }
+                ]
+              },
+              "examples": {
+                "Histórico de um filme": {
+                  "value": {
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "movieId": "e0150833-89fc-436c-aa10-d2a68b0fa32f"
+                  }
+                },
+                "Histórico de uma série": {
+                  "value": {
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "seriesId": "e0150833-89fc-436c-aa10-d2a68b0fa32f"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED**: Registro de atividade adicionado ao histórico",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/MovieHistoryResponse" },
+                    { "$ref": "#/components/schemas/SeriesHistoryResponse" }
+                  ]
+                },
+                "examples": {
+                  "Histórico de um filme": {
+                    "value": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "watchedAt": "2022-11-04T04:13:06.135Z",
+                      "user": {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Myke Macedo",
+                        "email": "myke@teste.com"
+                      },
+                      "movie": {
+                        "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Justice League",
+                        "year": 2017,
+                        "duration": 120,
+                        "description": "Impulsionado pela restauração de sua fé na humanidade e inspirado pelo ato altruísta do Superman, Bruce Wayne convoca sua nova aliada Diana Prince para o combate contra um inimigo ainda maior, recém-despertado. Juntos, Batman e Mulher-Maravilha buscam e recrutam com agilidade um time de meta-humanos, mas mesmo com a formação da liga de heróis sem precedentes, pode ser tarde demais para salvar o planeta de um catastrófico ataque.",
+                        "direction": "Zack Snyder"
+                      }
+                    }
+                  },
+                  "Histórico de uma série": {
+                    "value": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "watchedAt": "2022-11-04T04:13:06.135Z",
+                      "user": {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Kelven Souza",
+                        "email": "kelven@teste.com"
+                      },
+                      "series": {
+                        "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                        "name": "Bridgetown",
+                        "year": 2020,
+                        "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                        "direction": "Shonda Rhimes, Sarah Dollard"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "description is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Referência não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Usuário não encontrado": {
+                    "value": {
+                      "message": "User not found"
+                    }
+                  },
+                  "Filme não encontrado": {
+                    "value": {
+                      "message": "Movie not found"
+                    }
+                  },
+                  "Série não encontrada": {
+                    "value": {
+                      "message": "Series not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/movies": {
+      "get": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Listagem de todos os registros do histórico de filmes",
+        "description": "Esta método é responsável por trazer todos os registros de todos os usuários no histórico de filmes. Esta rota pode ser acessada somente por administradores.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem de todos os registros no histórico de filmes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieHistoryList"
+                },
+                "example": [
+                  {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "watchedAt": "2022-11-04T04:13:06.135Z",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Queren Hope",
+                      "email": "queren@teste.com"
+                    },
+                    "movie": {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Avengers: Age of Ultron",
+                      "year": 2015,
+                      "duration": 141,
+                      "description": "Ao tentar proteger o planeta de ameaças, Tony Stark constrói um sistema de inteligência artificial que cuidaria da paz mundial. O projeto acaba dando errado e gera o nascimento do Ultron. Com o destino da Terra em jogo, Capitão América, Homem de Ferro, Thor, Hulk, Viúva Negra e Gavião Arqueiro terão que se unir para mais uma vez salvar a raça humana da extinção.",
+                      "direction": "Joss Whedon"
+                    }
+                  },
+                  {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "watchedAt": "2022-11-04T04:13:06.135Z",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Myke Macedo",
+                      "email": "myke@teste.com"
+                    },
+                    "movie": {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Justice League",
+                      "year": 2017,
+                      "duration": 120,
+                      "description": "Impulsionado pela restauração de sua fé na humanidade e inspirado pelo ato altruísta do Superman, Bruce Wayne convoca sua nova aliada Diana Prince para o combate contra um inimigo ainda maior, recém-despertado. Juntos, Batman e Mulher-Maravilha buscam e recrutam com agilidade um time de meta-humanos, mas mesmo com a formação da liga de heróis sem precedentes, pode ser tarde demais para salvar o planeta de um catastrófico ataque.",
+                      "direction": "Zack Snyder"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/series": {
+      "get": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Listagem de todos os registros do histórico de séries",
+        "description": "Esta método é responsável por trazer todos os registros de todos os usuários no histórico de séries. Esta rota pode ser acessada somente por administradores.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem de todos os registros no histórico de séries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesHistoryList"
+                },
+                "example": [
+                  {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "watchedAt": "2022-11-04T04:13:06.135Z",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Alexandre Borges",
+                      "email": "alexandre@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "Bridgetown",
+                      "year": 2020,
+                      "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                      "direction": "Shonda Rhimes, Sarah Dollard"
+                    }
+                  },
+                  {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "watchedAt": "2022-11-04T04:13:06.135Z",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Guilherme Bernardo",
+                      "email": "guilherme@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "Jessica Jones",
+                      "year": 2015,
+                      "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                      "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/movies/{ movieId }": {
+      "get": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Listagem do histórico de registros de uma série específica",
+        "description": "Esta método é responsável por trazer o registro do histórico de atividades de um filme específico. Esta rota pode ser acessada por qualquer usuário.",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do filme a ser listada o histórico de atividades",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem do um registro de um filme específico",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleMovieHistory"
+                },
+                "example": {
+                  "movie": {
+                    "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "name": "Avengers: Age of Ultron",
+                    "year": 2015,
+                    "duration": 141,
+                    "description": "Ao tentar proteger o planeta de ameaças, Tony Stark constrói um sistema de inteligência artificial que cuidaria da paz mundial. O projeto acaba dando errado e gera o nascimento do Ultron. Com o destino da Terra em jogo, Capitão América, Homem de Ferro, Thor, Hulk, Viúva Negra e Gavião Arqueiro terão que se unir para mais uma vez salvar a raça humana da extinção.",
+                    "direction": "Joss Whedon"
+                  },
+                  "activity": [
+                    {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "watchedAt": "2022-11-04T04:13:06.135Z",
+                      "user": {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Queren Hope",
+                        "email": "queren@teste.com"
+                      }
+                    },
+                    {
+                      "id": "f7128efb-9455-4b94-85b7-779808584786",
+                      "watchedAt": "2022-06-01T23:13:06.135Z",
+                      "user": {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Guilherme Bernardo",
+                        "email": "guilherme@teste.com"
+                      }
+                    },
+                    "..."
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Registro não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Movie register not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/series/{ seriesId }": {
+      "get": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Listagem do histórico de registros de uma série específica",
+        "description": "Esta método é responsável por trazer o registro de atividades de uma série específica no histórico de séries. Esta rota pode ser acessada por qualquer usuário.",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser listado o histórico de atividades",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem de um registro específico no histórico de filmes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleSeriesHistory"
+                },
+                "example": {
+                  "movie": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Jessica Jones",
+                    "year": 2015,
+                    "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                    "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                  },
+                  "activity": [
+                    {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "watchedAt": "2022-11-04T04:13:06.135Z",
+                      "user": {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Queren Hope",
+                        "email": "queren@teste.com"
+                      }
+                    },
+                    {
+                      "id": "f7128efb-9455-4b94-85b7-779808584786",
+                      "watchedAt": "2022-06-01T23:13:06.135Z",
+                      "user": {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "name": "Guilherme Bernardo",
+                        "email": "guilherme@teste.com"
+                      }
+                    },
+                    "..."
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Registro não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Movie register not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ratings": {
+      "options": {
+        "tags": ["Ratings"],
+        "summary": "Rotas disponíveis",
+        "description": "Detalhamento dos métodos possíveis de serem acessados com relação à gestão de avaliações.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Detalhamento sobre os endpoints relacionados a rota `/ratings`",
+            "content": {
+              "text/plain": {
+                "example": "HTTP/1.1 200 OK\nDate: Mon, 01 Dec 2008 01:15:39 GMT\nAccess-Control-Allow-Origin: http://localhost:3000\nAccess-Control-Allow-Methods: OPTIONS, GET, DELETE\nAccess-Control-Allow-Endpoints: /ratings, /ratings/movies, /rating/series, /ratings/{movieId}/{userId}, /ratings/{seriesId}/{userId}\nContent-Length: 5\nContent-type: application/json"
+              }
+            }
+          }
+        }
+      }
+    },
     "/ratings/movies": {
       "get": {
         "tags": ["Ratings"],
@@ -1322,14 +2512,14 @@
           {
             "name": "movieId",
             "in": "path",
-            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do filme a ser editado",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do filme a ser deletado",
             "required": true,
             "type": "string"
           },
           {
             "name": "userId",
             "in": "path",
-            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser editado",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser deletado",
             "required": true,
             "type": "string"
           }
@@ -1376,6 +2566,79 @@
                   "Filme não encontrado": {
                     "value": {
                       "message": "Movie not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ratings/{ seriesId }/{ userId }": {
+      "delete": {
+        "tags": ["Ratings"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Deleção de uma avaliação sobre uma série",
+        "description": "Deleção de uma avaliação sobre uma série. Pode ser acessado para deleção pelo próprio dono da avaliação, ou até mesmo avaliações feitas por terceiros, caso o usuário logado seja um administrador, visando o controle de linguagem imprópria ou afins",
+        "parameters": [
+          {
+            "name": "seriesId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser deletada",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser deletado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "**NO CONTENT:** Avaliação excluída com sucesso!"
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** usuário ou filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Usuário não encontrado": {
+                    "value": {
+                      "message": "User not found"
+                    }
+                  },
+                  "Filme não encontrado": {
+                    "value": {
+                      "message": "Series not found"
                     }
                   }
                 }
@@ -1480,8 +2743,8 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "year": { "type": "integer" },
-          "duration": { "type": "integer" },
+          "year": { "type": "integer", "format": "full-year" },
+          "duration": { "type": "integer", "format": "minutes" },
           "description": { "type": "string" },
           "direction": { "type": "string" }
         }
@@ -1491,8 +2754,8 @@
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "name": { "type": "string" },
-          "year": { "type": "integer" },
-          "duration": { "type": "integer" },
+          "year": { "type": "integer", "format": "full-year" },
+          "duration": { "type": "integer", "format": "minutes" },
           "description": { "type": "string" },
           "direction": { "type": "string" }
         }
@@ -1501,6 +2764,73 @@
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/CreateMovieResponse"
+        }
+      },
+      "CreateSeriesRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "year": { "type": "number", "format": "year" },
+          "description": { "type": "string" },
+          "direction": { "type": "string" }
+        }
+      },
+      "CreateSeriesResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "year": { "type": "integer", "format": "full-year" },
+          "description": { "type": "string" },
+          "direction": { "type": "string" }
+        }
+      },
+      "SeriesList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/CreateSeriesResponse"
+        }
+      },
+      "CreateEpisodeRequest": {
+        "type": "object",
+        "properties": {
+          "season": { "type": "integer" },
+          "episode": { "type": "integer" },
+          "name": { "type": "string" },
+          "duration": { "type": "integer", "format": "minutes" },
+          "description": { "type": "string" },
+          "seriesId": { "type": "string", "format": "uuid" }
+        }
+      },
+      "ListSeriesEpisodes": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "year": { "type": "integer", "format": "full-year" },
+          "description": { "type": "string" },
+          "direction": { "type": "string" },
+          "episodes": {
+            "$ref": "#/components/schemas/EpisodesList"
+          }
+        }
+      },
+      "CreateEpisodeResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "season": { "type": "integer" },
+          "episode": { "type": "integer" },
+          "name": { "type": "string" },
+          "duration": { "type": "integer", "format": "minutes" },
+          "description": { "type": "string" },
+          "seriesId": { "type": "string", "format": "uuid" }
+        }
+      },
+      "EpisodesList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/CreateEpisodeResponse"
         }
       },
       "CreateMovieRating": {
@@ -1529,6 +2859,96 @@
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/MovieRating"
+        }
+      },
+      "MovieHistoryRequest": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string", "format": "uuid" },
+          "movieId": { "type": "string", "format": "uuid" }
+        }
+      },
+      "MovieHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "watchedAt": { "type": "string", "format": "date-time" },
+          "user": {
+            "$ref": "#/components/schemas/SummaryProfile"
+          },
+          "movie": {
+            "$ref": "#/components/schemas/CreateMovieResponse"
+          }
+        }
+      },
+      "MovieHistoryList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MovieHistoryResponse"
+        }
+      },
+      "SingleMovieHistory": {
+        "type": "object",
+        "properties": {
+          "movie": {
+            "$ref": "#/components/schemas/CreateMovieResponse"
+          },
+          "activity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserActivity"
+            }
+          }
+        }
+      },
+      "SeriesHistoryRequest": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string", "format": "uuid" },
+          "seriesId": { "type": "string", "format": "uuid" }
+        }
+      },
+      "SeriesHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "watchedAt": { "type": "string", "format": "date-time" },
+          "user": {
+            "$ref": "#/components/schemas/SummaryProfile"
+          },
+          "series": {
+            "$ref": "#/components/schemas/CreateSeriesResponse"
+          }
+        }
+      },
+      "SeriesHistoryList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SeriesHistoryResponse"
+        }
+      },
+      "SingleSeriesHistory": {
+        "type": "object",
+        "properties": {
+          "series": {
+            "$ref": "#/components/schemas/CreateSeriesResponse"
+          },
+          "activity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserActivity"
+            }
+          }
+        }
+      },
+      "UserActivity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "watchedAt": { "type": "string", "format": "date-time" },
+          "user": {
+            "$ref": "#/components/schemas/SummaryProfile"
+          }
         }
       },
       "Error": {

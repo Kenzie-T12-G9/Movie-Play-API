@@ -1,20 +1,17 @@
 import * as core from 'express-serve-static-core';
 import { Request, Response } from 'express';
+import { Users } from '../../entities/Users.entity';
 
-export type IUserRequest = Request<
-  core.ParamsDictionary,
-  IUserResponseBody,
-  IUserRequestBody
->;
+export type IUserRequest = Request<null, Users, IUserRequestBody>;
 
-export type IUserUpdate = Request<
-  core.ParamsDictionary,
-  IUserResponseBody,
-  IUserUpdateBody
->;
-
-export type IUserResponse = Response<IUserResponseBody>;
+export type IUserResponse = Response<Users | any>;
 export type IUserList = Response<IUserResponseBody[]>;
+export type IUserUpdate = Request<IUserParams, Users, IUserUpdateBody>;
+export type IUserDelete = Request<IUserParams>;
+
+interface IUserParams extends core.ParamsDictionary {
+  id: string;
+}
 
 export interface IPaymentInfo {
   name: string;
