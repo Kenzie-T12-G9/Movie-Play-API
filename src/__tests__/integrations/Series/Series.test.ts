@@ -103,10 +103,10 @@ describe("/series" , ()=> {
 
 
 
-    test( "POST /series/:id/episodeos - Add episode with admin user", async () => {
+    test( "POST /series/episodeos/:id - Add episode with admin user", async () => {
 
         const user = await request(app)
-            .post(`/series/${idSerie}/episodeos`).send(addEpisodesInSeries)
+            .post(`/series/episodeos/${idSerie}`).send(addEpisodesInSeries)
             .set("Authorization", `Bearer ${tokenADM}`)
 
         expect(user.status).toBe(201) 
@@ -124,20 +124,20 @@ describe("/series" , ()=> {
         expect(user.body.serie).toHaveProperty("direction")
     } )
 
-    test( "POST /series/:id/episodeos - It shouldn't be possible to add not being admin", async () => {
+    test( "POST /series/episodeos/:id - It shouldn't be possible to add not being admin", async () => {
 
         const user = await request(app)
-            .post(`/series/${idSerie}/episodeos`).send(addEpisodesInSeries)
+            .post(`/series/episodeos/${idSerie}`).send(addEpisodesInSeries)
             .set("Authorization", `Bearer ${tokenNotADM}`)
 
-        expect(user.status).toBe(403) 
+        expect(user.status).toBe(401) 
         expect(user.body).toHaveProperty("message")
     } )
 
-    test( "POST /series/:id/episodeos - Must not be possible to add with empty properties", async () => {
+    test( "POST /series/episodeos/:id - Must not be possible to add with empty properties", async () => {
 
         const user = await request(app)
-            .post(`/series/${idSerie}/episodeos`).send(addEpisodesInSeriesValueless)
+            .post(`/series/episodeos/${idSerie}`).send(addEpisodesInSeriesValueless)
             .set("Authorization", `Bearer ${tokenADM}`)
 
         expect(user.status).toBe(400) 
@@ -145,24 +145,24 @@ describe("/series" , ()=> {
         expect(user.body.message.length).toBe(5) 
     } )
 
-    test( "POST /series/:id/episodeos - Must not be possible to add, in a non-existent series", async () => {
+    test( "POST /series/episodeos/:id - Must not be possible to add, in a non-existent series", async () => {
 
         const user = await request(app)
-            .post(`/series/${"3234sd32"}/episodeos`).send(addEpisodesInSeries)
+            .post(`/series/episodeos/3234sd32`).send(addEpisodesInSeries)
             .set("Authorization", `Bearer ${tokenADM}`)
 
-        expect(user.status).toBe(404) 
+        expect(user.status).toBe(403) 
         expect(user.body).toHaveProperty("message")
     } )
 
 
-    test( "POST /series/:id/episodeos - Must not be possible to add, in a non-existent series", async () => {
+    test( "POST /series/episodeos/:id - Must not be possible to add, in a non-existent series", async () => {
 
         const user = await request(app)
-            .post(`/series/${"3234sd32"}/episodeos`).send(addEpisodesInSeries)
+            .post(`/series/episodeos/3234sd32`).send(addEpisodesInSeries)
             .set("Authorization", `Bearer ${tokenADM}`)
 
-        expect(user.status).toBe(404) 
+        expect(user.status).toBe(403) 
         expect(user.body).toHaveProperty("message")
     } )
 
