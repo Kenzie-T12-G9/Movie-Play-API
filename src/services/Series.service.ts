@@ -21,6 +21,8 @@ export default class SeriesService {
       throw new AppError('Series already registered', 401);
     }
 
+    data.isActive = true
+
     const serie = this.serieRepository.create(data);
     await this.serieRepository.save(serie);
 
@@ -71,7 +73,7 @@ export default class SeriesService {
     if (!serieExist) {
       throw new AppError('Series not registered', 403);
     }
-
+    
     const episodeoExist = await this.episodeosRepository.findOneBy({
       name: data.name,
     });
