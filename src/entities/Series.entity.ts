@@ -10,8 +10,8 @@ class Series {
   @Column()
   name: string;
 
-  @Column()
-  year: Date;
+  @Column( { length:4 } )
+  year: string;
 
   @Column()
   description: string;

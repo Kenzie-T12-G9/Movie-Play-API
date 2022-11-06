@@ -17,7 +17,7 @@ export interface IPaymentInfo {
   name: string;
   cpf: string;
   number: string;
-  dueDate: Date;
+  dueDate: string;
   code: string;
 }
 
