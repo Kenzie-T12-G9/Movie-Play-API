@@ -32,6 +32,20 @@ paymentMethods: {
 },
 };
 
+const temporaryMockednotAdm2 = {
+    name: 'Guilherme Bernardo 2',
+    email: 'contato2@mail.com',
+    isAdm: false,
+    password: 'Teste123@',
+    paymentMethods: {
+        name: 'Guilherme Bernardo 2',
+        cpf: '12345612345',
+        number: '1111222233334444',
+        dueDate: '2026-10-21',
+        code: '123',
+    },
+    };
+
 const mockedMovie = JSON.parse(JSON.stringify({
     "name": "Django Unchained",
     "year": 2012,
@@ -52,6 +66,10 @@ describe('/movies', () => {
           .catch((err) => {
             console.error('Data source initialization error', err);
           });
+
+          await request(app).post('/users').send(temporaryMockedAdm)
+          await request(app).post('/users').send(temporaryMockednotAdm)
+          await request(app).post('/users').send(temporaryMockednotAdm2)
       });
     
       afterAll(async () => {
@@ -100,6 +118,8 @@ describe('/movies', () => {
         expect(response.status).toBe(401)
 
       })
+
+      //COLOCAR ERRO DE POSTAGEM COM CAMPO INVALIDO
 
       test("GET /movies - Must be able to list all movies", async () => {
 
