@@ -4,6 +4,7 @@ import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
+import { schemaValidIdParams } from '../serializers/methods.serializer';
 
 export default class Ensuraces {
   static serializerData =
@@ -82,4 +83,23 @@ export default class Ensuraces {
 
     next();
   }
+
+  static validIdParams = async ( req:Request, res:Response, next:NextFunction ) => {
+
+    const { id } = req.params
+
+    try {
+      await schemaValidIdParams.validate({id}, {
+        stripUnknown: true,
+        abortEarly: false,
+      });
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+  
 }
