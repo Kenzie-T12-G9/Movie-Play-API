@@ -48,7 +48,7 @@ describe('/login', () => {
     expect(response.body).toHaveProperty('token');
   });
 
-  test("POST /login -  should not be able to login with the user with incorrect email",async () => {
+  test("POST /login - should not be able to login with the user with incorrect email",async () => {
     const response = await request(app).post("/login").send({
         email: "emailErrado@mail.com",
         password: "Teste123@"
@@ -58,7 +58,7 @@ describe('/login', () => {
     expect(response.status).toBe(400)
   }); 
 
-  test("POST /login -  should not be able to login with the user with incorrect password",async () => {
+  test("POST /login - should not be able to login with the user with incorrect password",async () => {
     const response = await request(app).post("/login").send({
         email: "francisco@mail.com",
         password: "senhaErrada@123"
