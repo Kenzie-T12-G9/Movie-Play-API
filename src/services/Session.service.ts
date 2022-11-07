@@ -16,15 +16,15 @@ export default class SessionService {
     const user = await this.repository.findOneBy({ email: email });
 
     if (!user) {
-      throw new AppError('Email/password is wrong', 401);
+      throw new AppError('Email/password is wrong', 400);
     }
 
     const hashedPassword = bcrypt.compareSync(password, user.password);
 
     if (!hashedPassword) {
-      throw new AppError('Email/password is wrong', 401);
+      throw new AppError('Email/password is wrong', 400);
     }
-
+    
     const token = sign(
       { isAdm: user.isAdm },
       process.env.SECRET_KEY as string,
@@ -35,7 +35,8 @@ export default class SessionService {
     );
 
     return {
-      token,
+      user: user,
+      token: token,
     };
   }
 }
