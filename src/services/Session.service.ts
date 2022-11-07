@@ -24,7 +24,7 @@ export default class SessionService {
     if (!hashedPassword) {
       throw new AppError('Email/password is wrong', 400);
     }
-    
+
     const token = sign(
       { isAdm: user.isAdm },
       process.env.SECRET_KEY as string,
@@ -34,9 +34,6 @@ export default class SessionService {
       }
     );
 
-    return {
-      user: user,
-      token: token,
-    };
+    return { user, token };
   }
 }

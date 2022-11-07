@@ -2,23 +2,11 @@ import AppDataSource from '../data-source';
 import { Episodes } from '../entities/Episodes.entity';
 import { Series } from '../entities/Series.entity';
 import { AppError } from '../error/AppError';
-import {
-  IAddEpisodeoSerie,
-  ICreateSerie,
-  IUpdateSerie,
-} from '../interfaces/series';
+import { IAddEpisodeoSerie, ICreateSerie, IUpdateSerie } from '../interfaces/series';
 
 export default class SeriesService {
   static serieRepository = AppDataSource.getRepository(Series);
   static episodeosRepository = AppDataSource.getRepository(Episodes);
-
-  static checkSerieExists = async ( id:string ) => {
-    const serieExist = await this.serieRepository.findOneBy({ id });
-
-    if (!serieExist) {
-      throw new AppError('Series not found', 404);
-    }
-  }
 
   static async create(data: ICreateSerie) {
     const serieExist = await this.serieRepository.findOneBy({
@@ -95,4 +83,14 @@ export default class SeriesService {
 
     return episode;
   }
+
+  
+  static async checkSerieExists ( id:string ) {
+    const serieExist = await this.serieRepository.findOneBy({ id });
+
+    if (!serieExist) {
+      throw new AppError('Series not found', 404);
+    }
+  }
+
 }
