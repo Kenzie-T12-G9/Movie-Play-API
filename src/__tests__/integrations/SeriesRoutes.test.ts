@@ -104,6 +104,45 @@ describe("/series" , ()=> {
 
 
 
+    test( "GET /series/:id - It should be possible to search for a specific series", async () => {
+
+        const user = await request(app)
+            .get(`/series/${idSerie}`).send()
+
+        expect(user.status).toBe(200) 
+        expect(user.body.length).toBe(1) 
+    } )
+
+    test( "GET /series/:id - It should not be possible to search for a series that does not exist", async () => {
+
+        const user = await request(app)
+            .get(`/series/36d48f7f-73bd-46e2-80d8-acdc6a1f2eb0`).send()
+
+        expect(user.status).toBe(404) 
+        expect(user.body).toHaveProperty("message")
+    } )
+
+    test( "GET /series/:id - It should not be possible to search for a series with an id that is not UUID", async () => {
+
+        const user = await request(app)
+            .get(`/series/36d48f7f-73bd-46e2-80d8-acdc6a1f2eb`).send()
+
+        expect(user.status).toBe(400) 
+        expect(user.body).toHaveProperty("message")
+    } )
+
+
+
+
+    test( "POST /series/:id/episodes - It should not be possible to add an episode with an id that is not a UUID", async () => {
+
+        const user = await request(app)
+            .post(`/series/36d48f7f-73bd-46e2-80d8-acdc6a1f2eb/episodes`).send(addEpisodesInSeries)
+            .set("Authorization", `Bearer ${tokenADM}`)
+
+        expect(user.status).toBe(400) 
+        expect(user.body).toHaveProperty("message")
+    } )
 
     test( "POST /series/:id/episodes - Add episode with admin user", async () => {
 
@@ -155,12 +194,23 @@ describe("/series" , ()=> {
             .post(`/series/36d48f7f-73bd-46e2-80d8-acdc6a1f2eb0/episodes`).send(addEpisodesInSeries)
             .set("Authorization", `Bearer ${tokenADM}`)
 
-        expect(user.status).toBe(403) 
+        expect(user.status).toBe(404) 
         expect(user.body).toHaveProperty("message")
     } )
 
 
 
+
+    test( "PATCH /episodes/:id - It should not be possible to update an episode with an id other than a UUID", async () => {
+
+        const user = await request(app)
+            .patch(`/episodes/34242`).send(updateEpisode)
+            .set("Authorization", `Bearer ${tokenADM}`)
+
+        expect(user.status).toBe(400) 
+        expect(user.body).toHaveProperty("message")
+      
+    } )
 
     test( "PATCH /episodes/:id - It should be possible to update the episode", async () => {
 
@@ -198,6 +248,16 @@ describe("/series" , ()=> {
 
 
 
+
+    test( "DELETE /episodes/:id - It should not be possible to delete an episode with an id that is not a UUID", async () => {
+
+        const user = await request(app)
+            .delete(`/episodes/234234`).send()
+            .set("Authorization", `Bearer ${tokenNotADM}`)
+
+        expect(user.status).toBe(400) 
+        expect(user.body).toHaveProperty("message")
+    } )
 
     test( "DELETE /episodes/:id - It should not be possible to delete without admin permission", async () => {
 
@@ -241,7 +301,18 @@ describe("/series" , ()=> {
 
 
 
-    test( "PATCH /series - Only admin user should be able to update", async () => {
+    test( "PATCH /series/:id - It should not be possible to update a series with an id that is not a UUID", async () => {
+
+        const user = await request(app)
+            .patch(`/series/23423`)
+            .send(updateSerie)
+            .set("Authorization", `Bearer ${tokenADM}`)
+
+        expect(user.status).toBe(400) 
+        expect(user.body).toHaveProperty("message")
+    } )
+
+    test( "PATCH /series/:id - Only admin user should be able to update", async () => {
 
         const user = await request(app)
             .patch(`/series/${idSerie}`)
@@ -255,7 +326,7 @@ describe("/series" , ()=> {
         expect(user.body.direction).toEqual("Lucas filmes")
     } )
 
-    test( "PATCH /series - It shouldn't be possible to update if it's not admin", async () => {
+    test( "PATCH /series/:id - It shouldn't be possible to update if it's not admin", async () => {
 
         const user = await request(app)
             .patch(`/series/${idSerie}`)
@@ -266,7 +337,7 @@ describe("/series" , ()=> {
         expect(user.body).toHaveProperty("message")
     } )
 
-    test( "PATCH /series -  It should not be possible to update a series that does not exist", async () => {
+    test( "PATCH /series/:id -  It should not be possible to update a series that does not exist", async () => {
 
         const user = await request(app)
             .patch(`/series/36d48f7f-73bd-46e2-80d8-acdc6a1f2eb0`)
@@ -278,7 +349,20 @@ describe("/series" , ()=> {
     } )
 
 
-    test( "DELETE /series -  It should not be possible to delete a series that does not exist", async () => {
+
+
+    test( "DELETE /series/:id - It must not be possible to delete a series with an id that is not a UUID", async () => {
+
+        const user = await request(app)
+            .delete(`/series/234243`)
+            .send(updateSerie)
+            .set("Authorization", `Bearer ${tokenADM}`)
+
+            expect(user.status).toBe(400) 
+            expect(user.body).toHaveProperty("message")
+    } )
+
+    test( "DELETE /series/:id -  It should not be possible to delete a series that does not exist", async () => {
 
         const user = await request(app)
             .delete(`/series/36d48f7f-73bd-46e2-80d8-acdc6a1f2eb0`)
@@ -289,7 +373,7 @@ describe("/series" , ()=> {
             expect(user.body).toHaveProperty("message")
     } )
 
-    test( "DELETE /series -  It shouldn't be possible to delete if it's not admin", async () => {
+    test( "DELETE /series/:id -  It shouldn't be possible to delete if it's not admin", async () => {
 
         const user = await request(app)
             .delete(`/series/${idSerie}`)
@@ -300,7 +384,7 @@ describe("/series" , ()=> {
             expect(user.body).toHaveProperty("message")
     } )
 
-    test( "DELETE /series -  It must be possible to delete", async () => {
+    test( "DELETE /series/:id -  It must be possible to delete", async () => {
 
         const user = await request(app)
             .delete(`/series/${idSerie}`)
