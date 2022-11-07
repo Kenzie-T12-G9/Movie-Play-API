@@ -12,6 +12,14 @@ export default class SeriesService {
   static serieRepository = AppDataSource.getRepository(Series);
   static episodeosRepository = AppDataSource.getRepository(Episodes);
 
+  static checkSerieExists = async ( id:string ) => {
+    const serieExist = await this.serieRepository.findOneBy({ id });
+
+    if (!serieExist) {
+      throw new AppError('Series not found', 404);
+    }
+  }
+
   static async create(data: ICreateSerie) {
     const serieExist = await this.serieRepository.findOneBy({
       name: data.name,
@@ -37,13 +45,22 @@ export default class SeriesService {
       },
     });
   };
+  
+  static listOne = async ( id:string ) => {
+
+    await this.checkSerieExists( id )
+
+    return await this.serieRepository.find({
+      where: { isActive: true, id },
+      relations: {
+        episodes: true,
+      },
+    });
+  };
 
   static async update(id: string, data: IUpdateSerie) {
-    const serieExist = await this.serieRepository.findOneBy({ id });
-
-    if (!serieExist) {
-      throw new AppError('Series not found', 404);
-    }
+    
+    await this.checkSerieExists( id )
 
     await this.serieRepository.update(id, data);
 
@@ -58,11 +75,8 @@ export default class SeriesService {
   }
 
   static delete = async (id: string) => {
-    const serieExist = await this.serieRepository.findOneBy({ id });
-
-    if (!serieExist) {
-      throw new AppError('Series not registered', 403);
-    }
+    
+    await this.checkSerieExists( id )
 
     await this.serieRepository.update(id, { isActive: false });
   };
@@ -70,17 +84,7 @@ export default class SeriesService {
   static async addEpisode(id: string, data: IAddEpisodeoSerie) {
     const serieExist = await this.serieRepository.findOneBy({ id });
 
-    if (!serieExist) {
-      throw new AppError('Series not registered', 403);
-    }
-    
-    const episodeoExist = await this.episodeosRepository.findOneBy({
-      name: data.name,
-    });
-
-    if (episodeoExist) {
-      throw new AppError('Name is registered', 401);
-    }
+    await this.checkSerieExists( id )
 
     // @ts-ignore ou // @ts-expect-error
     const episode = this.episodeosRepository.create({
