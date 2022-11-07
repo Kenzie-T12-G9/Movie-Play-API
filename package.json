@@ -43,7 +43,7 @@
     "orm:run": "typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
     "build": "tsc",
     "start": "node dist/src/server.js",
-    "test": "cross-env NODE_ENV=test SECRET_KEY jest"
+    "test": "cross-env NODE_ENV=test SECRET_KEY=123 jest"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

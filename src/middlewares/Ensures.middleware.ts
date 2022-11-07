@@ -22,7 +22,8 @@ export default class Ensuraces {
         next();
       } catch (error) {
         if (error instanceof ValidationError) {
-          throw new AppError(error.errors[0], 400);
+          // @ts-ignore ou // @ts-expect-error
+          throw new AppError(error.errors, 400);
         }
       }
     };
