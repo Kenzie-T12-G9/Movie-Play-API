@@ -68,7 +68,7 @@ export const createSerieValueless:ICreateSerie = {
 
 export const updateSerie:IUpdateSerie = {
     name:"The mandalorian 2",
-    year:"2023-01-01T00:00:00.000Z",
+    year:"2023",
     description:"Indefinido",
     direction:"Lucas filmes"
 }
