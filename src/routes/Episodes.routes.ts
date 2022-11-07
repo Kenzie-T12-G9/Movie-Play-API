@@ -6,6 +6,7 @@ import { shemaUpdateEpisodes } from "../serializers/Episodes.serializer";
 export const episodesRouter = Router()
 
 episodesRouter.patch('/:id',
+    Ensuraces.validIdParams,
     Ensuraces.authentication,
     Ensuraces.onlyAdm,
     Ensuraces.removeEmptyProperties,
@@ -13,6 +14,7 @@ episodesRouter.patch('/:id',
     controller.update
 )
 episodesRouter.delete('/:id',
+    Ensuraces.validIdParams,
     Ensuraces.authentication,
     Ensuraces.onlyAdm,
     controller.delete

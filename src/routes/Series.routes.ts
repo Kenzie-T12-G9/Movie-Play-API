@@ -5,7 +5,8 @@ import { shemaAddEpisodeoSerie, shemaCreateSerie, shemaUpdateSerie } from "../se
 
 export const seriesRouter = Router()
 
-seriesRouter.post('/episodeos/:id',
+seriesRouter.post('/:id/episodes',
+    Ensuraces.validIdParams,
     Ensuraces.authentication,
     Ensuraces.onlyAdm,
     Ensuraces.serializerData(shemaAddEpisodeoSerie),
@@ -23,7 +24,14 @@ seriesRouter.get('',
     controller.list
 )
 
+seriesRouter.get('/:id',
+    Ensuraces.validIdParams,
+    controller.listOne
+)
+
+
 seriesRouter.patch('/:id',
+    Ensuraces.validIdParams,
     Ensuraces.authentication,
     Ensuraces.onlyAdm,
     Ensuraces.removeEmptyProperties,
@@ -32,6 +40,7 @@ seriesRouter.patch('/:id',
 )
 
 seriesRouter.delete('/:id',
+    Ensuraces.validIdParams,
     Ensuraces.authentication,
     Ensuraces.onlyAdm,
     controller.delete
