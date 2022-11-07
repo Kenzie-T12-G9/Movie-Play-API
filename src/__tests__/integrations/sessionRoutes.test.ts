@@ -55,7 +55,7 @@ describe('/login', () => {
     });
 
     expect(response.body).toHaveProperty("message")
-    expect(response.status).toBe(403)
+    expect(response.status).toBe(400)
   }); 
 
   test("POST /login -  should not be able to login with the user with incorrect password",async () => {
@@ -65,6 +65,6 @@ describe('/login', () => {
     });
 
     expect(response.body).toHaveProperty("message")
-    expect(response.status).toBe(403)
+    expect(response.status).toBe(400)
   }); 
 });
