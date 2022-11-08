@@ -2,6 +2,7 @@ import AppDataSource from "../data-source"
 import { History } from "../entities/History.entity"
 import { AppError } from "../error/AppError"
 import { IHistoryIdRelations } from "../interfaces/history"
+import { arrayResHistory, arrayResMovie, arrayResSeries, schemaResListMovie, schemaResListSerie, schemaResMovie, schemaResSerie } from "../serializers/history.serizalizer"
 
 import MovieService from "./Movies.service"
 import SeriesService from "./Series.service"
@@ -36,66 +37,90 @@ export default class HistoryService {
         const history = this.historyRepository.create({
                 watchedAt,
                 user,
+                isActive:true,
                 ...property
         })
         
         await this.historyRepository.save(history)
-        
-        return history
+
+        const schema = type == "Movie" ? schemaResMovie : schemaResSerie
+
+        return await schema.validate(history, {
+            stripUnknown: true,
+            abortEarly: false,
+        });
     }
 
     static async listAll( id:string ){
    
-        return await this.historyRepository.find({ where:{user:{
+        const MyListALl = await this.historyRepository.find({ where:{user:{
             id
-        }} })
+        },
+            isActive:true
+        } })
+
+        return await arrayResHistory.validate(MyListALl, { stripUnknown:true })
     }
 
     static async listAllMovies( id:string ){
         
-        return await this.historyRepository.find({ where:{user:{
+        const historyMovie = await this.historyRepository.find({ where:{user:{
             id
         },
-            movie:true    
+            movie:true,
+            isActive:true
         }})
+
+        return await arrayResMovie.validate(historyMovie, { stripUnknown:true })
     }
 
     static async listAllSeries( id:string ){
         
-        return  await this.historyRepository.find({ where:{user:{
+        const historySeries = await this.historyRepository.find({ where:{user:{
             id
         },
-            series:true    
+            series:true,
+            isActive:true   
         }})
+
+        return await arrayResSeries.validate(historySeries, { stripUnknown:true })
     }
 
     static async listMovie( idUser:string, idMovie:string ){
 
-        return  await this.historyRepository.findOne({ where:{user:{
+        const historyMovie = await this.historyRepository.findOne({ where:{user:{
             id:idUser
         },
             movie:{
                 id:idMovie
-            }
+            },
+            isActive:true
         }})
+
+        return await schemaResListMovie.validate(historyMovie, { stripUnknown:true })
     }
 
     static async listSerie( idUser:string, idSerie:string ){
 
-        return  await this.historyRepository.findOne({ where:{user:{
+        const historySeries = await this.historyRepository.findOne({ where:{user:{
             id:idUser
         },
             series:{
                 id:idSerie
-            }
+            },
+            isActive:true
         }})
+
+        return await schemaResListSerie.validate(historySeries, { stripUnknown:true })
     }
 
     static async listAllAdm( id:string ){
 
         await this.checkUserExis( id )
 
-        return await this.historyRepository.find({where:{ user:{id} }})
+        const listHistoryUser = await this.historyRepository.find({where:{ user:{id} }})
+
+        return await arrayResHistory.validate(listHistoryUser, { stripUnknown:true })
     }
 
     static async checkUserExis( idUser:string ) {
