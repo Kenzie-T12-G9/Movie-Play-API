@@ -54,4 +54,11 @@ export default class HistoryController {
         const resHistory = await service.listAllAdm( id )
         return res.status(200).json(resHistory)
     }
+
+    static async delete( req:Request, res:Response ){
+
+        const { id } = req.params 
+        await service.delete( id )
+        return res.status(204).send()
+    }
 }

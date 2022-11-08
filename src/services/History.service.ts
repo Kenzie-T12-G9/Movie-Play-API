@@ -123,6 +123,17 @@ export default class HistoryService {
         return await arrayResHistory.validate(listHistoryUser, { stripUnknown:true })
     }
 
+    static async delete( id:string ){
+
+        const history = await this.historyRepository.findOneBy({id})
+
+        if( !history ){
+            throw new AppError("History not found", 404)
+        }
+
+        await this.historyRepository.update(id, { isActive:false })
+    }
+
     static async checkUserExis( idUser:string ) {
         const user = await UserService.repository.findOneBy({id:idUser})
 

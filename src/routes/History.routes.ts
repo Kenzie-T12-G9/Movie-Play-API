@@ -32,6 +32,12 @@ historyRouter.get('/serie/:id',
     Ensurances.authentication, 
     controller.listSerie
 )
+historyRouter.delete('/:id',
+    Ensurances.validIdParams,
+    Ensurances.authentication, 
+    Ensurances.onlyAdm,
+    controller.delete
+)
 
 historyRouter.get('/user/:id', 
     Ensurances.validIdParams,
