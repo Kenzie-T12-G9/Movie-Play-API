@@ -1,107 +1,69 @@
 import AppDataSource from "../data-source"
 import { History } from "../entities/History.entity"
-import { Movies } from "../entities/Movies.entity"
-import { Series } from "../entities/Series.entity"
-import { Users } from "../entities/Users.entity"
 import { AppError } from "../error/AppError"
 import { IHistoryIdRelations } from "../interfaces/history"
 
+import MovieService from "./Movies.service"
+import SeriesService from "./Series.service"
+import UserService from "./Users.service"
+
 export default class HistoryService {
-
+    
     static historyRepository = AppDataSource.getRepository(History)
-    static userRepository = AppDataSource.getRepository(Users)
-    static movieRepository = AppDataSource.getRepository(Movies)
-    static serieRepository = AppDataSource.getRepository(Series)
 
-    static async create( id:string, data:IHistoryIdRelations ){
-
-        if( data.movieId && data.serieId || !data.movieId && !data.serieId ) {
+    static async create( id:string, { movieId, serieId, watchedAt }:IHistoryIdRelations ){
+        
+        if( movieId && serieId || !movieId && !serieId ) {
             throw new AppError("Send only series or movie", 401)
         }
 
-        const user = await this.userRepository.findOneBy({id})
+        const user = await this.checkUserExis( id )
 
-        if( !user ){
-            throw new AppError("User not found", 404)
+        const type:string = movieId ? "Movie" : "Series"
+
+        const content = movieId ? 
+
+            await MovieService.repository.findOneBy({id:movieId}) 
+                : 
+            await SeriesService.serieRepository.findOneBy({id:serieId})
+
+        if( !content ){
+            throw new AppError(`${type} not found`, 404)
         }
 
-        if( data.movieId ){
+        const property = type == "Movie" ? { movie:content } : { series:content }
 
-            const movie = await this.movieRepository.findOneBy({id:data.movieId})
-
-            if( !movie ){
-                throw new AppError("Movie not found", 404)
-            }
-
-            const history = this.historyRepository.create({
-                watchedAt:data.watchedAt,
+        const history = this.historyRepository.create({
+                watchedAt,
                 user,
-                movie
-            })
-            
-            await this.historyRepository.save(history)
-            
-            return history
-        }
-
-        if( data.serieId ){
-
-            const series = await this.serieRepository.findOneBy({id:data.serieId})
-
-            if( !series ){
-                throw new AppError("Serie not found", 404)
-            }
-
-            const history = this.historyRepository.create({
-                watchedAt:data.watchedAt,
-                user,
-                series
-            })
-            
-            await this.historyRepository.save(history)
-            
-            return history
-        }
+                ...property
+        })
+        
+        await this.historyRepository.save(history)
+        
+        return history
     }
 
     static async listAll( id:string ){
-
-        const user = await this.userRepository.findOneBy({id})
-
-        if( !user ){
-            throw new AppError("User not found", 404)
-        }
    
         return await this.historyRepository.find({ where:{user:{
-            id:user.id
+            id
         }} })
     }
 
     static async listAllMovies( id:string ){
-
-        const user = await this.userRepository.findOneBy({id})
-
-        if( !user ){
-            throw new AppError("User not found", 404)
-        }
         
-        return  await this.historyRepository.find({ where:{user:{
-            id:user.id
+        return await this.historyRepository.find({ where:{user:{
+            id
         },
             movie:true    
         }})
     }
 
     static async listAllSeries( id:string ){
-
-        const user = await this.userRepository.findOneBy({id})
-
-        if( !user ){
-            throw new AppError("User not found", 404)
-        }
         
         return  await this.historyRepository.find({ where:{user:{
-            id:user.id
+            id
         },
             series:true    
         }})
@@ -109,14 +71,8 @@ export default class HistoryService {
 
     static async listMovie( idUser:string, idMovie:string ){
 
-        const user = await this.userRepository.findOneBy({id:idUser})
-
-        if( !user ){
-            throw new AppError("User not found", 404)
-        }
-
         return  await this.historyRepository.findOne({ where:{user:{
-            id:user.id
+            id:idUser
         },
             movie:{
                 id:idMovie
@@ -126,18 +82,29 @@ export default class HistoryService {
 
     static async listSerie( idUser:string, idSerie:string ){
 
-        const user = await this.userRepository.findOneBy({id:idUser})
-
-        if( !user ){
-            throw new AppError("User not found", 404)
-        }
-
         return  await this.historyRepository.findOne({ where:{user:{
-            id:user.id
+            id:idUser
         },
             series:{
                 id:idSerie
             }
         }})
+    }
+
+    static async listAllAdm( id:string ){
+
+        await this.checkUserExis( id )
+
+        return await this.historyRepository.find({where:{ user:{id} }})
+    }
+
+    static async checkUserExis( idUser:string ) {
+        const user = await UserService.repository.findOneBy({id:idUser})
+
+        if( !user ){
+            throw new AppError("User not found", 404)
+        }
+
+        return user
     }
 }

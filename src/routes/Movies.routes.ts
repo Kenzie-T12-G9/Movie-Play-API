@@ -1,6 +1,6 @@
 import { Router } from "express";
 import controller from "../controllers/Movies.controller";
-import Ensuraces from "../middlewares/Ensures.middleware";
+import Ensuraces from "../middlewares/Ensurances.middleware";
 
 export const moviesRouter = Router()
 

@@ -47,4 +47,11 @@ export default class HistoryController {
         const resHistory = await service.listSerie( idUser, idSerie )
         return res.status(200).json(resHistory)
     }
+
+    static async listAllAdm( req:Request, res:Response ){
+
+        const { id } = req.params 
+        const resHistory = await service.listAllAdm( id )
+        return res.status(200).json(resHistory)
+    }
 }
