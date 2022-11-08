@@ -1,5 +1,5 @@
 export interface IHistoryIdRelations {
   watchedAt: Date;
-  serieId:string;
-  movieId:string
+  serieId?:string;
+  movieId?:string
 }
