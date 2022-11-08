@@ -12,9 +12,9 @@ export class WatchLater {
   @JoinColumn()
   user: Users;
 
-  @ManyToOne(() => Movies, (movies) => movies.movies, { eager: true })
-  movies: Movies[];
+  @ManyToOne(() => Movies)
+  movies: Movies;
 
-  @ManyToOne(() => Series, (series) => series.series, { eager: true })
-  series: Series[];
+  @ManyToOne(() => Series)
+  series: Series;
 }

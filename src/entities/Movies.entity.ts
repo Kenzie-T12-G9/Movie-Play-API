@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { History } from './History.entity';
 import { WatchLater } from './Watch_later.entity';
 
 @Entity('Movies')
@@ -9,8 +10,8 @@ class Movies {
   @Column()
   name: string;
 
-  @Column()
-  year: Date;
+  @Column( { length:4 } )
+  year: string;
 
   @Column()
   isActive: boolean;
@@ -24,8 +25,11 @@ class Movies {
   @Column()
   direction: string;
 
-  @OneToMany(() => WatchLater, (watchlater) => watchlater.movies)
-  movies: WatchLater;
+  @OneToMany(() => WatchLater, watchlater => watchlater.movies)
+  watchLater: WatchLater[];
+
+  @OneToMany(()=> History, history => history.movie )
+  history:History[]
 }
 
 export { Movies };
