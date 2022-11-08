@@ -1,6 +1,6 @@
 import { Router } from "express";
 import controller from "../controllers/Series.controller";
-import Ensuraces from "../middlewares/Ensures.middleware";
+import Ensuraces from "../middlewares/Ensurances.middleware";
 import { shemaAddEpisodeoSerie, shemaCreateSerie, shemaUpdateSerie } from "../serializers/Series.serializer";
 
 export const seriesRouter = Router()

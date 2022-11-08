@@ -6,7 +6,7 @@ import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
 import { schemaValidIdParams, schemaValidMovieIdParams, schemaValidSerieIdParams, schemaValidUserIdParams } from '../serializers/methods.serializer';
 
-export default class Ensuraces {
+export default class Ensurances {
   static serializerData =
     (serializer: SchemaOf<any>) =>
     async (request: Request, _: Response, next: NextFunction) => {
