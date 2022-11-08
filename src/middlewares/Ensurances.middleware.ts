@@ -4,7 +4,7 @@ import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
-import { schemaValidIdParams } from '../serializers/methods.serializer';
+import { schemaValidIdParams, schemaValidMovieIdParams, schemaValidSerieIdParams, schemaValidUserIdParams } from '../serializers/methods.serializer';
 
 export default class Ensurances {
   static serializerData =
@@ -90,6 +90,60 @@ export default class Ensurances {
 
     try {
       await schemaValidIdParams.validate({id}, {
+        stripUnknown: true,
+        abortEarly: false,
+      });
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+
+  static validMovieIdParams = async ( req:Request, res:Response, next:NextFunction ) => {
+
+    const { movieId } = req.params
+
+    try {
+      await schemaValidMovieIdParams.validate({movieId}, {
+        stripUnknown: true,
+        abortEarly: false,
+      });
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+
+  static validSerieIdParams = async ( req:Request, res:Response, next:NextFunction ) => {
+
+    const { serieId } = req.params
+
+    try {
+      await schemaValidSerieIdParams.validate({serieId}, {
+        stripUnknown: true,
+        abortEarly: false,
+      });
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+
+  static validUserIdParams = async ( req:Request, res:Response, next:NextFunction ) => {
+
+    const { userId } = req.params
+
+    try {
+      await schemaValidUserIdParams.validate({userId}, {
         stripUnknown: true,
         abortEarly: false,
       });
