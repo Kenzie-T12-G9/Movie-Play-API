@@ -9,16 +9,17 @@ export type IMovie = Request<
 
 export interface IMovieBodyReq{
     name: string;
-    year: Date;
+    year: string;
     duration: number;
     description: string;
     direction: string;
+    isActive:boolean
 }
 
 export interface IMovieBodyRes{
     id: string;
     name: string;
-    year: Date;
+    year: string;
     duration: number;
     description: string;
     direction: string;

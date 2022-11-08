@@ -1,4 +1,5 @@
-export interface IHistoryResponse {
+export interface IHistoryIdRelations {
   watchedAt: Date;
-  comment: string;
+  serieId:string;
+  movieId:string
 }
