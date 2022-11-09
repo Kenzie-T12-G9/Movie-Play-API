@@ -11,7 +11,7 @@ class Series {
   @Column()
   name: string;
 
-  @Column( { length:4 } )
+  @Column({ length: 4 })
   year: string;
 
   @Column()
@@ -23,14 +23,14 @@ class Series {
   @Column()
   direction: string;
 
-  @OneToMany(() => Episodes, (episodes) => episodes.serie)
+  @OneToMany(() => Episodes, (episodes) => episodes.series)
   episodes: Episodes[];
 
   @OneToMany(() => WatchLater, (watchlater) => watchlater.series)
   series: WatchLater[];
 
-  @OneToMany(()=> History, history => history.series )
-  history:History[]
+  @OneToMany(() => History, (history) => history.series)
+  history: History[];
 }
 
 export { Series };

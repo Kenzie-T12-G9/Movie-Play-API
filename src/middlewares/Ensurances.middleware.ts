@@ -4,7 +4,10 @@ import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
-import { schemaValidIdContentParams, schemaValidIdParams } from '../serializers/methods.serializer';
+import {
+  schemaValidIdContentParams,
+  schemaValidIdParams,
+} from '../serializers/methods.serializer';
 
 export default class Ensurances {
   static serializerData =
@@ -84,15 +87,21 @@ export default class Ensurances {
     next();
   }
 
-  static validIdParams = async ( req:Request, res:Response, next:NextFunction ) => {
-
-    const { id } = req.params
+  static validIdParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id } = req.params;
 
     try {
-      await schemaValidIdParams.validate({id}, {
-        stripUnknown: true,
-        abortEarly: false,
-      });
+      await schemaValidIdParams.validate(
+        { id },
+        {
+          stripUnknown: true,
+          abortEarly: false,
+        }
+      );
 
       next();
     } catch (error) {
@@ -102,20 +111,27 @@ export default class Ensurances {
     }
   };
 
-  static validIdContentParams = async ( req:Request, res:Response, next:NextFunction ) => {
+  static validIdContentParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { movieId } = req.params;
+    const { seriesId } = req.params;
+    let selectorId;
 
-    const { movieId } = req.params
-    const { serieId } = req.params
-    let selectorId
-
-    if(!movieId){selectorId = movieId}
-    else(selectorId = serieId)
+    if (!movieId) {
+      selectorId = movieId;
+    } else selectorId = seriesId;
 
     try {
-      await schemaValidIdContentParams.validate({selectorId}, {
-        stripUnknown: true,
-        abortEarly: false,
-      });
+      await schemaValidIdContentParams.validate(
+        { selectorId },
+        {
+          stripUnknown: true,
+          abortEarly: false,
+        }
+      );
 
       next();
     } catch (error) {
@@ -124,7 +140,7 @@ export default class Ensurances {
       }
     }
   };
-  
+
   static partialPermissions(req: Request, _: Response, next: NextFunction) {
     const { id, isAdm } = req.token;
     const { id: userId } = req.params;
