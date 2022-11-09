@@ -27,11 +27,7 @@ export default class RatingsService {
     return allMoviesRatings;
   }
 
-  static async postUserRateOfaMovieService(
-    rate: IRatingRequest,
-    movieId: string,
-    idUserToken: string
-  ) {
+  static async postUserRateOfaMovieService( rate: IRatingRequest, movieId: string, idUserToken: string) {
     const user = await this.userRepository.findOneBy({ id: idUserToken });
     if (!user) {
       throw new AppError('User not found', 404);

@@ -16,7 +16,6 @@ describe('/history', () => {
   let connection: DataSource;
 
   let tokenADM: string;
-  let tokenNotADM: string;
   let seriesId: string;
   let movieId: string;
 
@@ -35,12 +34,8 @@ describe('/history', () => {
     const adminLoginResponse = await request(app)
       .post('/login')
       .send(loginUserAdm);
-    const notAdmLoginResponse = await request(app)
-      .post('/login')
-      .send(loginUserNotAdm);
 
     tokenADM = adminLoginResponse.body.token;
-    tokenNotADM = notAdmLoginResponse.body.token;
 
     const movieResponse = await request(app)
       .post('/movies')
