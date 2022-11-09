@@ -91,10 +91,6 @@ export default class RatingsService {
       throw new AppError('User not found', 404);
     }
 
-    if (idUser != idUserToken || user.isAdm === false) {
-      throw new AppError('Access denied', 403);
-    }
-
     const movie = await this.movieRepository.findOneBy({ id: movieId });
     if (!movie) {
       throw new AppError('Movie not found', 404);
@@ -115,10 +111,6 @@ export default class RatingsService {
       throw new AppError('User not found', 404);
     }
 
-    if (idUser != idUserToken || user.isAdm === false) {
-      throw new AppError('Access denied', 403);
-    }
-
     const series = await this.serieRepository.findOneBy({ id: seriesId });
     if (!series) {
       throw new AppError('Movie not found', 404);
@@ -129,53 +121,23 @@ export default class RatingsService {
     });
   }
 
-  static async deleteMovieRatingService(
+  static async deleteRatingService(
     idUserToken: string,
-    movieId: string,
-    idUser: string
+    rateId: string,
   ) {
     const user = await this.userRepository.findOneBy({ id: idUserToken });
     if (!user) {
       throw new AppError('User not found', 404);
     }
 
-    if (idUser != idUserToken || user.isAdm === false) {
-      throw new AppError('Access denied', 403);
-    }
-
-    const movie = await this.movieRepository.findOneBy({ id: movieId });
-    if (!movie) {
+    const rate = await this.rateRepository.findOneBy({ id: rateId });
+    if (!rate) {
       throw new AppError('Movie not found', 404);
     }
 
     return await this.rateRepository.delete({
-      user: { id: user.id },
-      movie: { id: movieId },
+      movie: { id: rateId },
     });
   }
 
-  static async deleteSerieRatingService(
-    idUserToken: string,
-    seriesId: string,
-    idUser: string
-  ) {
-    const user = await this.userRepository.findOneBy({ id: idUserToken });
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-
-    if (idUser != idUserToken || user.isAdm === false) {
-      throw new AppError('Access denied', 403);
-    }
-
-    const movie = await this.serieRepository.findOneBy({ id: seriesId });
-    if (!movie) {
-      throw new AppError('Movie not found', 404);
-    }
-
-    return await this.rateRepository.delete({
-      user: { id: user.id },
-      series: { id: seriesId },
-    });
-  }
 }
