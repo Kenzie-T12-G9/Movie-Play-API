@@ -39,17 +39,11 @@ ratingsRouter.get('/movies', RatingsController.readAllRatingsMoviesController);
 ratingsRouter.get('/series', RatingsController.readAllRatingsSeriesController);
 
 ratingsRouter.delete(
-  '/:movieId/:id',
+  '/:id',
   Ensurances.validIdContentParams,
   Ensurances.validIdParams,
   Ensurances.authentication,
-  RatingsController.deleteMovieRatingController
+  RatingsController.deleteRatingController
 );
 
-ratingsRouter.delete(
-  '/:seriesId/:id',
-  Ensurances.validIdContentParams,
-  Ensurances.validIdParams,
-  Ensurances.authentication,
-  RatingsController.deleteSerieRatingController
-);
+
