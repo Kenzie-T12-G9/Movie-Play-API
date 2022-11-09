@@ -42,7 +42,7 @@ export default class HistoryController {
     static async listSerie( req:Request, res:Response ){
 
         const { id:idSerie } = req.params
-        const resHistory = await service.listSerie( idSerie )
+        const resHistory = await service.listSeries( idSerie )
         return res.status(200).json(resHistory)
     }
 

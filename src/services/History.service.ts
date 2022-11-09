@@ -1,12 +1,19 @@
-import AppDataSource from "../data-source"
-import { History } from "../entities/History.entity"
-import { AppError } from "../error/AppError"
-import { IHistoryIdRelations } from "../interfaces/history"
-import { arrayResHistory, arrayResMovie, arrayResSeries, movieIdResponse, schemaResListMovie, schemaResListSerie, schemaResMovie, schemaResSerie, seriesIdResponse } from "../serializers/history.serizalizer"
-
-import MovieService from "./Movies.service"
-import SeriesService from "./Series.service"
-import UserService from "./Users.service"
+import AppDataSource from '../data-source';
+import { History } from '../entities/History.entity';
+import { AppError } from '../error/AppError';
+import { IHistoryIdRelations } from '../interfaces/history';
+import {
+  arrayResHistory,
+  arrayResMovie,
+  schemaResMovie,
+  schemaResSerie,
+  movieIdResponse,
+  seriesIdResponse,
+  arrayResSeries,
+} from '../serializers/history.serizalizer';
+import MovieService from './Movies.service';
+import SeriesService from './Series.service';
+import UserService from './Users.service';
 
 export default class HistoryService {
   static historyRepository = AppDataSource.getRepository(History);
@@ -88,69 +95,68 @@ export default class HistoryService {
       },
     });
 
-    static async listMovie( idMovie:string ){
-
-        const movie = await MovieService.repository.findOneBy({ id:idMovie })
-
-        const history = await this.historyRepository.find({ where:{
-            movie:{
-                id:idMovie
-            }
-        }})
-
-        const { movie:validateMovie, activity } = await movieIdResponse.validate({
-            movie,
-            activity:history
-        }, { stripUnknown:true })
-        
-        return {
-            movie:validateMovie,
-            activity
-        }
-    }
-
-    static async listSerie( idSerie:string ){
-
-        const series = await SeriesService.serieRepository.findOneBy({ id:idSerie })
-
-        const history = await this.historyRepository.find({ where:{
-            series:{
-                id:idSerie
-            }
-        }})
-
-        const { series:validateSeries, activity } = await seriesIdResponse.validate({
-            series,
-            activity:history
-        }, { stripUnknown:true })
-        
-        return {
-            series:validateSeries,
-            activity
-        }
-    }
-
-    return await schemaResListMovie.validate(historyMovie, {
-      stripUnknown: true,
-    });
+    return await arrayResSeries.validate(historySeries, { stripUnknown: true });
   }
 
-  static async listSerie(idUser: string, idSerie: string) {
-    const historySeries = await this.historyRepository.findOne({
+  static async listMovie(idMovie: string) {
+    const movie = await MovieService.repository.findOneBy({ id: idMovie });
+
+    if (!movie) {
+      throw new AppError('Movie not found', 404);
+    }
+
+    const history = await this.historyRepository.find({
       where: {
-        user: {
-          id: idUser,
+        movie: {
+          id: idMovie,
         },
-        series: {
-          id: idSerie,
-        },
-        isActive: true,
       },
     });
 
-    return await schemaResListSerie.validate(historySeries, {
-      stripUnknown: true,
+    const { movie: validateMovie, activity } = await movieIdResponse.validate(
+      {
+        movie,
+        activity: history,
+      },
+      { stripUnknown: true }
+    );
+
+    return {
+      movie: validateMovie,
+      activity,
+    };
+  }
+
+  static async listSeries(idSerie: string) {
+    const series = await SeriesService.serieRepository.findOneBy({
+      id: idSerie,
     });
+
+    if (!series) {
+      throw new AppError('Serries not found', 404);
+    }
+    
+    const history = await this.historyRepository.find({
+      where: {
+        series: {
+          id: idSerie,
+        },
+      },
+    });
+
+    const { series: validateSeries, activity } =
+      await seriesIdResponse.validate(
+        {
+          series,
+          activity: history,
+        },
+        { stripUnknown: true }
+      );
+
+    return {
+      series: validateSeries,
+      activity,
+    };
   }
 
   static async listAllAdm(id: string) {
@@ -176,7 +182,10 @@ export default class HistoryService {
   }
 
   static async checkUserExists(idUser: string) {
-    const user = await UserService.repository.findOneBy({ id: idUser, isActive: true });
+    const user = await UserService.repository.findOneBy({
+      id: idUser,
+      isActive: true,
+    });
 
     if (!user) {
       throw new AppError('User not found', 404);
