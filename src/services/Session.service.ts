@@ -2,11 +2,11 @@ import AppDataSource from '../data-source';
 import { Users } from '../entities/Users.entity';
 import { AppError } from '../error/AppError';
 import { IUserLoginBody } from '../interfaces/users';
-import { compare } from 'bcryptjs';
 
 import * as bcrypt from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
+import { schemaResSession } from '../serializers/Users.serializer';
 config();
 
 export default class SessionService {
@@ -16,13 +16,13 @@ export default class SessionService {
     const user = await this.repository.findOneBy({ email: email });
 
     if (!user) {
-      throw new AppError('Email/password is wrong', 400);
+      throw new AppError('Email/password is wrong', 401);
     }
 
     const hashedPassword = bcrypt.compareSync(password, user.password);
 
     if (!hashedPassword) {
-      throw new AppError('Email/password is wrong', 400);
+      throw new AppError('Email/password is wrong', 401);
     }
     
     const token = sign(
@@ -34,9 +34,9 @@ export default class SessionService {
       }
     );
 
-    return {
+    return await schemaResSession.validate({
       user: user,
       token: token,
-    };
+    }, { stripUnknown:true })
   }
 }
