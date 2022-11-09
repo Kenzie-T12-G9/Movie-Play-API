@@ -12,15 +12,15 @@ class History {
   watchedAt: Date;
 
   @Column()
-  isActive:boolean
+  isActive: boolean;
 
   @ManyToOne(() => Users, { eager:true }) 
   user: Users;
 
-  @ManyToOne(() => Series, { eager:true })
+  @ManyToOne(() => Series, { eager: true })
   series?: Series;
 
-  @ManyToOne(() => Movies, { eager:true })
+  @ManyToOne(() => Movies, { eager: true })
   movie?: Movies;
 }
 

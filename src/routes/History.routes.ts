@@ -1,9 +1,9 @@
-import { Router } from "express";
-import controller from "../controllers/History.controller";
-import Ensurances from "../middlewares/Ensurances.middleware";
-import { schemaCreateHistory } from "../serializers/history.serizalizer";
+import { Router } from 'express';
+import controller from '../controllers/History.controller';
+import Ensurances from '../middlewares/Ensurances.middleware';
+import { schemaCreateHistory } from '../serializers/history.serizalizer';
 
-export const historyRouter = Router()
+export const historyRouter = Router();
 
 historyRouter.post('', 
     Ensurances.serializerData(schemaCreateHistory),
@@ -41,9 +41,10 @@ historyRouter.delete('/:id',
     controller.delete
 )
 
-historyRouter.get('/user/:id', 
-    Ensurances.validIdParams,
-    Ensurances.authentication,
-    Ensurances.onlyAdm,
-    controller.listAllAdm
-)
+historyRouter.get(
+  '/user/:id',
+  Ensurances.validIdParams,
+  Ensurances.authentication,
+  Ensurances.onlyAdm,
+  controller.listAllAdm
+);
