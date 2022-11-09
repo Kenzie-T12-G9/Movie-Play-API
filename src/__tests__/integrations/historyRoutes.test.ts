@@ -3,7 +3,13 @@ import request from 'supertest';
 import AppDataSource from '../../data-source';
 import app from '../../app';
 import {} from '../mocks/session';
-import { createSerie, createUserADM, createUserNotAdm, loginUserAdm, loginUserNotAdm } from '../mocks/Series';
+import {
+  createSerie,
+  createUserADM,
+  createUserNotAdm,
+  loginUserAdm,
+  loginUserNotAdm,
+} from '../mocks/Series';
 import { createMovie } from '../mocks/Movies';
 
 describe('/history', () => {
@@ -72,7 +78,7 @@ describe('/history', () => {
       .post('/history')
       .set('Authorization', `Bearer ${tokenADM}`)
       .send({ seriesId });
-
+    console.log(response.body);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
     expect(response.body).toHaveProperty('watchedAt');
@@ -153,15 +159,15 @@ describe('/history', () => {
     expect(response.body.message).toEqual('Missing authorization token');
   });
 
-  // test('GET /history/movies/:movieId - should be able to list register movie by id as admin', async () => {
-  //   const response = await request(app)
-  //     .get(`/history/movies/${movieId}`)
-  //     .set('Authorization', `Bearer ${tokenADM}`);
+  test('GET /history/movies/:movieId - should be able to list register movie by id as admin', async () => {
+    const response = await request(app)
+      .get(`/history/movies/${movieId}`)
+      .set('Authorization', `Bearer ${tokenADM}`);
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body).toHaveProperty('movie');
-  //   expect(response.body).toHaveProperty('activity');
-  // });   // FALHANDO
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('movie');
+    expect(response.body).toHaveProperty('activity');
+  });
 
   test('GET /history/movies/:movieId -  should not be able to list movie history without authentication', async () => {
     const response = await request(app).get(`/history/movies/${movieId}`);
@@ -171,25 +177,27 @@ describe('/history', () => {
     expect(response.body.message).toEqual('Missing authorization token');
   });
 
-  // test('GET /history/movies/:movieId - should not be able to list history movie that not exist', async () => {
-  //   const response = await request(app)
-  //     .get(`/history/movies/${movieId.replace('a', 'b')}`)
-  //     .set('Authorization', `Bearer ${tokenADM}`);
+  test('GET /history/movies/:movieId - should not be able to list history movie that not exist', async () => {
+    const invalidId = '2640b089-20ad-4c7c-8d38-5f3d7bdc7ce1';
+    const response = await request(app)
+      .get(`/history/movies/${invalidId}`)
+      .set('Authorization', `Bearer ${tokenADM}`);
+    console.log(response.error);
 
-  //   expect(response.status).toBe(404);
-  //   expect(response.body).toHaveProperty('message');
-  //   expect(response.body.message).toEqual('Movie not found');
-  // });
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('Movie not found');
+  });
 
-  // test('GET /history/series/:seriesId - should be able to list history series by id', async () => {
-  //   const response = await request(app)
-  //     .get(`/history/series/${seriesId}`)
-  //     .set('Authorization', `Bearer ${tokenADM}`);
+  test('GET /history/series/:seriesId - should be able to list history series by id', async () => {
+    const response = await request(app)
+      .get(`/history/series/${seriesId}`)
+      .set('Authorization', `Bearer ${tokenADM}`);
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body).toHaveProperty('series');
-  //   expect(response.body).toHaveProperty('activity');
-  // });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('series');
+    expect(response.body).toHaveProperty('activity');
+  });
 
   test('GET /history/series/:seriesId - should not be able to list series history without authentication', async () => {
     const response = await request(app).get(`/history/series/${seriesId}`);
@@ -199,12 +207,13 @@ describe('/history', () => {
     expect(response.body.message).toEqual('Missing authorization token');
   });
 
-  // test('GET /history/series/:seriesId - should not be able to list history series that not exists', async () => {
-  //   const response = await request(app)
-  //     .get(`/history/series/${undefined}`)
-  //     .set('Authorization', `Bearer ${tokenADM}`);
+  test('GET /history/series/:seriesId - should not be able to list history series that not exists', async () => {
+    const invalidId = '2640b089-20ad-4c7c-8d38-5f3d7bdc7ce1';
+    const response = await request(app)
+      .get(`/history/series/${invalidId}`)
+      .set('Authorization', `Bearer ${tokenADM}`);
 
-  //   expect(response.status).toBe(404);
-  //   expect(response.body).toHaveProperty('message');
-  // });
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty('message');
+  });
 });
