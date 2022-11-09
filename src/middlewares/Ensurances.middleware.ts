@@ -4,9 +4,9 @@ import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
-import { schemaValidIdParams } from '../serializers/methods.serializer';
+import { schemaValidIdContentParams, schemaValidIdParams } from '../serializers/methods.serializer';
 
-export default class Ensuraces {
+export default class Ensurances {
   static serializerData =
     (serializer: SchemaOf<any>) =>
     async (request: Request, _: Response, next: NextFunction) => {
@@ -90,6 +90,29 @@ export default class Ensuraces {
 
     try {
       await schemaValidIdParams.validate({id}, {
+        stripUnknown: true,
+        abortEarly: false,
+      });
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+
+  static validIdContentParams = async ( req:Request, res:Response, next:NextFunction ) => {
+
+    const { movieId } = req.params
+    const { serieId } = req.params
+    let selectorId
+
+    if(!movieId){selectorId = movieId}
+    else(selectorId = serieId)
+
+    try {
+      await schemaValidIdContentParams.validate({selectorId}, {
         stripUnknown: true,
         abortEarly: false,
       });

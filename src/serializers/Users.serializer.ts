@@ -31,3 +31,51 @@ export const shemaUpdateUser = yup.object().shape({
   password: yup.string().notRequired(),
   paymentMethods: shemaPaymentUpdate,
 }).noUnknown(true).strict();
+
+const schemaPaymentMethod = yup.object().shape({
+  id:yup  
+    .string()
+    .notRequired(),
+  name:yup  
+    .string()
+    .notRequired(),
+  cpf:yup  
+    .string()
+    .notRequired(),
+  number:yup  
+    .string()
+    .notRequired(),
+  dueDate:yup  
+    .string()
+    .notRequired(),
+  code:yup  
+    .string()
+    .notRequired(),
+})
+
+const schemUser = yup.object().shape({
+  id:yup  
+    .string()
+    .notRequired(),
+  name:yup  
+    .string()
+    .notRequired(),
+  email:yup  
+    .string()
+    .notRequired(),
+  createdAt:yup  
+    .string()
+    .notRequired(),
+  updatedAt:yup  
+    .string()
+    .notRequired(),
+  paymentMethods:schemaPaymentMethod
+  
+})
+
+export const schemaResSession = yup.object().shape({
+    user:schemUser,
+    token:yup
+      .string()
+      .notRequired()
+})

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import UsersController from '../controllers/Users.controller';
-import Ensuraces from '../middlewares/Ensures.middleware';
+import Ensuraces from '../middlewares/Ensurances.middleware';
 import { shemaCreateUser, shemaUpdateUser } from '../serializers/Users.serializer';
 
 export const userRouter = Router();
