@@ -2238,7 +2238,7 @@
         "description": "Esta método é responsável por trazer o registro de atividades de uma série específica no histórico de séries. Esta rota pode ser acessada por qualquer usuário.",
         "parameters": [
           {
-            "name": "movieId",
+            "name": "seriesId",
             "in": "path",
             "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser listado o histórico de atividades",
             "required": true,
@@ -2254,7 +2254,7 @@
                   "$ref": "#/components/schemas/SingleSeriesHistory"
                 },
                 "example": {
-                  "movie": {
+                  "series": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Jessica Jones",
                     "year": 2015,
@@ -2316,7 +2316,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
-                  "message": "Movie register not found"
+                  "message": "Series register not found"
                 }
               }
             }
