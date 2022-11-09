@@ -13,7 +13,7 @@ export default class SessionService {
   static repository = AppDataSource.getRepository(Users);
 
   static async init({ email, password }: IUserLoginBody) {
-    const user = await this.repository.findOneBy({ email: email });
+    const user = await this.repository.findOneBy({ email: email, isActive: true });
 
     if (!user) {
       throw new AppError('Email/password is wrong', 400);
