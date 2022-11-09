@@ -1,20 +1,12 @@
-import AppDataSource from '../data-source';
-import { History } from '../entities/History.entity';
-import { AppError } from '../error/AppError';
-import { IHistoryIdRelations } from '../interfaces/history';
-import {
-  arrayResHistory,
-  arrayResMovie,
-  arrayResSeries,
-  schemaResListMovie,
-  schemaResListSerie,
-  schemaResMovie,
-  schemaResSerie,
-} from '../serializers/history.serizalizer';
+import AppDataSource from "../data-source"
+import { History } from "../entities/History.entity"
+import { AppError } from "../error/AppError"
+import { IHistoryIdRelations } from "../interfaces/history"
+import { arrayResHistory, arrayResMovie, arrayResSeries, movieIdResponse, schemaResListMovie, schemaResListSerie, schemaResMovie, schemaResSerie, seriesIdResponse } from "../serializers/history.serizalizer"
 
-import MovieService from './Movies.service';
-import SeriesService from './Series.service';
-import UserService from './Users.service';
+import MovieService from "./Movies.service"
+import SeriesService from "./Series.service"
+import UserService from "./Users.service"
 
 export default class HistoryService {
   static historyRepository = AppDataSource.getRepository(History);
@@ -96,21 +88,47 @@ export default class HistoryService {
       },
     });
 
-    return await arrayResSeries.validate(historySeries, { stripUnknown: true });
-  }
+    static async listMovie( idMovie:string ){
 
-  static async listMovie(idUser: string, idMovie: string) {
-    const historyMovie = await this.historyRepository.findOne({
-      where: {
-        user: {
-          id: idUser,
-        },
-        movie: {
-          id: idMovie,
-        },
-        isActive: true,
-      },
-    });
+        const movie = await MovieService.repository.findOneBy({ id:idMovie })
+
+        const history = await this.historyRepository.find({ where:{
+            movie:{
+                id:idMovie
+            }
+        }})
+
+        const { movie:validateMovie, activity } = await movieIdResponse.validate({
+            movie,
+            activity:history
+        }, { stripUnknown:true })
+        
+        return {
+            movie:validateMovie,
+            activity
+        }
+    }
+
+    static async listSerie( idSerie:string ){
+
+        const series = await SeriesService.serieRepository.findOneBy({ id:idSerie })
+
+        const history = await this.historyRepository.find({ where:{
+            series:{
+                id:idSerie
+            }
+        }})
+
+        const { series:validateSeries, activity } = await seriesIdResponse.validate({
+            series,
+            activity:history
+        }, { stripUnknown:true })
+        
+        return {
+            series:validateSeries,
+            activity
+        }
+    }
 
     return await schemaResListMovie.validate(historyMovie, {
       stripUnknown: true,
