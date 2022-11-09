@@ -1,49 +1,53 @@
 import { Router } from "express";
 import RatingsController from "../controllers/Ratings.controller";
-import Ensuraces from "../middlewares/Ensures.middleware";
+import Ensurances from "../middlewares/Ensurances.middleware";
+
 import { schemaCreateRating } from "../serializers/Ratings.serializer";
 
 export const ratingsRouter = Router()
 
-ratingsRouter.post("/movies/:id/ratings",
-    Ensuraces.validIdParams,
-    Ensuraces.authentication, 
-    Ensuraces.serializerData(schemaCreateRating),
+ratingsRouter.post("/movies/:id",
+    Ensurances.validIdParams,
+    Ensurances.authentication, 
+    Ensurances.serializerData(schemaCreateRating),
     RatingsController.postUserRatingsOfaMovieController
 )
 
-ratingsRouter.post("/series/:id/ratings",
-    Ensuraces.validIdParams,
-    Ensuraces.authentication, 
-    Ensuraces.serializerData(schemaCreateRating),
+ratingsRouter.post("/series/:id",
+    Ensurances.validIdParams,
+    Ensurances.authentication, 
+    Ensurances.serializerData(schemaCreateRating),
     RatingsController.postUserRatingsOfaSerieController
 )
 
-ratingsRouter.get('/ratings/movies', 
+ratingsRouter.get('/movies/:id',
+    Ensurances.validIdParams,
+    RatingsController.listUserRatingsOfaMovieController
+)
+
+ratingsRouter.get('/series/:id',
+    Ensurances.validIdParams,
+    RatingsController.listUserRatingsOfaSerieController 
+)
+
+ratingsRouter.get('/movies', 
     RatingsController.readAllRatingsMoviesController
 )
 
-ratingsRouter.get('/ratings/series',
+ratingsRouter.get('/series',
     RatingsController.readAllRatingsSeriesController
 )
 
-ratingsRouter.get('/ratings/:movieId',
-    Ensuraces.validMovieIdParams,
-    RatingsController.listUserRatingsOfaMovieController
-)
-ratingsRouter.get('/ratings/:serieId',
-    Ensuraces.validSerieIdParams,
-    RatingsController.listUserRatingsOfaSerieController 
-)
-ratingsRouter.delete('/ratings/:movieId/:userId',
-    Ensuraces.validMovieIdParams,
-    Ensuraces.validUserIdParams,
-    Ensuraces.authentication,
+ratingsRouter.delete('/:movieId/:id',
+    Ensurances.validIdContentParams,
+    Ensurances.validIdParams,
+    Ensurances.authentication,
     RatingsController.deleteMovieRatingController
 )
-ratingsRouter.delete('/ratings/:serieId/:userId',
-    Ensuraces.validSerieIdParams,
-    Ensuraces.validUserIdParams,
-    Ensuraces.authentication,
+
+ratingsRouter.delete('/:serieId/:id',
+    Ensurances.validIdContentParams,
+    Ensurances.validIdParams,
+    Ensurances.authentication,
     RatingsController.deleteSerieRatingController
 )

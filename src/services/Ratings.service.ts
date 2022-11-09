@@ -27,9 +27,9 @@ export default class RatingsService {
         return allMoviesRatings;
     }
 
-    static async postUserRateOfaMovieService(rate: IRatingRequest, movieId:string, idToken:string)
+    static async postUserRateOfaMovieService(rate: IRatingRequest, movieId:string, idUserToken:string)
     {
-        const user = await this.userRepository.findOneBy({id:idToken})
+        const user = await this.userRepository.findOneBy({id:idUserToken})
         if( !user ){throw new AppError("User not found", 404)}
 
         const movie = await this.movieRepository.findOneBy({id:movieId})
@@ -48,9 +48,9 @@ export default class RatingsService {
 
     }
 
-    static async postUserRateOfaSerieService(rate: IRatingRequest, serieId:string,idToken:string)
+    static async postUserRateOfaSerieService(rate: IRatingRequest, serieId:string, idUserToken:string)
     {
-        const user = await this.userRepository.findOneBy({id:idToken})
+        const user = await this.userRepository.findOneBy({id:idUserToken})
         if( !user ){throw new AppError("User not found", 404)}
 
         const serie = await this.serieRepository.findOneBy({id:serieId})
@@ -68,13 +68,13 @@ export default class RatingsService {
         return postRate
     }
 
-    static async listUserRatingsOfaMovieService(idToken:string, idUser:string, movieId:string)
+    static async listUserRatingsOfaMovieService(idUser:string, movieId:string, idUserToken:string)
     {   
-        const user = await this.userRepository.findOneBy({id:idToken})
+        const user = await this.userRepository.findOneBy({id:idUserToken})
         if( !user )
         {throw new AppError("User not found", 404)}
 
-        if(idUser != idToken || user.isAdm === false)
+        if(idUser != idUserToken || user.isAdm === false)
         {throw new AppError("Access denied", 403)}
 
         const movie = await this.movieRepository.findOneBy({id:movieId})
@@ -89,13 +89,13 @@ export default class RatingsService {
         )
     }
 
-    static async listUserRatingsOfaSerieService(idToken:string, idUser:string, serieId:string)
+    static async listUserRatingsOfaSerieService(idUser:string, serieId:string, idUserToken:string)
     {
-        const user = await this.userRepository.findOneBy({id:idToken})
+        const user = await this.userRepository.findOneBy({id:idUserToken})
         if( !user )
         {throw new AppError("User not found", 404)}
 
-        if(idUser != idToken || user.isAdm === false)
+        if(idUser != idUserToken || user.isAdm === false)
         {throw new AppError("Access denied", 403)}
 
         const serie = await this.serieRepository.findOneBy({id:serieId})
@@ -110,13 +110,13 @@ export default class RatingsService {
         )
     }
     
-    static async deleteMovieRatingService(idToken:string, idUser:string, movieId:string)
+    static async deleteMovieRatingService(idUserToken:string, movieId:string, idUser:string)
     {
-        const user = await this.userRepository.findOneBy({id:idToken})
+        const user = await this.userRepository.findOneBy({id:idUserToken})
         if( !user )
         {throw new AppError("User not found", 404)}
 
-        if(idUser != idToken || user.isAdm === false)
+        if(idUser != idUserToken || user.isAdm === false)
         {throw new AppError("Access denied", 403)}
 
         const movie = await this.movieRepository.findOneBy({id:movieId})
@@ -128,13 +128,13 @@ export default class RatingsService {
         )
     }
 
-    static async deleteSerieRatingService(idToken:string, idUser:string, serieId:string )
+    static async deleteSerieRatingService(idUserToken:string, serieId:string, idUser:string )
     {
-        const user = await this.userRepository.findOneBy({id:idToken})
+        const user = await this.userRepository.findOneBy({id:idUserToken})
         if( !user )
         {throw new AppError("User not found", 404)}
 
-        if(idUser != idToken || user.isAdm === false)
+        if(idUser != idUserToken || user.isAdm === false)
         {throw new AppError("Access denied", 403)}
 
         const movie = await this.serieRepository.findOneBy({id:serieId})
