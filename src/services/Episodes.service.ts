@@ -6,14 +6,6 @@ import { IUpdatedEpisodes } from "../interfaces/episodes";
 export default class EpisodeService {
   static episodesRepository = AppDataSource.getRepository(Episodes)
 
-  static checkEpisodeExists = async ( id:string ) => {
-    const serieExist = await this.episodesRepository.findOneBy({ id });
-
-    if (!serieExist) {
-      throw new AppError('Episode not found', 404);
-    }
-  }
-
   static async update( id:string, data:IUpdatedEpisodes ) {
 
     await this.checkEpisodeExists( id )
@@ -28,5 +20,13 @@ export default class EpisodeService {
     await this.checkEpisodeExists( id )
 
     await this.episodesRepository.delete(id)
+  }
+
+  static checkEpisodeExists = async ( id:string ) => {
+    const serieExist = await this.episodesRepository.findOneBy({ id });
+
+    if (!serieExist) {
+      throw new AppError('Episode not found', 404);
+    }
   }
 }

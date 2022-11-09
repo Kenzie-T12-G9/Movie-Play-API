@@ -143,4 +143,16 @@ export default class HistoryService {
 
         return user
     }
+
+    return await this.historyRepository.findOne({
+      where: {
+        user: {
+          id: user.id,
+        },
+        series: {
+          id: idSerie,
+        },
+      },
+    });
+  }
 }

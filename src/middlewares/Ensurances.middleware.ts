@@ -125,4 +125,14 @@ export default class Ensurances {
     }
   };
   
+  static partialPermissions(req: Request, _: Response, next: NextFunction) {
+    const { id, isAdm } = req.token;
+    const { id: userId } = req.params;
+
+    if (!isAdm && id !== userId) {
+      throw new AppError('User is not admin', 403);
+    }
+
+    next();
+  }
 }
