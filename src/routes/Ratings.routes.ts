@@ -1,6 +1,6 @@
 import { Router } from "express";
 import RatingsController from "../controllers/Ratings.controller";
-import Ensuraces from "../middlewares/Ensures.middleware";
+import Ensuraces from "../middlewares/Ensurances.middleware";
 import { schemaCreateRating } from "../serializers/Ratings.serializer";
 
 export const ratingsRouter = Router()
