@@ -73,7 +73,7 @@ describe('/history', () => {
       .post('/history')
       .set('Authorization', `Bearer ${tokenADM}`)
       .send({ seriesId });
-    console.log(response.body);
+    
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
     expect(response.body).toHaveProperty('watchedAt');
@@ -177,7 +177,6 @@ describe('/history', () => {
     const response = await request(app)
       .get(`/history/movies/${invalidId}`)
       .set('Authorization', `Bearer ${tokenADM}`);
-    console.log(response.error);
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('message');

@@ -113,7 +113,7 @@ export default class Ensurances {
 
   static validIdContentParams = async (
     req: Request,
-    res: Response,
+    _: Response,
     next: NextFunction
   ) => {
     const { movieId } = req.params;
