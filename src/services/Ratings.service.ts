@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import AppDataSource from '../data-source';
 import { Movies } from '../entities/Movies.entity';
 import { Ratings } from '../entities/Ratings.entity';
@@ -16,19 +15,38 @@ export default class RatingsService {
   static async readAllRatingsMoviesService() {
     const allMoviesRatings = await this.rateRepository.find({
       where: { movie: true },
+      relations: { movie: true, user: true },
     });
-    return allMoviesRatings;
+
+    const formatResponse = allMoviesRatings.map((rating) => {
+      const { id, name, email } = rating.user;
+
+      return { ...rating, user: { id, name, email } };
+    });
+
+    return formatResponse;
   }
 
   static async readAllRatingsSeriesService() {
     const allMoviesRatings = await this.rateRepository.find({
       where: { series: true },
+      relations: { series: true, user: true },
     });
-    return allMoviesRatings;
+
+    const formatResponse = allMoviesRatings.map((rating) => {
+      const { id, name, email } = rating.user;
+
+      return { ...rating, user: { id, name, email } };
+    });
+
+    return formatResponse;
   }
 
-  static async postUserRateOfaMovieService( rate: IRatingRequest, movieId: string, idUserToken: string) {
-    const user = await this.userRepository.findOneBy({ id: idUserToken });
+  static async postUserRateOfaMovieService(
+    movieId: string,
+    { rate, comment, userId }: IRatingRequest
+  ) {
+    const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {
       throw new AppError('User not found', 404);
     }
@@ -38,24 +56,17 @@ export default class RatingsService {
       throw new AppError('Movie not found', 404);
     }
 
-    const postRate = this.rateRepository.create({
-      rate: rate.rate,
-      comment: rate.comment,
-      user: user,
-      movie: movie,
-    });
-
+    const postRate = this.rateRepository.create({ rate, comment, user, movie });
     await this.rateRepository.save(postRate);
 
     return postRate;
   }
 
   static async postUserRateOfaSerieService(
-    rate: IRatingRequest,
     seriesId: string,
-    idUserToken: string
+    { rate, comment, userId }: IRatingRequest
   ) {
-    const user = await this.userRepository.findOneBy({ id: idUserToken });
+    const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {
       throw new AppError('User not found', 404);
     }
@@ -66,15 +77,23 @@ export default class RatingsService {
     }
 
     const postRate = this.rateRepository.create({
-      rate: rate.rate,
-      comment: rate.comment,
-      user: user,
-      series: series,
+      rate,
+      comment,
+      user,
+      series,
     });
-
     await this.rateRepository.save(postRate);
 
-    return postRate;
+    const formatResponse = {
+      ...postRate,
+      user: {
+        id: postRate.user.id,
+        name: postRate.user.name,
+        email: postRate.user.email,
+      },
+    };
+
+    return formatResponse;
   }
 
   static async listUserRatingsOfaMovieService(
@@ -117,23 +136,12 @@ export default class RatingsService {
     });
   }
 
-  static async deleteRatingService(
-    idUserToken: string,
-    rateId: string,
-  ) {
-    const user = await this.userRepository.findOneBy({ id: idUserToken });
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-
+  static async deleteRatingService(rateId: string) {
     const rate = await this.rateRepository.findOneBy({ id: rateId });
     if (!rate) {
-      throw new AppError('Movie not found', 404);
+      throw new AppError('Rating not found', 404);
     }
 
-    return await this.rateRepository.delete({
-      movie: { id: rateId },
-    });
+    await this.rateRepository.delete(rateId);
   }
-
 }

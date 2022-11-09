@@ -3,3 +3,7 @@ export interface IRatingRequest {
   comment: string;
   userId: string;
 }
+
+export interface IRatingInvalid extends IRatingRequest {
+  invalidField: any;
+}
