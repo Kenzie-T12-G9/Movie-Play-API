@@ -2,191 +2,157 @@ import { DataSource } from 'typeorm';
 import request from 'supertest';
 import AppDataSource from '../../data-source';
 import app from '../../app';
+import { createUserADM, createUserNotAdm, loginUserAdm } from '../mocks/Series/indes';
+import { createMovie, CreateMovieWithWorthlessProperty } from '../mocks/Movies';
+
+  describe("/series" , ()=> {
+    let connection:DataSource
+
+    let tokenADM:string
+    let tokenNotADM:string
+    let idMovie:string
+
+    beforeAll(async() => {
+        await AppDataSource.initialize().then((res) => {
+            connection = res
+        }).catch((err) => {
+            console.error("Error during Data Source initialization", err)
+        })
+
+        await request(app).post('/users').send(createUserADM)
+        await request(app).post('/users').send(createUserNotAdm)
+
+        const adminLoginResponse = await request(app)
+            .post("/login")
+            .send(loginUserAdm);
+        const notAdmLoginResponse = await request(app)
+            .post("/login")
+            .send(createUserNotAdm);
+        
+        tokenADM = adminLoginResponse.body.token
+        tokenNotADM = notAdmLoginResponse.body.token
+    })
+
+    afterAll( async ()=>{
+        await connection.destroy()
+    })
 
 
-const temporaryMockedAdm = {
-    name: 'Francisco Stenico',
-    email: 'francisco@mail.com',
-    isAdm: true,
-    password: 'Teste123@',
-    paymentMethods: {
-      name: 'Francisco C Stenico',
-      cpf: '12345678900',
-      number: '1111222233334444',
-      dueDate: '2026-10-21',
-      code: '123',
-    },
-};
+      test("POST /movies - It should be possible to create as ADM", async () => {
 
-const temporaryMockednotAdm = {
-name: 'Guilherme Bernardo',
-email: 'contato@mail.com',
-isAdm: false,
-password: 'Teste123@',
-paymentMethods: {
-    name: 'Guilherme Bernardo',
-    cpf: '12345612345',
-    number: '1111222233334444',
-    dueDate: '2026-10-21',
-    code: '123',
-},
-};
+        const response = await request(app).post('/movies').set("Authorization", `Bearer ${tokenADM}`).send(createMovie)
 
-const temporaryMockednotAdm2 = {
-    name: 'Guilherme Bernardo 2',
-    email: 'contato2@mail.com',
-    isAdm: false,
-    password: 'Teste123@',
-    paymentMethods: {
-        name: 'Guilherme Bernardo 2',
-        cpf: '12345612345',
-        number: '1111222233334444',
-        dueDate: '2026-10-21',
-        code: '123',
-    },
-    };
-
-const mockedMovie = JSON.parse(JSON.stringify({
-    "name": "Django Unchained",
-    "year": 2012,
-    "duration": 165,
-    "direction": "Quentin Tarantino",
-    "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
-  }))
-
-describe('/movies', () => {
-
-    let connection: DataSource;
-    
-      beforeAll(async () => {
-        await AppDataSource.initialize()
-          .then((res) => {
-            connection = res;
-          })
-          .catch((err) => {
-            console.error('Data source initialization error', err);
-          });
-
-          await request(app).post('/users').send(temporaryMockedAdm)
-          await request(app).post('/users').send(temporaryMockednotAdm)
-          await request(app).post('/users').send(temporaryMockednotAdm2)
-      });
-    
-      afterAll(async () => {
-        await connection.destroy();
-      });
-
-      test("POST /movies - Must be able to post a Movie", async () => {
-
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const response = await request(app).post('/movies').set("Authorization", `Bearer ${adminLoginResponse.body.token}`).send(mockedMovie)
-
+        expect(response.status).toBe(201)
         expect(response.body).toHaveProperty("id")
         expect(response.body).toHaveProperty("name")
         expect(response.body).toHaveProperty("year")
         expect(response.body).toHaveProperty("duration")
         expect(response.body).toHaveProperty("description")
-        expect(response.status).toBe(201)
 
+        idMovie = response.body.id
+
+      })
+
+      test("POST /movies - It should not be possible to create if the user is not an admin", async () => {
+
+        const response = await request(app).post('/movies').set("Authorization", `Bearer ${tokenNotADM}`).send(createMovie)
+
+        expect(response.status).toBe(401)
+        expect(response.body).toHaveProperty("message")
       })
 
       test("POST /movies - should not be able to post a movie that already exists", async () => {
 
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const response = await request(app).post('/movies').set("Authorization", `Bearer ${adminLoginResponse.body.token}`).send(mockedMovie)
+        const response = await request(app).post('/movies').set("Authorization", `Bearer ${tokenADM}`).send(createMovie)
 
         expect(response.body).toHaveProperty("message")
         expect(response.status).toBe(400)
 
       })
 
-      test("POST /movies - should not be able to create movie without authentication", async () => {
+      test("POST /movies - It should not be possible to create a movie with a worthless property", async () => {
 
-        const notAdminLoginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        const response = await request(app).post('/movies').set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(mockedMovie)
-
-        expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(403)
-
-      })
-
-      test("POST /movies - should not be able to post movies without authentication", async () => {
-
-        const response = await request(app).post('/movies').send(mockedMovie)
+        const response = await request(app).post('/movies').set("Authorization", `Bearer ${tokenADM}`).send(CreateMovieWithWorthlessProperty)
 
         expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(401)
+        expect(response.status).toBe(400)
+        expect(response.body.message.length).toEqual(4)
 
       })
 
-      //COLOCAR ERRO DE POSTAGEM COM CAMPO INVALIDO
+      test("GET /movies - It should be possible to search all movies", async () => {
 
-      test("GET /movies - Must be able to list all movies", async () => {
+        const response = await request(app).get('/movies').send()
 
-        const response = await request(app).get('/movies')
-        expect(response.body).toHaveLength(1)
         expect(response.status).toBe(200)
-
+        expect(response.body.length).toEqual(1)
+        expect(response.body[0]).toHaveProperty("id")
+        expect(response.body[0]).toHaveProperty("name")
+        expect(response.body[0]).toHaveProperty("year")
+        expect(response.body[0]).toHaveProperty("isActive")
+        expect(response.body[0]).toHaveProperty("duration")
+        expect(response.body[0]).toHaveProperty("description")
+        expect(response.body[0]).toHaveProperty("direction")
       })
 
-      test("GET /movies/:id - Must be able to list one movie", async () => {
-        
-        const movieList = await request(app).get('/movies')
-        const response = await request(app).get(`/movies/${movieList.body[0].id}`)
+      test("GET /movies/:id - It should be possible to search for a specific movie", async () => {
+
+        const response = await request(app).get(`/movies/${idMovie}`).send()
 
         expect(response.status).toBe(200)
-
         expect(response.body).toHaveProperty("id")
         expect(response.body).toHaveProperty("name")
         expect(response.body).toHaveProperty("year")
+        expect(response.body).toHaveProperty("isActive")
         expect(response.body).toHaveProperty("duration")
         expect(response.body).toHaveProperty("description")
-
+        expect(response.body).toHaveProperty("direction")
       })
 
-      test("GET /movies/:id - Should not be able to list a movie with invalid id", async () => {
+      test("GET /movies/:id - It should not be possible to search for a movie with an id other than uuid", async () => {
 
-        const response = await request(app).get(`/movies/13970660-5dbe-423a-9a9d-5c23b37943cf`)
+        const response = await request(app).get(`/movies/234234`).send()
+
+        expect(response.status).toBe(400)
         expect(response.body).toHaveProperty("message")
+      })
+
+      test("GET /movies/:id - It shouldn't be possible to search for a movie that doesn't exist", async () => {
+
+        const response = await request(app).get(`/movies/18efb03b-6be1-4ad5-932f-735d5c6d9fdc`).send()
+
         expect(response.status).toBe(404)
-
+        expect(response.body).toHaveProperty("message")
       })
 
-      test("DELELE /movies/:id - Should not be able to delete a movie with invalid id", async () => {
-        
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const response = await request(app).delete(`/movies/13970660-5dbe-423a-9a9d-5c23b37943cf`).set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
+      test("DELETE /movies/:id - It should not be possible to delete a movie with an id other than uuid", async () => {
 
+        const response = await request(app).delete(`/movies/2323`).send()
+
+        expect(response.status).toBe(400)
         expect(response.body).toHaveProperty("message")
+      })
+
+      test("DELETE /movies/:id - It shouldn't be possible to delete a movie that doesn't exist", async () => {
+
+        const response = await request(app).delete(`/movies/18efb03b-6be1-4ad5-932f-735d5c6d9fdc`).set("Authorization", `Bearer ${tokenADM}`).send()
+
         expect(response.status).toBe(404)
-
+        expect(response.body).toHaveProperty("message")
       })
 
-      test("DELELE /movies/:id - Should not be able to delete a movie without authentication", async () => {
+      test("DELETE /movies/:id - It should not be possible to delete without admin authorization", async () => {
 
-        const notAdminLoginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        const movieList = await request(app).get('/movies')
-        const movie = movieList.body[0].id
-        const response = await request(app).delete(`/movies/${movie}`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`)
+        const response = await request(app).delete(`/movies/${idMovie}`).set("Authorization", `Bearer ${tokenNotADM}`).send()
 
-        expect(response.body).toHaveProperty("message")
         expect(response.status).toBe(401)
-
+        expect(response.body).toHaveProperty("message")
       })
 
-      test("DELELE /movies/:id", async () => {
+      test("DELETE /movies/:id - It must be possible to delete a user", async () => {
 
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const movieList = await request(app).get('/movies')
-        const movie = movieList.body[0].id
-
-        const findMovie = await request(app).get('/movie').set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-        const response = await request(app).delete(`/movies/${movie}`).set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-        expect(findMovie.body[0].isActive).toBe(false)
+        const response = await request(app).delete(`/movies/${idMovie}`).set("Authorization", `Bearer ${tokenADM}`).send()
 
         expect(response.status).toBe(204)
-        
-    })
-
-
+      })
 })
