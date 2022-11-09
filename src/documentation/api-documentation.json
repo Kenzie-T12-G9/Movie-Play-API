@@ -799,6 +799,11 @@
                       "message": "name is a required field"
                     }
                   },
+                  "Filme já exite": {
+                    "value": {
+                      "message": "Movie already exists."
+                    }
+                  },
                   "Argumentos inválidos": {
                     "value": {
                       "message": "this field has unspecified keys: InvalidArg"
@@ -1252,6 +1257,11 @@
                   "Argumentos ausentes": {
                     "value": {
                       "message": "name is a required field"
+                    }
+                  },
+                  "Série já exite": {
+                    "value": {
+                      "message": "Series already exists."
                     }
                   },
                   "Argumentos inválidos": {
