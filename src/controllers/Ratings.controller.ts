@@ -59,24 +59,12 @@ export default class RatingsController {
     return res.status(200).json(data);
   }
 
-  static async deleteMovieRatingController(req: Request, res: Response) {
-    const { movieId, id: idUser } = req.params;
+  static async deleteRatingController(req: Request, res: Response) {
+    const { id: rateId } = req.params;
     const { id: idUserToken } = req.token;
-    const data = await RatingsService.deleteMovieRatingService(
+    const data = await RatingsService.deleteRatingService(
       idUserToken,
-      movieId,
-      idUser
-    );
-    return res.status(200).json(data);
-  }
-
-  static async deleteSerieRatingController(req: Request, res: Response) {
-    const { seriesId, id: idUser } = req.params;
-    const { id: idUserToken } = req.token;
-    const data = await RatingsService.deleteSerieRatingService(
-      idUserToken,
-      seriesId,
-      idUser
+      rateId
     );
     return res.status(200).json(data);
   }
