@@ -35,16 +35,14 @@ export default class HistoryController {
     static async listMovie( req:Request, res:Response ){
 
         const { id:idMovie } = req.params
-        const { id:idUser } = req.token
-        const resHistory = await service.listMovie( idUser, idMovie )
+        const resHistory = await service.listMovie( idMovie )
         return res.status(200).json(resHistory)
     }
 
     static async listSerie( req:Request, res:Response ){
 
         const { id:idSerie } = req.params
-        const { id:idUser } = req.token
-        const resHistory = await service.listSerie( idUser, idSerie )
+        const resHistory = await service.listSerie( idSerie )
         return res.status(200).json(resHistory)
     }
 

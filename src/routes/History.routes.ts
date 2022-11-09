@@ -25,11 +25,13 @@ historyRouter.get('/series',
 historyRouter.get('/movies/:id', 
     Ensurances.validIdParams,
     Ensurances.authentication,
+    Ensurances.onlyAdm,
     controller.listMovie
 )
 historyRouter.get('/series/:id',
     Ensurances.validIdParams,
     Ensurances.authentication, 
+    Ensurances.onlyAdm,
     controller.listSerie
 )
 historyRouter.delete('/:id',

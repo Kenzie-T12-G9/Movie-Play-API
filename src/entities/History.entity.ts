@@ -14,7 +14,7 @@ class History {
   @Column()
   isActive:boolean
 
-  @ManyToOne(() => Users) 
+  @ManyToOne(() => Users, { eager:true }) 
   user: Users;
 
   @ManyToOne(() => Series, { eager:true })

@@ -5,7 +5,7 @@ import AppDataSource from "../../data-source"
 
 import app from "../../app"
 
-import { addEpisodesInSeries, addEpisodesInSeriesValueless, createSerie, createSerieInvalidYear, createSerieValueless, createUserADM, createUserNotAdm, loginUserAdm, updateSerie } from "../mocks/Series/indes"
+import { addEpisodesInSeries, addEpisodesInSeriesValueless, createSerie, createSerieInvalidYear, createSerieValueless, createUserADM, createUserNotAdm, loginUserAdm, loginUserNotAdm, updateSerie } from "../mocks/Series/indes"
 import { updateEpisode } from "../mocks/Episodes"
 
 describe("/series" , ()=> {
@@ -31,7 +31,7 @@ describe("/series" , ()=> {
             .send(loginUserAdm);
         const notAdmLoginResponse = await request(app)
             .post("/login")
-            .send(createUserNotAdm);
+            .send(loginUserNotAdm);
         
         tokenADM = adminLoginResponse.body.token
         tokenNotADM = notAdmLoginResponse.body.token

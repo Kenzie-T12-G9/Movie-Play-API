@@ -121,7 +121,31 @@ export const schemaResHistory = yup.object().shape({
     movie:schemaResponseMovieHistory.nullable()
 })
 
+export const schemaResActivity = yup.object().shape({
+    watchedAt:yup   
+        .date()
+        .required(),
+    id:yup   
+        .string()
+        .required(),
+    user:schemaResponseUserHistory
+})
+
 export const arrayResMovie = yup.array(schemaResListMovie)
 export const arrayResSeries = yup.array(schemaResListSerie)
 
 export const arrayResHistory = yup.array(schemaResHistory)
+
+const resMovieActive = yup.array(schemaResActivity)
+
+export const movieIdResponse = yup.object().shape({
+    movie:schemaResponseMovieHistory,
+    activity:resMovieActive
+})
+
+const resSeriesActive = yup.array(schemaResActivity)
+
+export const seriesIdResponse = yup.object().shape({
+    series:schemaResponseSeriesHistory,
+    activity:resSeriesActive
+})
