@@ -22,7 +22,7 @@ class Episodes {
   description: string;
 
   @ManyToOne(() => Series, { onDelete: 'CASCADE' })
-  serie: Series;
+  series: Series;
 }
 
 export { Episodes };

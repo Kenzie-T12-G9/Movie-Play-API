@@ -1,6 +1,6 @@
 export interface IHistoryIdRelations {
   watchedAt: Date;
-  serieId:string;
-  movieId:string
-  isActive:boolean
+  seriesId: string;
+  movieId: string;
+  isActive: boolean;
 }
