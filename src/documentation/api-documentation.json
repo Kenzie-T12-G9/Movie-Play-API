@@ -175,7 +175,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/Error" },
+                    { "$ref": "#/components/schemas/ErrorList" }
+                  ]
                 },
                 "examples": {
                   "Email em uso": {
@@ -185,17 +188,19 @@
                   },
                   "Atributo 'dueDate' fora do formato padrão": {
                     "value": {
-                      "message": "dueDate attribute must be in the standart Date format (yyyy-mm-dd)"
+                      "message": [
+                        "dueDate attribute must be in the standart Date format (yyyy-mm-dd)"
+                      ]
                     }
                   },
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "isAdm is a required field"
+                      "message": ["isAdm is a required field"]
                     }
                   },
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: unspecifiedArgument"
+                      "message": ["this field has unspecified keys: invalidArg"]
                     }
                   },
                   "Cartão com a validade expirada": {
@@ -2153,26 +2158,18 @@
       },
       "get": {
         "tags": ["Ratings"],
-        "security": [{"bearerAuth": []}],
+        "security": [{ "bearerAuth": [] }],
         "summary": "Listagem da avaliações de um unico filme",
         "description": "Método responsavel pela listagem de todas as avaliações sobre um filme específico presente no catálogo. Todos os usuários tem acesso a rota. A rota precisa de um token de autenticação.",
         "responses": {
           "200": {
             "description": "**OK:** Listagem das avaliações de uma filme específico",
             "content": {
-              "application/json":{
-                "schema":{
-                  "$ref":"#/components/schemas/MovieRating"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieRatingActivity"
                 },
-                "example":{[{
-                  "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
-                  "rate": 5,
-                  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                  "user": {
-                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
-                    "name": "Francisco Stenico",
-                    "email": "francisco@teste.com"
-                  },
+                "example": {
                   "movie": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Avengers: Endgame",
@@ -2180,8 +2177,30 @@
                     "duration": 182,
                     "direction": "Anthony Russo, Joe Russo",
                     "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
-                  }
-                }]}
+                  },
+                  "ratings": [
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 3,
+                      "comment": "Deixou a desejar em muitos pontos e me deu sono na maioria do tempo",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Francisco C Stenico",
+                        "email": "francisco@teste.com"
+                      }
+                    },
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 5,
+                      "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Guilherme Bernardo",
+                        "email": "guilherme@teste.com"
+                      }
+                    }
+                  ]
+                }
               }
             }
           },
@@ -2393,6 +2412,99 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": ["Ratings"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Listagem da avaliações de uma única série",
+        "description": "Método responsavel pela listagem de todas as avaliações sobre uma série específica presente no catálogo. Todos os usuários tem acesso a rota. A rota precisa de um token de autenticação.",
+        "parameters": [
+          {
+            "name": "seriesId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser criada uma avaliação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem das avaliações de uma série específico",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesRatingActivity"
+                },
+                "example": {
+                  "series": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Jessica Jones",
+                    "year": 2015,
+                    "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                    "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                  },
+                  "ratings": [
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 3,
+                      "comment": "Deixou a desejar em muitos pontos e me deu sono na maioria do tempo",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Francisco C Stenico",
+                        "email": "francisco@teste.com"
+                      }
+                    },
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 5,
+                      "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Guilherme Bernardo",
+                        "email": "guilherme@teste.com"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Série não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Series not found"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/ratings/movies": {
@@ -2481,7 +2593,77 @@
         "tags": ["Ratings"],
         "security": [{ "bearerAuth": [] }],
         "summary": "Listagem de todas as avaliações sobre séries do catálogo",
-        "description": "Método responsável pela listagem de todas as avaliações feitas sobre as séries presentes no catálogo. A rota necessita de um token de autorização e pode ser acessada por qualquer usuário"
+        "description": "Método responsável pela listagem de todas as avaliações feitas sobre as séries presentes no catálogo. A rota necessita de um token de autorização e pode ser acessada por qualquer usuário",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem da avaliação de série específica",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesRatingList"
+                },
+                "example": [
+                  {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "rate": 5,
+                    "comment": "Série simplesmente incrível, indico a todos com certeza!",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Myke Macedo",
+                      "email": "myke@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "Jessica Jones",
+                      "year": 2015,
+                      "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                      "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                    }
+                  },
+                  {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "rate": 5,
+                    "comment": "Série simplesmente incrível, indico a todos com certeza!",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Queren Hope",
+                      "email": "queren@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "What if...",
+                      "year": 2021,
+                      "description": "O que aconteceria se os eventos do MCU ocorressem de outra forma",
+                      "direction": "Anthony Russo, Joe Russo"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/ratings/{ ratingId }": {
@@ -2830,6 +3012,26 @@
           }
         }
       },
+      "SeriesRating": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "rate": { "type": "integer" },
+          "comment": { "type": "string" },
+          "user": {
+            "$ref": "#/components/schemas/SummaryProfile"
+          },
+          "series": {
+            "$ref": "#/components/schemas/CreateSeriesResponse"
+          }
+        }
+      },
+      "SeriesRatingList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SeriesRating"
+        }
+      },
       "SeriesHistoryList": {
         "type": "array",
         "items": {
@@ -2864,14 +3066,56 @@
         "type": "object",
         "properties": {
           "movie": {
-            "$ref": ""
+            "$ref": "#/components/schemas/CreateMovieResponse"
+          },
+          "ratings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "rate": { "type": "integer" },
+                "comment": { "type": "string" },
+                "user": {
+                  "$ref": "#/components/schemas/SummaryProfile"
+                }
+              }
+            }
           }
         }
-      },     
+      },
+      "SeriesRatingActivity": {
+        "type": "object",
+        "properties": {
+          "series": {
+            "$ref": "#/components/schemas/CreateSeriesResponse"
+          },
+          "ratings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "rate": { "type": "integer" },
+                "comment": { "type": "string" },
+                "user": {
+                  "$ref": "#/components/schemas/SummaryProfile"
+                }
+              }
+            }
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "properties": {
           "message": { "type": "string" }
+        }
+      },
+      "ErrorList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Error"
         }
       }
     },
