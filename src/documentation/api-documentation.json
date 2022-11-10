@@ -2164,7 +2164,7 @@
                 "schema":{
                   "$ref":"#/components/schemas/MovieRating"
                 },
-                "example":{
+                "example":{[{
                   "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
                   "rate": 5,
                   "comment": "Filme simplesmente incrível, indico a todos com certeza!",
@@ -2181,7 +2181,7 @@
                     "direction": "Anthony Russo, Joe Russo",
                     "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
                   }
-                }
+                }]}
               }
             }
           },
