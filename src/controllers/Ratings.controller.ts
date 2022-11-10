@@ -14,9 +14,13 @@ export default class RatingsController {
 
   static async postUserRatingsOfaMovieController(req: Request, res: Response) {
     const { id: movieId } = req.params;
-    const {rate, comment, userId} = req.body;
+    const { rate, comment, userId } = req.body;
 
-    const data = await RatingsService.postUserRateOfaMovieService(movieId, { rate, comment, userId });
+    const data = await RatingsService.postUserRateOfaMovieService(movieId, {
+      rate,
+      comment,
+      userId,
+    });
     return res.status(200).json(data);
   }
 
@@ -24,29 +28,23 @@ export default class RatingsController {
     const { id: seriesId } = req.params;
     const { rate, comment, userId } = req.body;
 
-    const data = await RatingsService.postUserRateOfaSerieService(seriesId, { rate, comment, userId });
+    const data = await RatingsService.postUserRateOfaSerieService(seriesId, {
+      rate,
+      comment,
+      userId,
+    });
     return res.status(200).json(data);
   }
 
   static async listUserRatingsOfaMovieController(req: Request, res: Response) {
-    const { movieId, id: idUser } = req.params;
-    const { id: idUserToken } = req.token;
-    const data = await RatingsService.listUserRatingsOfaMovieService(
-      idUser,
-      movieId,
-      idUserToken
-    );
+    const { id } = req.params;
+    const data = await RatingsService.listUserRatingsOfaMovieService(id);
     return res.status(200).json(data);
   }
 
   static async listUserRatingsOfaSerieController(req: Request, res: Response) {
-    const { seriesId, idUser } = req.params;
-    const { id: idUserToken } = req.token;
-    const data = await RatingsService.listUserRatingsOfaSerieService(
-      idUser,
-      seriesId,
-      idUserToken
-    );
+    const { id } = req.params;
+    const data = await RatingsService.listUserRatingsOfaSerieService(id);
     return res.status(200).json(data);
   }
 

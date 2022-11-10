@@ -59,7 +59,14 @@ export default class RatingsService {
     const postRate = this.rateRepository.create({ rate, comment, user, movie });
     await this.rateRepository.save(postRate);
 
-    return postRate;
+    return {
+      ...postRate,
+      user: {
+        id: postRate.user.id,
+        name: postRate.user.name,
+        email: postRate.user.email,
+      },
+    };
   }
 
   static async postUserRateOfaSerieService(
@@ -96,44 +103,54 @@ export default class RatingsService {
     return formatResponse;
   }
 
-  static async listUserRatingsOfaMovieService(
-    idUser: string,
-    movieId: string,
-    idUserToken: string
-  ) {
-    const user = await this.userRepository.findOneBy({ id: idUserToken });
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-
+  static async listUserRatingsOfaMovieService(movieId: string) {
     const movie = await this.movieRepository.findOneBy({ id: movieId });
     if (!movie) {
       throw new AppError('Movie not found', 404);
     }
 
-    return await this.rateRepository.findOne({
-      where: { user: { id: user.id }, movie: { id: movieId } },
+    const ratingsResults = await this.rateRepository.find({
+      where: { movie: { id: movieId } },
+      relations: { movie: false, user: true },
     });
+    const ratings = ratingsResults.map((rating) => {
+      return {
+        ...rating,
+        user: {
+          id: rating.user.id,
+          name: rating.user.name,
+          email: rating.user.email,
+        },
+      };
+    });
+
+    return { movie, ratings };
   }
 
   static async listUserRatingsOfaSerieService(
-    idUser: string,
     seriesId: string,
-    idUserToken: string
   ) {
-    const user = await this.userRepository.findOneBy({ id: idUserToken });
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-
-    const series = await this.serieRepository.findOneBy({ id: seriesId });
+    const series = await this.movieRepository.findOneBy({ id: seriesId });
     if (!series) {
       throw new AppError('Movie not found', 404);
     }
 
-    return await this.rateRepository.findOne({
-      where: { user: { id: user.id }, series: { id: seriesId } },
+    const ratingsResults = await this.rateRepository.find({
+      where: { movie: { id: seriesId } },
+      relations: { movie: false, user: true },
     });
+    const ratings = ratingsResults.map((rating) => {
+      return {
+        ...rating,
+        user: {
+          id: rating.user.id,
+          name: rating.user.name,
+          email: rating.user.email,
+        },
+      };
+    });
+
+    return { series, ratings };
   }
 
   static async deleteRatingService(rateId: string) {
