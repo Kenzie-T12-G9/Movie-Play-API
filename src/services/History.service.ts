@@ -2,14 +2,9 @@ import AppDataSource from '../data-source';
 import { History } from '../entities/History.entity';
 import { AppError } from '../error/AppError';
 import { IHistoryIdRelations } from '../interfaces/history';
-import {
-  arrayResHistory,
-  arrayResMovie,
-  schemaResMovie,
-  schemaResSerie,
-  movieIdResponse,
-  seriesIdResponse,
-  arrayResSeries,
+// prettier-ignore
+import { 
+  arrayResHistory, arrayResMovie, schemaResMovie, schemaResSerie, movieIdResponse, seriesIdResponse, arrayResSeries,
 } from '../serializers/history.serizalizer';
 import MovieService from './Movies.service';
 import SeriesService from './Series.service';
@@ -31,8 +26,8 @@ export default class HistoryService {
     const type: string = movieId ? 'Movie' : 'Series';
 
     const content = movieId
-      ? await MovieService.repository.findOneBy({ id: movieId })
-      : await SeriesService.serieRepository.findOneBy({ id: seriesId });
+      ? await MovieService.repository.findOneBy({ id: movieId, isActive: true })
+      : await SeriesService.serieRepository.findOneBy({ id: seriesId, isActive: true });
 
     if (!content) {
       throw new AppError(`${type} not found`, 404);
@@ -43,7 +38,6 @@ export default class HistoryService {
     const history = this.historyRepository.create({
       watchedAt,
       user,
-      isActive: true,
       ...property,
     });
 
@@ -59,26 +53,34 @@ export default class HistoryService {
 
   static async listAll(id: string) {
     const MyListALl = await this.historyRepository.find({
-      where: {
-        user: {
-          id,
-        },
-        isActive: true,
-      },
+      where: { user: { id }, isActive: true },
     });
 
-    return await arrayResHistory.validate(MyListALl, { stripUnknown: true });
+    const historyList = MyListALl.map(
+      ({ id, watchedAt, movie, series, user }) => {
+        const summaryProfile = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        };
+
+        return movie
+          ? { id, watchedAt, user: summaryProfile, movie }
+          : { id, watchedAt, user: summaryProfile, series };
+      }
+    );
+
+    return historyList;
   }
 
   static async listAllMovies(id: string) {
     const historyMovie = await this.historyRepository.find({
       where: {
-        user: {
-          id,
-        },
+        user: { id },
         movie: true,
         isActive: true,
       },
+      relations: { user: true },
     });
 
     return await arrayResMovie.validate(historyMovie, { stripUnknown: true });
@@ -135,7 +137,7 @@ export default class HistoryService {
     if (!series) {
       throw new AppError('Serries not found', 404);
     }
-    
+
     const history = await this.historyRepository.find({
       where: {
         series: {
@@ -162,13 +164,18 @@ export default class HistoryService {
   static async listAllAdm(id: string) {
     await this.checkUserExists(id);
 
+    const findUser = await UserService.repository.findOneBy({ id });
     const listHistoryUser = await this.historyRepository.find({
       where: { user: { id } },
+      relations: { user: false },
     });
 
-    return await arrayResHistory.validate(listHistoryUser, {
-      stripUnknown: true,
+    const user = { id: findUser!.id, name: findUser!.name, email: findUser!.email };
+    const activity = listHistoryUser.map(({ id, watchedAt, movie, series }) => {
+      return movie ? { id, watchedAt, movie } : { id, watchedAt, series };
     });
+
+    return { user, activity };
   }
 
   static async delete(id: string) {

@@ -11,24 +11,37 @@ export default class MovieService {
       where: { name: data.name },
     });
 
-    if (movieAlreadyExists) {
+    if (movieAlreadyExists && movieAlreadyExists?.isActive) {
       throw new AppError('Movie already exists.', 400);
     }
 
-    data.isActive = true
+    if (!movieAlreadyExists) {
+      const newMovie = this.repository.create(data);
+      await this.repository.save(newMovie);
 
-    const newMovie = this.repository.create(data);
-    await this.repository.save(newMovie);
-    return newMovie;
+      return newMovie;
+    } else {
+      await this.repository.update(movieAlreadyExists!.id, {
+        ...data,
+        isActive: true,
+      });
+      const oldMovie = await this.repository.findOneBy({
+        id: movieAlreadyExists!.id,
+      });
+
+      return oldMovie;
+    }
   }
 
   static async readAll() {
-    const Movies = await this.repository.find({where:{ isActive:true }});
+    const Movies = await this.repository.find({ where: { isActive: true } });
     return Movies;
   }
 
   static async read(id: string) {
-    const movie = await this.repository.findOne({ where: { id, isActive:true } });
+    const movie = await this.repository.findOne({
+      where: { id, isActive: true },
+    });
 
     if (!movie) {
       throw new AppError('Movie not found!', 404);
@@ -38,13 +51,9 @@ export default class MovieService {
   }
 
   static async delete(id: string) {
-    const movie = await this.repository.findOneBy({ id: id });
+    const movie = await this.repository.findOneBy({ id: id, isActive: true });
     if (!movie) {
       throw new AppError('Movie not found', 404);
-    }
-
-    if (movie.isActive === false) {
-      throw new AppError('Movie is already inactive', 401);
     }
 
     await this.repository.update(id, {

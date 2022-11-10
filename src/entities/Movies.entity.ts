@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { History } from './History.entity';
 import { WatchLater } from './Watch_later.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('Movies')
 class Movies {
@@ -10,11 +11,12 @@ class Movies {
   @Column()
   name: string;
 
-  @Column( { length:4 } )
+  @Column({ length: 4 })
   year: string;
 
-  @Column()
-  isActive: boolean;
+  @Column({ default: true })
+  @Exclude()
+  readonly isActive: boolean;
 
   @Column()
   duration: number;
@@ -25,11 +27,11 @@ class Movies {
   @Column()
   direction: string;
 
-  @OneToMany(() => WatchLater, watchlater => watchlater.movies)
+  @OneToMany(() => WatchLater, (watchlater) => watchlater.movies)
   watchLater: WatchLater[];
 
-  @OneToMany(()=> History, history => history.movie )
-  history:History[]
+  @OneToMany(() => History, (history) => history.movie)
+  history: History[];
 }
 
 export { Movies };

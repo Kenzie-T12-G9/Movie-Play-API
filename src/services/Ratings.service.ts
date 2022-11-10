@@ -80,7 +80,7 @@ export default class RatingsService {
 
     const series = await this.serieRepository.findOneBy({ id: seriesId });
     if (!series) {
-      throw new AppError('Movie not found', 404);
+      throw new AppError('Series not found', 404);
     }
 
     const postRate = this.rateRepository.create({
@@ -130,13 +130,13 @@ export default class RatingsService {
   static async listUserRatingsOfaSerieService(
     seriesId: string,
   ) {
-    const series = await this.movieRepository.findOneBy({ id: seriesId });
+    const series = await this.serieRepository.findOneBy({ id: seriesId });
     if (!series) {
       throw new AppError('Movie not found', 404);
     }
 
     const ratingsResults = await this.rateRepository.find({
-      where: { movie: { id: seriesId } },
+      where: { series: { id: seriesId } },
       relations: { movie: false, user: true },
     });
     const ratings = ratingsResults.map((rating) => {

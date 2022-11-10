@@ -115,7 +115,12 @@ describe('/series', () => {
     const user = await request(app).get(`/series/${idSerie}`).send();
 
     expect(user.status).toBe(200);
-    expect(user.body.length).toBe(1);
+    expect(user.body).toHaveProperty('id');
+    expect(user.body).toHaveProperty('name');
+    expect(user.body).toHaveProperty('year');
+    expect(user.body).toHaveProperty('description');
+    expect(user.body).toHaveProperty('direction');
+    expect(user.body).toHaveProperty('episodes');
   });
 
   test('GET /series/:id - It should not be possible to search for a series that does not exist', async () => {

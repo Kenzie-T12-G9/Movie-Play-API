@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Episodes } from './Episodes.entity';
 import { History } from './History.entity';
@@ -17,8 +18,9 @@ class Series {
   @Column()
   description: string;
 
-  @Column()
-  isActive: boolean;
+  @Column({ default: true })
+  @Exclude()
+  readonly isActive: boolean;
 
   @Column()
   direction: string;

@@ -73,7 +73,7 @@ describe('/history', () => {
       .post('/history')
       .set('Authorization', `Bearer ${tokenADM}`)
       .send({ seriesId });
-    
+
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
     expect(response.body).toHaveProperty('watchedAt');
@@ -104,7 +104,7 @@ describe('/history', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
   });
 
   test('POST /history - should not be able to create a history without authentication', async () => {
@@ -133,7 +133,7 @@ describe('/history', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
   });
 
   test('GET /history/series - should be able to list all series history', async () => {
@@ -151,7 +151,7 @@ describe('/history', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
   });
 
   test('GET /history/movies/:movieId - should be able to list register movie by id as admin', async () => {
@@ -169,7 +169,7 @@ describe('/history', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
   });
 
   test('GET /history/movies/:movieId - should not be able to list history movie that not exist', async () => {
@@ -198,7 +198,7 @@ describe('/history', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
   });
 
   test('GET /history/series/:seriesId - should not be able to list history series that not exists', async () => {

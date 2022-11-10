@@ -102,7 +102,7 @@ describe('/users', () => {
     const response = await request(app).get('/users');
 
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
 
     expect(response.status).toBe(401);
   });
@@ -148,7 +148,7 @@ describe('/users', () => {
     const response = await request(app).get(`/users/${loggedUser.body.user.id}`);
 
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
 
     expect(response.status).toBe(401);
   });
@@ -245,7 +245,7 @@ describe('/users', () => {
     const response = await request(app).patch(`/users/${userId}`).send(update);
 
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
 
     expect(response.status).toBe(401);
   });
@@ -301,7 +301,7 @@ describe('/users', () => {
     const response = await request(app).delete(`/users/${userId}`);
 
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
 
     expect(response.status).toBe(401);
   });
@@ -338,31 +338,39 @@ describe('/users', () => {
     const admLogin = await request(app).post('/login').send(userAdm);
     const newUserId = newUser.body.id;
     const token = `Bearer ${admLogin.body.token}`;
-    
-    await request(app).delete(`/users/${newUserId}`).set("Authorization", token);
-    
-    const responseInvalid = await request(app).delete(`/users/${newUserId.replace('a', 'b')}`).set("Authorization", token);
-    const responseInactive = await request(app).delete(`/users/${newUserId}`).set("Authorization", token);
-    
+
+    await request(app)
+      .delete(`/users/${newUserId}`)
+      .set('Authorization', token);
+
+    const responseInvalid = await request(app)
+      .delete(`/users/${newUserId.replace('a', 'b')}`)
+      .set('Authorization', token);
+    const responseInactive = await request(app)
+      .delete(`/users/${newUserId}`)
+      .set('Authorization', token);
+
     expect(responseInvalid.body).toHaveProperty('message');
     expect(responseInvalid.body.message).toEqual('User not found');
-    
+
     expect(responseInactive.body).toHaveProperty('message');
     expect(responseInactive.body.message).toEqual('User not found');
-    
+
     expect(responseInvalid.status).toBe(404);
     expect(responseInactive.status).toBe(404);
   });
-  
+
   test('DELETE /users/:id - Should be able to soft-delete a user', async () => {
     const newUser = await request(app).post('/users').send(mockedDeletion);
     const admLogin = await request(app).post('/login').send(userAdm);
     const newUserId = newUser.body.id;
     const token = `Bearer ${admLogin.body.token}`;
-    
-    const response = await request(app).delete(`/users/${newUserId}`).set("Authorization", token);
+
+    const response = await request(app)
+      .delete(`/users/${newUserId}`)
+      .set('Authorization', token);
 
     expect(response.body).not.toHaveProperty('message');
     expect(response.status).toBe(204);
-  })
+  });
 });

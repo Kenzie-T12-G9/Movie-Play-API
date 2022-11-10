@@ -229,7 +229,7 @@ describe('/ratings', () => {
     const response = await request(app).delete(`/ratings/${invalidUUID}`);
 
     expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.body.message).toEqual('Missing authorization headers');
     expect(response.status).toBe(401);
   });
 

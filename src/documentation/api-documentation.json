@@ -360,6 +360,8 @@
                   "name": "Kelven Souza",
                   "email": "kelven@teste.com",
                   "isAdm": true,
+                  "createdAt": "2022-01-12T14:51:27.422Z",
+                  "updatedAt": "2022-11-01T08:12:59.278Z",
                   "paymentMethods": {
                     "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
                     "name": "Kelven S Souza",
@@ -367,9 +369,7 @@
                     "number": "4444555566667777",
                     "dueDate": "2028-04-25",
                     "code": "999"
-                  },
-                  "createdAt": "2022-01-12T14:51:27.422Z",
-                  "updatedAt": "2022-11-01T08:12:59.278Z"
+                  }
                 }
               }
             }
@@ -475,6 +475,8 @@
                   "name": "Alexandre Borges",
                   "email": "alexandre@teste.com",
                   "isAdm": true,
+                  "createdAt": "2022-10-22T04:31:36.398Z",
+                  "updatedAt": "2022-10-23T18:42:11.521Z",
                   "paymentMethods": {
                     "id": "f8cc7ba1-61a3-49d7-9d47-b97ea100814a",
                     "name": "Alexandre B Albuquerque",
@@ -482,9 +484,7 @@
                     "number": "4444333322221111",
                     "dueDate": "2024-11-06",
                     "code": "321"
-                  },
-                  "createdAt": "2022-10-22T04:31:36.398Z",
-                  "updatedAt": "2022-10-23T18:42:11.521Z"
+                  }
                 }
               }
             }
@@ -494,12 +494,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/Error" },
+                    { "$ref": "#/components/schemas/ErrorList" }
+                  ]
                 },
                 "examples": {
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
+                      "message": ["this field has unspecified keys: InvalidArg"]
                     }
                   },
                   "Atualização Parcial do método de pagamento": {
@@ -706,7 +709,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/Error" },
+                    { "$ref": "#/components/schemas/ErrorList" }
+                  ]
                 },
                 "examples": {
                   "Usuário inexistente | Senha incorreta": {
@@ -716,7 +722,7 @@
                   },
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "password is a required field"
+                      "message": ["password is a required field"]
                     }
                   }
                 }
@@ -744,7 +750,7 @@
                 "Padrão": {
                   "value": {
                     "name": "Django Unchained",
-                    "year": 2012,
+                    "year": "2012",
                     "duration": 165,
                     "direction": "Quentin Tarantino",
                     "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
@@ -752,7 +758,7 @@
                 },
                 "Argumentos ausentes": {
                   "value": {
-                    "year": 2012,
+                    "year": "2012",
                     "duration": 165,
                     "direction": "Quentin Tarantino",
                     "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
@@ -762,7 +768,7 @@
                   "value": {
                     "InvalidArg": null,
                     "name": "Django Unchained",
-                    "year": 2012,
+                    "year": "2012",
                     "duration": 165,
                     "direction": "Quentin Tarantino",
                     "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
@@ -781,12 +787,12 @@
                   "$ref": "#/components/schemas/CreateMovieResponse"
                 },
                 "example": {
-                  "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
                   "name": "Django Unchained",
-                  "year": 2012,
+                  "year": "2012",
                   "duration": 165,
                   "direction": "Quentin Tarantino",
-                  "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
+                  "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos.",
+                  "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f"
                 }
               }
             }
@@ -796,22 +802,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/Error" },
+                    { "$ref": "#/components/schemas/ErrorList" }
+                  ]
                 },
                 "examples": {
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "name is a required field"
+                      "message": ["name is a required field"]
                     }
                   },
-                  "Filme já exite": {
+                  "Filme já existe": {
                     "value": {
                       "message": "Movie already exists."
                     }
                   },
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
+                      "message": ["this field has unspecified keys: InvalidArg"]
                     }
                   }
                 }
@@ -871,26 +880,26 @@
                   {
                     "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
                     "name": "Django Unchained",
-                    "year": 2012,
+                    "year": "2012",
                     "duration": 165,
-                    "direction": "Quentin Tarantino",
-                    "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
+                    "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos.",
+                    "direction": "Quentin Tarantino"
                   },
                   {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Avengers: Endgame",
-                    "year": 2019,
+                    "year": "2019",
                     "duration": 182,
-                    "direction": "Anthony Russo, Joe Russo",
-                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
+                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco.",
+                    "direction": "Anthony Russo, Joe Russo"
                   },
                   {
                     "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
                     "name": "Parasite",
-                    "year": 2019,
+                    "year": "2019",
                     "duration": 132,
-                    "direction": "Bong Joon-ho",
-                    "description": "Toda a família de Ki-taek está desempregada, vivendo em um porão sujo e apertado. Por obra do acaso, ele começa a dar aulas de inglês para uma garota de família rica. Fascinados com a vida luxuosa destas pessoas, pai, mãe e filhos bolam um plano para se infiltrar também na abastada família, um a um. No entanto, os segredos e mentiras necessários à ascensão social cobram o seu preço."
+                    "description": "Toda a família de Ki-taek está desempregada, vivendo em um porão sujo e apertado. Por obra do acaso, ele começa a dar aulas de inglês para uma garota de família rica. Fascinados com a vida luxuosa destas pessoas, pai, mãe e filhos bolam um plano para se infiltrar também na abastada família, um a um. No entanto, os segredos e mentiras necessários à ascensão social cobram o seu preço.",
+                    "direction": "Bong Joon-ho"
                   },
                   "..."
                 ]
@@ -926,10 +935,32 @@
                 "example": {
                   "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                   "name": "Avengers: Endgame",
-                  "year": 2019,
+                  "year": "2019",
                   "duration": 182,
                   "direction": "Anthony Russo, Joe Russo",
                   "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
                 }
               }
             }
@@ -1036,14 +1067,14 @@
                 "Padrão": {
                   "value": {
                     "name": "Bridgetown",
-                    "year": 2020,
+                    "year": "2020",
                     "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                     "direction": "Shonda Rhimes, Sarah Dollard"
                   }
                 },
                 "Argumentos ausentes": {
                   "value": {
-                    "year": 2020,
+                    "year": "2020",
                     "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                     "direction": "Shonda Rhimes, Sarah Dollard"
                   }
@@ -1052,7 +1083,7 @@
                   "value": {
                     "InvalidArg": null,
                     "name": "Bridgetown",
-                    "year": 2020,
+                    "year": "2020",
                     "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                     "direction": "Shonda Rhimes, Sarah Dollard"
                   }
@@ -1072,7 +1103,7 @@
                 "example": {
                   "id": "e0150833-89fc-436c-aa10-d2a68b0fa32f",
                   "name": "Bridgetown",
-                  "year": 2020,
+                  "year": "2020",
                   "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                   "direction": "Shonda Rhimes, Sarah Dollard"
                 }
@@ -1084,22 +1115,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/Error" },
+                    { "$ref": "#/components/schemas/ErrorList" }
+                  ]
                 },
                 "examples": {
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "name is a required field"
+                      "message": ["name is a required field"]
                     }
                   },
                   "Série já exite": {
                     "value": {
-                      "message": "Series already exists."
+                      "message": "Series already registered"
                     }
                   },
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
+                      "message": ["this field has unspecified keys: InvalidArg"]
                     }
                   }
                 }
@@ -1159,14 +1193,14 @@
                   {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Bridgetown",
-                    "year": 2020,
+                    "year": "2020",
                     "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                     "direction": "Shonda Rhimes, Sarah Dollard"
                   },
                   {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Jessica Jones",
-                    "year": 2015,
+                    "year": "2015",
                     "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
                     "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
                   },
@@ -1204,7 +1238,7 @@
                 "example": {
                   "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                   "name": "Jessica Jones",
-                  "year": 2015,
+                  "year": "2015",
                   "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
                   "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others...",
                   "episodes": [
@@ -1462,6 +1496,67 @@
         }
       }
     },
+    "/series/episodes/{ episodeId }": {
+      "delete": {
+        "tags": ["Series"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Deleção de um episódio",
+        "description": "Este método será responsável pelo hard delete de um episódio específico. Apenas usuários administradores poderão acessar esta rota, sendo obviamente seguido por um token de autenticação",
+        "responses": {
+          "204": {
+            "description": "**NO CONTENT:** Episódio excluído com sucesso!"
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Série não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Episode not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/history": {
       "post": {
         "tags": ["History"],
@@ -1518,7 +1613,7 @@
                       "movie": {
                         "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
                         "name": "Justice League",
-                        "year": 2017,
+                        "year": "2017",
                         "duration": 120,
                         "description": "Impulsionado pela restauração de sua fé na humanidade e inspirado pelo ato altruísta do Superman, Bruce Wayne convoca sua nova aliada Diana Prince para o combate contra um inimigo ainda maior, recém-despertado. Juntos, Batman e Mulher-Maravilha buscam e recrutam com agilidade um time de meta-humanos, mas mesmo com a formação da liga de heróis sem precedentes, pode ser tarde demais para salvar o planeta de um catastrófico ataque.",
                         "direction": "Zack Snyder"
@@ -1537,7 +1632,7 @@
                       "series": {
                         "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                         "name": "Bridgetown",
-                        "year": 2020,
+                        "year": "2020",
                         "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                         "direction": "Shonda Rhimes, Sarah Dollard"
                       }
@@ -1614,6 +1709,94 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Listagem de todos os registros dentro do histórico",
+        "description": "Esta método é responsável por trazer todos os registros de todos os usuários no histórico geral. Esta rota pode ser acessada somente por administradores e exige um token de autenticação.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem de todos os registros no histórico de filmes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieHistoryList"
+                },
+                "example": [
+                  {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "watchedAt": "2022-11-04T04:13:06.135Z",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Queren Hope",
+                      "email": "queren@teste.com"
+                    },
+                    "movie": {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Avengers: Age of Ultron",
+                      "year": "2015",
+                      "duration": 141,
+                      "description": "Ao tentar proteger o planeta de ameaças, Tony Stark constrói um sistema de inteligência artificial que cuidaria da paz mundial. O projeto acaba dando errado e gera o nascimento do Ultron. Com o destino da Terra em jogo, Capitão América, Homem de Ferro, Thor, Hulk, Viúva Negra e Gavião Arqueiro terão que se unir para mais uma vez salvar a raça humana da extinção.",
+                      "direction": "Joss Whedon"
+                    }
+                  },
+                  {
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "watchedAt": "2022-11-04T04:13:06.135Z",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Alexandre Borges",
+                      "email": "alexandre@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "Bridgetown",
+                      "year": "2020",
+                      "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
+                      "direction": "Shonda Rhimes, Sarah Dollard"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN**: Permissões de administrador ausentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User is not the admin"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/history/movies": {
@@ -1642,7 +1825,7 @@
                     "movie": {
                       "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
                       "name": "Avengers: Age of Ultron",
-                      "year": 2015,
+                      "year": "2015",
                       "duration": 141,
                       "description": "Ao tentar proteger o planeta de ameaças, Tony Stark constrói um sistema de inteligência artificial que cuidaria da paz mundial. O projeto acaba dando errado e gera o nascimento do Ultron. Com o destino da Terra em jogo, Capitão América, Homem de Ferro, Thor, Hulk, Viúva Negra e Gavião Arqueiro terão que se unir para mais uma vez salvar a raça humana da extinção.",
                       "direction": "Joss Whedon"
@@ -1659,7 +1842,7 @@
                     "movie": {
                       "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
                       "name": "Justice League",
-                      "year": 2017,
+                      "year": "2017",
                       "duration": 120,
                       "description": "Impulsionado pela restauração de sua fé na humanidade e inspirado pelo ato altruísta do Superman, Bruce Wayne convoca sua nova aliada Diana Prince para o combate contra um inimigo ainda maior, recém-despertado. Juntos, Batman e Mulher-Maravilha buscam e recrutam com agilidade um time de meta-humanos, mas mesmo com a formação da liga de heróis sem precedentes, pode ser tarde demais para salvar o planeta de um catastrófico ataque.",
                       "direction": "Zack Snyder"
@@ -1733,7 +1916,7 @@
                     "series": {
                       "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                       "name": "Bridgetown",
-                      "year": 2020,
+                      "year": "2020",
                       "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
                       "direction": "Shonda Rhimes, Sarah Dollard"
                     }
@@ -1749,7 +1932,7 @@
                     "series": {
                       "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                       "name": "Jessica Jones",
-                      "year": 2015,
+                      "year": "2015",
                       "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
                       "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
                     }
@@ -1823,7 +2006,7 @@
                   "movie": {
                     "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
                     "name": "Avengers: Age of Ultron",
-                    "year": 2015,
+                    "year": "2015",
                     "duration": 141,
                     "description": "Ao tentar proteger o planeta de ameaças, Tony Stark constrói um sistema de inteligência artificial que cuidaria da paz mundial. O projeto acaba dando errado e gera o nascimento do Ultron. Com o destino da Terra em jogo, Capitão América, Homem de Ferro, Thor, Hulk, Viúva Negra e Gavião Arqueiro terão que se unir para mais uma vez salvar a raça humana da extinção.",
                     "direction": "Joss Whedon"
@@ -1918,7 +2101,7 @@
                   "series": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Jessica Jones",
-                    "year": 2015,
+                    "year": "2015",
                     "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
                     "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
                   },
@@ -1978,6 +2161,63 @@
                 },
                 "example": {
                   "message": "Series register not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/{ historyId }": {
+      "delete": {
+        "tags": ["History"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Deleção de um histórico específico",
+        "description": "Deleção de um histórico de filme ou série específico. A rota exige um token de autenticação e pode ser acessado para apenas por administradores.",
+        "parameters": [
+          {
+            "name": "historyId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do histórico a ser deletado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "**NO CONTENT:** Histórico excluído com sucesso!"
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** usuário ou filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "History not found"
                 }
               }
             }
@@ -2061,7 +2301,7 @@
                   "movie": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Avengers: Endgame",
-                    "year": 2019,
+                    "year": "2019",
                     "duration": 182,
                     "direction": "Anthony Russo, Joe Russo",
                     "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
@@ -2075,22 +2315,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ErrorList"
                 },
                 "examples": {
                   "Valor de 'rate' inválido": {
                     "value": {
-                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
+                      "message": ["Value of argument 'rate' must be an integer between 1 and 5"]
                     }
                   },
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "name is a required field"
+                      "message": ["name is a required field"]
                     }
                   },
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
+                      "message": ["this field has unspecified keys: InvalidArg"]
                     }
                   }
                 }
@@ -2115,19 +2355,6 @@
                       "message": "Invalid token"
                     }
                   }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "message": "This user has already submitted a rating about this movie"
                 }
               }
             }
@@ -2173,7 +2400,7 @@
                   "movie": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Avengers: Endgame",
-                    "year": 2019,
+                    "year": "2019",
                     "duration": 182,
                     "direction": "Anthony Russo, Joe Russo",
                     "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
@@ -2315,10 +2542,10 @@
                     "name": "Francisco Stenico",
                     "email": "francisco@teste.com"
                   },
-                  "movie": {
+                  "series": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Avengers: Endgame",
-                    "year": 2019,
+                    "year": "2019",
                     "duration": 182,
                     "direction": "Anthony Russo, Joe Russo",
                     "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
@@ -2332,22 +2559,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ErrorList"
                 },
                 "examples": {
                   "Valor de 'rate' inválido": {
                     "value": {
-                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
+                      "message": ["Value of argument 'rate' must be an integer between 1 and 5"]
                     }
                   },
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "name is a required field"
+                      "message": ["name is a required field"]
                     }
                   },
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
+                      "message": ["this field has unspecified keys: InvalidArg"]
                     }
                   }
                 }
@@ -2376,19 +2603,6 @@
               }
             }
           },
-          "403": {
-            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "message": "This user has already submitted a rating about this movie"
-                }
-              }
-            }
-          },
           "404": {
             "description": "**NOT FOUND:** usuário ou filme não encontrado",
             "content": {
@@ -2402,9 +2616,9 @@
                       "message": "User not found"
                     }
                   },
-                  "Filme não encontrado": {
+                  "Série não encontrado": {
                     "value": {
-                      "message": "Movie not found"
+                      "message": "Series not found"
                     }
                   }
                 }
@@ -2439,7 +2653,7 @@
                   "series": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Jessica Jones",
-                    "year": 2015,
+                    "year": "2015",
                     "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
                     "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
                   },
@@ -2534,7 +2748,7 @@
                     "movie": {
                       "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                       "name": "Avengers: Endgame",
-                      "year": 2019,
+                      "year": "2019",
                       "duration": 182,
                       "direction": "Anthony Russo, Joe Russo",
                       "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
@@ -2552,7 +2766,7 @@
                     "movie": {
                       "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                       "name": "Avengers: Endgame",
-                      "year": 2019,
+                      "year": "2019",
                       "duration": 182,
                       "direction": "Anthony Russo, Joe Russo",
                       "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
@@ -2615,7 +2829,7 @@
                     "series": {
                       "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                       "name": "Jessica Jones",
-                      "year": 2015,
+                      "year": "2015",
                       "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
                       "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
                     }
@@ -2632,7 +2846,7 @@
                     "series": {
                       "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                       "name": "What if...",
-                      "year": 2021,
+                      "year": "2021",
                       "description": "O que aconteceria se os eventos do MCU ocorressem de outra forma",
                       "direction": "Anthony Russo, Joe Russo"
                     }
@@ -2834,7 +3048,7 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "year": { "type": "integer", "format": "full-year" },
+          "year": { "type": "string", "format": "full-year" },
           "duration": { "type": "integer", "format": "minutes" },
           "description": { "type": "string" },
           "direction": { "type": "string" }
@@ -2845,7 +3059,7 @@
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "name": { "type": "string" },
-          "year": { "type": "integer", "format": "full-year" },
+          "year": { "type": "string", "format": "full-year" },
           "duration": { "type": "integer", "format": "minutes" },
           "description": { "type": "string" },
           "direction": { "type": "string" }
@@ -2871,7 +3085,7 @@
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "name": { "type": "string" },
-          "year": { "type": "integer", "format": "full-year" },
+          "year": { "type": "string", "format": "full-year" },
           "description": { "type": "string" },
           "direction": { "type": "string" }
         }
@@ -2898,7 +3112,7 @@
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "name": { "type": "string" },
-          "year": { "type": "integer", "format": "full-year" },
+          "year": { "type": "string", "format": "full-year" },
           "description": { "type": "string" },
           "direction": { "type": "string" },
           "episodes": {

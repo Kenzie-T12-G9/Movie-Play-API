@@ -40,7 +40,7 @@ export default class Ensurances {
     let token = request.headers.authorization;
 
     if (!token) {
-      throw new AppError('Missing authorization token', 401);
+      throw new AppError('Missing authorization headers', 401);
     }
 
     token = token.split(' ')[1];

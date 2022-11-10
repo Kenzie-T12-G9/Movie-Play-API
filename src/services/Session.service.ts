@@ -13,7 +13,7 @@ export default class SessionService {
   static repository = AppDataSource.getRepository(Users);
 
   static async init({ email, password }: IUserLoginBody) {
-    const user = await this.repository.findOneBy({ email: email, isActive: true });
+    const user = await this.repository.findOneBy({ email, isActive: true });
 
     if (!user) {
       throw new AppError('Email/password is wrong', 401);
@@ -34,9 +34,6 @@ export default class SessionService {
       }
     );
 
-    return await schemaResSession.validate({
-      user: user,
-      token: token,
-    }, { stripUnknown:true })
+    return { user, token };
   }
 }

@@ -56,6 +56,7 @@ export const schemaResListMovie = yup.object().shape({
   watchedAt: yup.date().required(),
   id: yup.string().required(),
   movie: schemaResponseMovieHistory,
+  user: schemaResponseUserHistory,
 });
 
 export const schemaResSerie = yup.object().shape({
@@ -69,13 +70,14 @@ export const schemaResListSerie = yup.object().shape({
   watchedAt: yup.date().required(),
   id: yup.string().required(),
   series: schemaResponseSeriesHistory,
+  user: schemaResponseUserHistory,
 });
 
 export const schemaResHistory = yup.object().shape({
   watchedAt: yup.date().required(),
   id: yup.string().required(),
-  series: schemaResponseSeriesHistory.nullable(),
-  movie: schemaResponseMovieHistory.nullable(),
+  series: schemaResponseSeriesHistory.nullable().notRequired(),
+  movie: schemaResponseMovieHistory.nullable().notRequired(),
 });
 
 export const schemaResActivity = yup.object().shape({

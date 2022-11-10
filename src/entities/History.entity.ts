@@ -9,12 +9,12 @@ class History {
   readonly id: string;
 
   @CreateDateColumn()
-  watchedAt: Date;
+  readonly watchedAt: Date;
 
-  @Column()
-  isActive: boolean;
+  @Column({ default: true })
+  readonly isActive: boolean;
 
-  @ManyToOne(() => Users, { eager:true }) 
+  @ManyToOne(() => Users, { eager: true })
   user: Users;
 
   @ManyToOne(() => Series, { eager: true })
