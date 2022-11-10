@@ -2,11 +2,7 @@ import { DataSource } from 'typeorm';
 import request from 'supertest';
 import AppDataSource from '../../data-source';
 import app from '../../app';
-import {
-  createUserADM,
-  createUserNotAdm,
-  loginUserAdm,
-} from '../mocks/Series';
+import { createUserADM, createUserNotAdm, loginUserAdm } from '../mocks/Series';
 import { createMovie, CreateMovieWithWorthlessProperty } from '../mocks/Movies';
 
 describe('/series', () => {

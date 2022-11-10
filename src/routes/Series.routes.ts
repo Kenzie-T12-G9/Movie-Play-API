@@ -18,7 +18,6 @@ seriesRouter.post(
   Ensuraces.serializerData(shemaAddEpisodeoSerie),
   controller.addEpisodeo
 );
-
 seriesRouter.post(
   '',
   Ensuraces.authentication,
@@ -26,11 +25,8 @@ seriesRouter.post(
   Ensuraces.serializerData(shemaCreateSerie),
   controller.create
 );
-
 seriesRouter.get('', controller.list);
-
 seriesRouter.get('/:id', Ensuraces.validIdParams, controller.listOne);
-
 seriesRouter.patch(
   '/:id',
   Ensuraces.validIdParams,
@@ -40,7 +36,6 @@ seriesRouter.patch(
   Ensuraces.serializerData(shemaUpdateSerie),
   controller.update
 );
-
 seriesRouter.delete(
   '/:id',
   Ensuraces.validIdParams,
@@ -48,7 +43,6 @@ seriesRouter.delete(
   Ensuraces.onlyAdm,
   controller.delete
 );
-
 seriesRouter.delete(
   '/episodes/:id',
   Ensuraces.authentication,

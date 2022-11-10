@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import app from '../../app';
 import AppDataSource from '../../data-source';
 import { userAdm, userNotAdm } from '../mocks/session';
-// prettier-ignore
+
 import { 
   mockedAbsent, mockedAdmin, mockedDeletion, mockedExpired, mockedInvalid, mockedNotAdmin, mockedPayment 
 } from '../mocks/users';
@@ -52,7 +52,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(400);
   });
-  // prettier-ignore
+  
   test('POST /users - Should not be able to create a user with a body contaiining invalid fields', async () => {
     const response = await request(app).post('/users').send(mockedInvalid);
 
@@ -70,7 +70,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(400);
   });
-  // prettier-ignore
+  
   test('POST /users - Should not be able to create a user with payment method expired', async () => {
     const response = await request(app).post('/users').send(mockedExpired);
 
@@ -88,7 +88,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(402);
   });
-  // prettier-ignore
+  
   test('GET /users - Must be able to list users', async () => {
     await request(app).post('/users').send(mockedNotAdmin);
     const adminLogin = await request(app).post('/login').send(userAdm);
@@ -106,7 +106,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('GET /users - Should not be able to list users with a invalid token', async () => {
     const response = await request(app).get('/users').set('Authorization', `Bearer invalidToken`);
 
@@ -115,7 +115,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('GET /users - Should not be able to list users without admin permissions', async () => {
     const notAdmLogin = await request(app).post('/login').send(userNotAdm);
     const response = await request(app).get('/users').set('Authorization', `Bearer ${notAdmLogin.body.token}`);
@@ -125,7 +125,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(403);
   });
-  // prettier-ignore
+  
   test('GET /users/:id - Must be able to list a specific user as an admin, or the logged\'n user\'s own profile', async () => {
     const loggedAdmin = await request(app).post('/login').send(userAdm);
     const loggedUser = await request(app).post('/login').send(userNotAdm);
@@ -142,7 +142,7 @@ describe('/users', () => {
     expect(otherProfile.status).toBe(200);
     expect(ownProfile.status).toBe(200);
   });
-  // prettier-ignore
+  
   test('GET /users/:id - Should not be able to list a user without authorization headers', async () => {
     const loggedUser = await request(app).post('/login').send(userAdm);
     const response = await request(app).get(`/users/${loggedUser.body.user.id}`);
@@ -152,7 +152,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('GET /users/:id - Should not be able to list a user with a invalid token', async () => {
     const loggedUser = await request(app).post('/login').send(userAdm);
     const response = await request(app).get(`/users/${loggedUser.body.user.id}`).set('Authorization', `Bearer invalidToken`);
@@ -162,7 +162,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('GET /users/:id - Should not be able to list other user without admin permissions', async () => {
     const loggedAdm = await request(app).post('/login').send(userAdm);
     const loggedUser = await request(app).post('/login').send(userNotAdm);
@@ -173,7 +173,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(403);
   });
-  // prettier-ignore
+  
   test('PATCH /users/:id - Must be able to update any user as admin or own profile as standart user', async () => {
     const userUpdates = { name: 'Carolina M Pimentel' };
     const adminUpdates = { name: 'Carolina Maronese Pimentel' };
@@ -203,7 +203,7 @@ describe('/users', () => {
     expect(userResponse.status).toBe(200);
     expect(admResponse.status).toBe(200);
   });
-  // prettier-ignore
+  
   test('PATCH /users/:id - Should not be able to update users with invalid args', async () => {
     const invalidArgs = { invalid: null };
 
@@ -218,7 +218,7 @@ describe('/users', () => {
     
     expect(response.status).toBe(400);
   });
-  // prettier-ignore
+  
   test('PATCH /users/:id - Should not be able to update paymentMethods without all fields', async () => {
     const partialPayment = {
       paymentMethods: { name: 'Some random name', code: '133' },
@@ -249,7 +249,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('PATCH /users/:id - Should not be able to update user with a invalid token', async () => {
     const update = { name: 'Some random name' };
     
@@ -263,7 +263,7 @@ describe('/users', () => {
     
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('PATCH /users/:id - Should not be able to update other user without admin permissions', async () => {
     const update = { name: 'Some random name' };
     
@@ -279,7 +279,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(403);
   });
-  // prettier-ignore
+  
   test('PATCH /users/:id - Should not be able to update user that not exists', async () => {
     const update = { name: 'Some random name' };
     
@@ -305,7 +305,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('DELETE /users/:id - Should not be able to delete a user with a invalid token', async () => {
     const userLogin = await request(app).post('/login').send(userNotAdm);
     const userId = userLogin.body.user.id;
@@ -317,7 +317,7 @@ describe('/users', () => {
 
     expect(response.status).toBe(401);
   });
-  // prettier-ignore
+  
   test('DELETE /users/:id - Should not be able to delete other user without admin permissions', async () => {
     const admLogin = await request(app).post('/login').send(userAdm);
     const userLogin = await request(app).post('/login').send(userNotAdm);

@@ -31,7 +31,7 @@ export interface IPaymentInfoRes {
 }
 
 export interface IUserRequestBody {
-  id?:string
+  id?: string;
   name: string;
   email: string;
   password: string;

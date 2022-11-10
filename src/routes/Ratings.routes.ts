@@ -13,7 +13,6 @@ ratingsRouter.post(
   Ensurances.serializerData(schemaCreateRating),
   RatingsController.postUserRatingsOfaMovieController
 );
-
 ratingsRouter.post(
   '/series/:id',
   Ensurances.validIdParams,
@@ -21,23 +20,18 @@ ratingsRouter.post(
   Ensurances.serializerData(schemaCreateRating),
   RatingsController.postUserRatingsOfaSerieController
 );
-
 ratingsRouter.get(
   '/movies/:id',
   Ensurances.validIdParams,
   RatingsController.listUserRatingsOfaMovieController
 );
-
 ratingsRouter.get(
   '/series/:id',
   Ensurances.validIdParams,
   RatingsController.listUserRatingsOfaSerieController
 );
-
 ratingsRouter.get('/movies', RatingsController.readAllRatingsMoviesController);
-
 ratingsRouter.get('/series', RatingsController.readAllRatingsSeriesController);
-
 ratingsRouter.delete(
   '/:id',
   Ensurances.validIdContentParams,
@@ -45,5 +39,3 @@ ratingsRouter.delete(
   Ensurances.authentication,
   RatingsController.deleteRatingController
 );
-
-

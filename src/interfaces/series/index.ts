@@ -1,23 +1,23 @@
 export interface ICreateSerie {
-    isActive?:boolean
-    name:string,
-    year:string,
-    description:string,
-    direction:string,
+  isActive?: boolean;
+  name: string;
+  year: string;
+  description: string;
+  direction: string;
 }
 
 export interface IUpdateSerie {
-    name?:string,
-    year?:string,
-    description?:string,
-    direction?:string,
+  name?: string;
+  year?: string;
+  description?: string;
+  direction?: string;
 }
 
 export interface IAddEpisodeoSerie {
-    id?:string,
-    season:number,
-    episode:number,
-    name:string,
-    duration:number,
-    description:string
+  id?: string;
+  season: number;
+  episode: number;
+  name: string;
+  duration: number;
+  description: string;
 }

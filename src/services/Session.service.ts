@@ -6,7 +6,6 @@ import { IUserLoginBody } from '../interfaces/users';
 import * as bcrypt from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
-import { schemaResSession } from '../serializers/Users.serializer';
 config();
 
 export default class SessionService {

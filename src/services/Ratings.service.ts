@@ -42,10 +42,7 @@ export default class RatingsService {
     return formatResponse;
   }
 
-  static async postUserRateOfaMovieService(
-    movieId: string,
-    { rate, comment, userId }: IRatingRequest
-  ) {
+  static async postUserRateOfaMovieService(movieId: string,{ rate, comment, userId }: IRatingRequest) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {
       throw new AppError('User not found', 404);
@@ -69,10 +66,7 @@ export default class RatingsService {
     };
   }
 
-  static async postUserRateOfaSerieService(
-    seriesId: string,
-    { rate, comment, userId }: IRatingRequest
-  ) {
+  static async postUserRateOfaSerieService(seriesId: string,{ rate, comment, userId }: IRatingRequest) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {
       throw new AppError('User not found', 404);
@@ -127,9 +121,7 @@ export default class RatingsService {
     return { movie, ratings };
   }
 
-  static async listUserRatingsOfaSerieService(
-    seriesId: string,
-  ) {
+  static async listUserRatingsOfaSerieService(seriesId: string) {
     const series = await this.serieRepository.findOneBy({ id: seriesId });
     if (!series) {
       throw new AppError('Movie not found', 404);

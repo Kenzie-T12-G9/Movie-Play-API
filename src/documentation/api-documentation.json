@@ -2320,7 +2320,9 @@
                 "examples": {
                   "Valor de 'rate' inválido": {
                     "value": {
-                      "message": ["Value of argument 'rate' must be an integer between 1 and 5"]
+                      "message": [
+                        "Value of argument 'rate' must be an integer between 1 and 5"
+                      ]
                     }
                   },
                   "Argumentos ausentes": {
@@ -2564,7 +2566,9 @@
                 "examples": {
                   "Valor de 'rate' inválido": {
                     "value": {
-                      "message": ["Value of argument 'rate' must be an integer between 1 and 5"]
+                      "message": [
+                        "Value of argument 'rate' must be an integer between 1 and 5"
+                      ]
                     }
                   },
                   "Argumentos ausentes": {

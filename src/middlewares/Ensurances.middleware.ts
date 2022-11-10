@@ -4,15 +4,11 @@ import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
-import {
-  schemaValidIdContentParams,
-  schemaValidIdParams,
-} from '../serializers/methods.serializer';
+import { schemaValidIdContentParams, schemaValidIdParams } from '../serializers/methods.serializer';
 
 export default class Ensurances {
-  static serializerData =
-    (serializer: SchemaOf<any>) =>
-    async (request: Request, _: Response, next: NextFunction) => {
+  static serializerData(serializer: SchemaOf<any>) {
+    return async (request: Request, _: Response, next: NextFunction) => {
       const user = request.body;
 
       try {
@@ -31,12 +27,9 @@ export default class Ensurances {
         }
       }
     };
+  }
 
-  static async authentication(
-    request: Request,
-    _: Response,
-    next: NextFunction
-  ) {
+  static async authentication(request: Request,_: Response,next: NextFunction) {
     let token = request.headers.authorization;
 
     if (!token) {
@@ -71,11 +64,7 @@ export default class Ensurances {
     return next();
   }
 
-  static async removeEmptyProperties(
-    request: Request,
-    _: Response,
-    next: NextFunction
-  ) {
+  static async removeEmptyProperties(request: Request,_: Response,next: NextFunction) {
     const data = request.body;
 
     const remove = Object.fromEntries(
@@ -87,11 +76,7 @@ export default class Ensurances {
     next();
   }
 
-  static validIdParams = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  static validIdParams = async (req: Request,_: Response,next: NextFunction) => {
     const { id } = req.params;
 
     try {
@@ -111,11 +96,7 @@ export default class Ensurances {
     }
   };
 
-  static validIdContentParams = async (
-    req: Request,
-    _: Response,
-    next: NextFunction
-  ) => {
+  static validIdContentParams = async (req: Request,_: Response,next: NextFunction) => {
     const { movieId } = req.params;
     const { seriesId } = req.params;
     let selectorId;

@@ -30,18 +30,21 @@ describe('/login', () => {
     expect(response.body).toHaveProperty('token');
   });
 
-  test("POST /login -  should not be able to login with the user with incorrect email",async () => {
-    const response = await request(app).post("/login").send(userAdmLoginIncorrectMail);
+  test('POST /login -  should not be able to login with the user with incorrect email', async () => {
+    const response = await request(app)
+      .post('/login')
+      .send(userAdmLoginIncorrectMail);
 
-    expect(response.body).toHaveProperty("message")
-    expect(response.status).toBe(401)
-  }); 
+    expect(response.body).toHaveProperty('message');
+    expect(response.status).toBe(401);
+  });
 
-  test("POST /login -  should not be able to login with the user with incorrect password",async () => {
-    const response = await request(app).post("/login").send(userAdmLoginIncorrectPassword);
+  test('POST /login -  should not be able to login with the user with incorrect password', async () => {
+    const response = await request(app)
+      .post('/login')
+      .send(userAdmLoginIncorrectPassword);
 
-    expect(response.body).toHaveProperty("message")
-    expect(response.status).toBe(401)
-
-  }); 
+    expect(response.body).toHaveProperty('message');
+    expect(response.status).toBe(401);
+  });
 });

@@ -3,13 +3,7 @@ import request from 'supertest';
 import AppDataSource from '../../data-source';
 import app from '../../app';
 import {} from '../mocks/session';
-import {
-  createSerie,
-  createUserADM,
-  createUserNotAdm,
-  loginUserAdm,
-  loginUserNotAdm,
-} from '../mocks/Series';
+import { createSerie, createUserADM, createUserNotAdm, loginUserAdm } from '../mocks/Series';
 import { createMovie } from '../mocks/Movies';
 
 describe('/history', () => {

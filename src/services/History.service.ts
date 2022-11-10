@@ -2,10 +2,7 @@ import AppDataSource from '../data-source';
 import { History } from '../entities/History.entity';
 import { AppError } from '../error/AppError';
 import { IHistoryIdRelations } from '../interfaces/history';
-// prettier-ignore
-import { 
-  arrayResHistory, arrayResMovie, schemaResMovie, schemaResSerie, movieIdResponse, seriesIdResponse, arrayResSeries,
-} from '../serializers/history.serizalizer';
+import { arrayResMovie, schemaResMovie, schemaResSerie, movieIdResponse, seriesIdResponse, arrayResSeries } from '../serializers/history.serizalizer';
 import MovieService from './Movies.service';
 import SeriesService from './Series.service';
 import UserService from './Users.service';

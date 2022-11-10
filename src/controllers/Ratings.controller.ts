@@ -16,11 +16,7 @@ export default class RatingsController {
     const { id: movieId } = req.params;
     const { rate, comment, userId } = req.body;
 
-    const data = await RatingsService.postUserRateOfaMovieService(movieId, {
-      rate,
-      comment,
-      userId,
-    });
+    const data = await RatingsService.postUserRateOfaMovieService(movieId, { rate, comment, userId });
     return res.status(200).json(data);
   }
 
@@ -28,11 +24,7 @@ export default class RatingsController {
     const { id: seriesId } = req.params;
     const { rate, comment, userId } = req.body;
 
-    const data = await RatingsService.postUserRateOfaSerieService(seriesId, {
-      rate,
-      comment,
-      userId,
-    });
+    const data = await RatingsService.postUserRateOfaSerieService(seriesId, { rate, comment, userId });
     return res.status(200).json(data);
   }
 

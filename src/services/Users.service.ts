@@ -9,7 +9,7 @@ import { expired, partialUpdates } from '../utils';
 export default class UsersService {
   static repository = AppDataSource.getRepository(Users);
   static paymentRepo = AppDataSource.getRepository(PaymentMethods);
-  // prettier-ignore
+
   static async create({ name, email, password, isAdm, paymentMethods }: IUserRequestBody): Promise<Users> {
     const user = await this.repository.findOneBy({ email });
 

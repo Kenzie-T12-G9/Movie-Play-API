@@ -1,7 +1,7 @@
 export interface IUpdatedEpisodes {
   season: number;
   episode: number;
-  name: string
+  name: string;
   duration: number;
   description: string;
 }
