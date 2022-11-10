@@ -2,18 +2,18 @@ import AppDataSource from '../data-source';
 import { Users } from '../entities/Users.entity';
 import { AppError } from '../error/AppError';
 import { IUserLoginBody } from '../interfaces/users';
-import { compare } from 'bcryptjs';
 
 import * as bcrypt from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
+import { schemaResSession } from '../serializers/Users.serializer';
 config();
 
 export default class SessionService {
   static repository = AppDataSource.getRepository(Users);
 
   static async init({ email, password }: IUserLoginBody) {
-    const user = await this.repository.findOneBy({ email: email });
+    const user = await this.repository.findOneBy({ email: email, isActive: true });
 
     if (!user) {
       throw new AppError('Email/password is wrong', 401);
@@ -34,8 +34,9 @@ export default class SessionService {
       }
     );
 
-    return {
-      token,
-    };
+    return await schemaResSession.validate({
+      user: user,
+      token: token,
+    }, { stripUnknown:true })
   }
 }

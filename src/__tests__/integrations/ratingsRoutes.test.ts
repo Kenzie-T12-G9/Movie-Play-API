@@ -2,318 +2,248 @@ import { DataSource } from 'typeorm';
 import request from 'supertest';
 import AppDataSource from '../../data-source';
 import app from '../../app';
-
-
-const temporaryMockedAdm = {
-    name: 'Francisco Stenico',
-    email: 'francisco@mail.com',
-    isAdm: true,
-    password: 'Teste123@',
-    paymentMethods: {
-      name: 'Francisco C Stenico',
-      cpf: '12345678900',
-      number: '1111222233334444',
-      dueDate: '2026-10-21',
-      code: '123',
-    },
-};
-
-const temporaryMockednotAdm = {
-name: 'Guilherme Bernardo',
-email: 'contato@mail.com',
-isAdm: false,
-password: 'Teste123@',
-paymentMethods: {
-    name: 'Guilherme Bernardo',
-    cpf: '12345612345',
-    number: '1111222233334444',
-    dueDate: '2026-10-21',
-    code: '123',
-},
-};
-
-const temporaryMockednotAdm2 = {
-  name: 'Guilherme Bernardo 2',
-  email: 'contato2@mail.com',
-  isAdm: false,
-  password: 'Teste123@',
-  paymentMethods: {
-      name: 'Guilherme Bernardo 2',
-      cpf: '12345612345',
-      number: '1111222233334444',
-      dueDate: '2026-10-21',
-      code: '123',
-  },
-  };
-
-const PostRate = JSON.parse(JSON.stringify({
-  "rate": 5,
-  "comment":"Simplesmente incrível, indico a todos com certeza!",
-  "userId":"1127f3f2-0057-4d67-b68a-a689c3447331"
-}))
-
-const PostRateNumberInvalid = JSON.parse(JSON.stringify({
-  "rate": 6,
-  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-  "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-}))
-
-const PostIncompletRating = JSON.parse(JSON.stringify({
-  "rate": 5,
-  "comment": "Filme simplesmente incrível, indico a todos com certeza!"
-}))
-
-const PostInvalidArgRating = JSON.parse(JSON.stringify({
-  "InvalidArg": null,
-  "rate": 5,
-  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-  "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-}))
-
-const mockedMovie = JSON.parse(JSON.stringify({
-  "name": "Django Unchained",
-  "year": 2012,
-  "duration": 165,
-  "direction": "Quentin Tarantino",
-  "description": "Django (Jamie Foxx) é um escravo liberto cujo passado brutal com seus antigos proprietários leva-o ao encontro do caçador de recompensas alemão Dr. King Schultz (Christoph Waltz). Schultz está em busca dos irmãos assassinos Brittle, e somente Django pode levá-lo a eles. O pouco ortodoxo Schultz compra Django com a promessa de libertá-lo quando tiver capturado os irmãos Brittle, vivos ou mortos."
-}))
-
-const mockedSerie = JSON.parse(JSON.stringify({
-  "name": "Bridgetown",
-  "year": 2020,
-  "description": "Oito irmãos inseparáveis buscam amor e felicidade na alta sociedade de Londres.",
-  "direction": "Shonda Rhimes, Sarah Dollard"
-}))
+import { mockedAdmin, mockedNotAdmin } from '../mocks/users';
+import { userAdm, userNotAdm } from '../mocks/session';
+import { createMovie } from '../mocks/Movies';
+import { createSerie } from '../mocks/Series';
+import { mockedAbsent } from '../mocks/Ratings';
+import { IRatingInvalid, IRatingRequest } from '../../interfaces/ratings';
 
 describe('/ratings', () => {
+  let connection: DataSource;
+  let tokenADM: string;
+  let tokenNotADM: string;
+  let userId: string;
+  let movieId: string;
+  let seriesId: string;
 
-    let connection: DataSource;
-    
-      beforeAll(async () => {
-        await AppDataSource.initialize()
-          .then((res) => {
-            connection = res;
-          })
-          .catch((err) => {
-            console.error('Data source initialization error', err);
-          });
-          
-          await request(app).post('/users').send(temporaryMockedAdm)
-          await request(app).post('/users').send(temporaryMockednotAdm)
-          await request(app).post('/users').send(temporaryMockednotAdm2)
+  let mockedRating: IRatingRequest;
+  let mockedInvalidField: IRatingInvalid;
+  let mockedInvalidRate: IRatingRequest;
 
-          const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-            
-          await request(app)
-            .post('/movies')
-            .set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-            .send(mockedMovie)
-
-          await request(app)
-            .post('/series')
-            .set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-            .send(mockedSerie)
-
-      });
-    
-      afterAll(async () => {
-        await connection.destroy();
+  beforeAll(async () => {
+    await AppDataSource.initialize()
+      .then((res) => {
+        connection = res;
+      })
+      .catch((err) => {
+        console.error('Data source initialization error', err);
       });
 
-      test("POST /movies/:id/ratings - should not be able to create a without necessarily parameters", async () => {
-        
-        const notAdminLoginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        const responseGetMovies = await request(app).get('/movies')
-        const movieToRating = await request(app).get(`/movies/${responseGetMovies.body[0].id}`)
+    await request(app).post('/users').send(mockedAdmin);
+    await request(app).post('/users').send(mockedNotAdmin);
 
-        const response1 = await request(app).post(`/movies/${movieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostIncompletRating)
+    const adminLoginResponse = await request(app).post('/login').send(userAdm);
+    const notAdmLoginResponse = await request(app)
+      .post('/login')
+      .send(userNotAdm);
 
-        expect(response1.body).toHaveProperty("message")
-        expect(response1.status).toBe(400)
+    tokenADM = adminLoginResponse.body.token;
+    tokenNotADM = notAdmLoginResponse.body.token;
+    userId = notAdmLoginResponse.body.user.id;
 
-        const response2 = await request(app).post(`/movies/${movieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostInvalidArgRating)
+    const movieResponse = await request(app)
+      .post('/movies')
+      .send(createMovie)
+      .set('Authorization', `Bearer ${tokenADM}`);
+    const seriesResponse = await request(app)
+      .post('/series')
+      .send(createSerie)
+      .set('Authorization', `Bearer ${tokenADM}`);
 
-        expect(response2.body).toHaveProperty("message")
-        expect(response2.status).toBe(400)
+    movieId = movieResponse.body.id;
+    seriesId = seriesResponse.body.id;
 
-        const response3 = await request(app).post(`/movies/${movieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostRateNumberInvalid)
+    mockedRating = { ...mockedAbsent, userId };
+    mockedInvalidField = { ...mockedRating, invalidField: null };
+    mockedInvalidRate = { ...mockedRating, rate: 10 };
+  });
 
-        expect(response3.body).toHaveProperty("message")
-        expect(response3.status).toBe(400)
+  afterAll(async () => {
+    await connection.destroy();
+  });
 
-      })
+  test('POST /ratings/movies/:id - should not be able to create a rate without necessarily parameters', async () => {
+    const response1 = await request(app)
+      .post(`/ratings/movies/${movieId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedAbsent);
 
-      test("POST /movies/:id/ratings - should not be able to create a without authentication", async () => {
+    expect(response1.status).toBe(400);
+    expect(response1.body).toHaveProperty('message');
+    expect(response1.body.message).toEqual(['userId is a required field']);
 
-        const responseGetMovies = await request(app).get('/movies')
-        const movieToRating = await request(app).get(`/movies/${responseGetMovies.body[0].id}`)
+    const response2 = await request(app)
+      .post(`/ratings/movies/${movieId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedInvalidField);
 
-        const response = await request(app).post(`/movies/${movieToRating}/ratings`).send(PostRate)
+    expect(response2.status).toBe(400);
+    expect(response2.body).toHaveProperty('message');
+    expect(response2.body.message).toEqual([
+      'this field has unspecified keys: invalidField',
+    ]);
 
-        expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(403)
+    const response3 = await request(app)
+      .post(`/ratings/movies/${movieId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedInvalidRate);
 
-      })
+    expect(response3.status).toBe(400);
+    expect(response3.body).toHaveProperty('message');
+    expect(response3.body.message).toEqual([
+      "Value of argument 'rate' must be an integer between 1 and 5",
+    ]);
+  });
 
-      test("POST /movies/:id/ratings - Able to post a rate to movie", async () => {
+  test('POST /ratings/movies/:id - should not be able to create a rating without authentication', async () => {
+    const response = await request(app)
+      .post(`/ratings/movies/${movieId}`)
+      .send(mockedRating);
 
-        const notAdminLoginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        const responseGetMovies = await request(app).get('/movies')
-        const movieToRating = await request(app).get(`/movies/${responseGetMovies.body[0].id}`)
+    expect(response.body).toHaveProperty('message');
+    expect(response.status).toBe(401);
+  });
 
-        const response = await request(app).post(`/movies/${movieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostRate)
+  test('POST /ratings/movies/:id - Able to post a rate to a movie', async () => {
+    const response = await request(app)
+      .post(`/ratings/movies/${movieId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedRating);
 
-        expect(response.body).toHaveProperty("id")
-        expect(response.body).toHaveProperty("arte")
-        expect(response.body).toHaveProperty("comment")
-        expect(response.body.user).toHaveProperty("id")
-        expect(response.body.user).toHaveProperty("name")
-        expect(response.body.user).toHaveProperty("email")
-        expect(response.body.movie).toHaveProperty("id")
-        expect(response.body.movie).toHaveProperty("name")
-        expect(response.body.movie).toHaveProperty("year")
-        expect(response.body.movie).toHaveProperty("duration")
-        expect(response.body.movie).toHaveProperty("direction")
-        expect(response.body.movie).toHaveProperty("description")
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('rate');
+    expect(response.body).toHaveProperty('comment');
+    expect(response.body.user).toHaveProperty('id');
+    expect(response.body.user).toHaveProperty('name');
+    expect(response.body.user).toHaveProperty('email');
+    expect(response.body.movie).toHaveProperty('id');
+    expect(response.body.movie).toHaveProperty('name');
+    expect(response.body.movie).toHaveProperty('year');
+    expect(response.body.movie).toHaveProperty('duration');
+    expect(response.body.movie).toHaveProperty('direction');
+    expect(response.body.movie).toHaveProperty('description');
+  });
 
-        expect(response.status).toBe(200)
+  test('POST /ratings/series/:id - should not be able to create a without necessarily parameters', async () => {
+    const response1 = await request(app)
+      .post(`/ratings/series/${seriesId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedAbsent);
 
-      })
+    expect(response1.status).toBe(400);
+    expect(response1.body).toHaveProperty('message');
 
-      test("POST /series/:id/ratings - should not be able to create a without necessarily parameters", async () => {
-        
-        const notAdminLoginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        const responseGetSeries = await request(app).get('/series')
-        const serieToRating = await request(app).get(`/series/${responseGetSeries.body[0].id}`)
+    const response2 = await request(app)
+      .post(`/ratings/series/${seriesId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedInvalidField);
 
-        const response1 = await request(app).post(`/series/${serieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostIncompletRating)
+    expect(response2.status).toBe(400);
+    expect(response2.body).toHaveProperty('message');
 
-        expect(response1.body).toHaveProperty("message")
-        expect(response1.status).toBe(400)
+    const response3 = await request(app)
+      .post(`/ratings/series/${seriesId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedInvalidRate);
 
-        const response2 = await request(app).post(`/series/${serieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostInvalidArgRating)
+    expect(response3.status).toBe(400);
+    expect(response3.body).toHaveProperty('message');
+  });
 
-        expect(response2.body).toHaveProperty("message")
-        expect(response2.status).toBe(400)
+  test('POST /ratings/series/:id - should not be able to create a without authentication', async () => {
+    const response = await request(app)
+      .post(`/ratings/series/${seriesId}`)
+      .send(mockedRating);
 
-        const response3 = await request(app).post(`/series/${serieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostRateNumberInvalid)
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty('message');
+  });
 
-        expect(response3.body).toHaveProperty("message")
-        expect(response3.status).toBe(400)
-      })
-      
-      test("POST /series/:id/ratings - should not be able to create a without authentication", async () => {
+  test('POST /ratings/series/:id - Able to create a series', async () => {
+    const response = await request(app)
+      .post(`/ratings/series/${seriesId}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`)
+      .send(mockedRating);
 
-        const responseGetMovies = await request(app).get('/series')
-        const serieToRate = await request(app).get(`/series/${responseGetMovies.body[0].id}`)
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('rate');
+    expect(response.body).toHaveProperty('comment');
+    expect(response.body).toHaveProperty('user');
+    expect(response.body).toHaveProperty('series');
+    expect(response.body.user).toHaveProperty('id');
+    expect(response.body.user).toHaveProperty('name');
+    expect(response.body.user).toHaveProperty('email');
+    expect(response.body.series).toHaveProperty('id');
+    expect(response.body.series).toHaveProperty('name');
+    expect(response.body.series).toHaveProperty('year');
+    expect(response.body.series).toHaveProperty('direction');
+    expect(response.body.series).toHaveProperty('description');
+  });
 
-        const response = await request(app).post(`/movies/${serieToRate}/ratings`).send(PostRate)
+  test('GET /ratings/movies - Must be able to list all ratings in all movies', async () => {
+    const response = await request(app).get('/ratings/movies');
 
-        expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(403)
+    expect(response.status).toBe(200);
+    expect(response.body).not.toHaveProperty('message');
+    expect(response.body[0]).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('rate');
+    expect(response.body[0]).toHaveProperty('comment');
+    expect(response.body[0]).toHaveProperty('user');
+    expect(response.body[0].user).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('movie');
+    expect(response.body[0].movie).toHaveProperty('id');
+    expect(response.body).toHaveLength(1);
+  });
 
-      })
+  test('GET /ratings/series - Must be able to list all ratings in all series', async () => {
+    const response = await request(app).get('/ratings/series');
 
-      test("POST /series/:id/ratings - Able to create a series", async () => {
-        const notAdminLoginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        const responseGetSeries = await request(app).get('/series')
-        const serieToRating = await request(app).get(`/series/${responseGetSeries.body[0].id}`)
+    expect(response.status).toBe(200);
+    expect(response.body).not.toHaveProperty('message');
+    expect(response.body[0]).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('rate');
+    expect(response.body[0]).toHaveProperty('comment');
+    expect(response.body[0]).toHaveProperty('user');
+    expect(response.body[0].user).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('series');
+    expect(response.body[0].series).toHaveProperty('id');
+    expect(response.body).toHaveLength(1);
+  });
 
-        const response = await request(app).post(`/series/${serieToRating}/ratings`).set("Authorization", `Bearer ${notAdminLoginResponse.body.token}`).send(PostRate)
+  test('DELELE /ratings/:id - Should not be able to delete a rating with invalid ids', async () => {
+    const invalidUUID = 'd3fa00e4-bcd9-4c59-9609-c7ac9a931074';
+    const response = await request(app)
+      .delete(`/ratings/${invalidUUID}`)
+      .set('Authorization', `Bearer ${tokenNotADM}`);
 
-        expect(response.body).toHaveProperty("id")
-        expect(response.body).toHaveProperty("arte")
-        expect(response.body).toHaveProperty("comment")
-        expect(response.body.user).toHaveProperty("id")
-        expect(response.body.user).toHaveProperty("name")
-        expect(response.body.user).toHaveProperty("email")
-        expect(response.body.serie).toHaveProperty("id")
-        expect(response.body.serie).toHaveProperty("name")
-        expect(response.body.serie).toHaveProperty("year")
-        expect(response.body.serie).toHaveProperty("duration")
-        expect(response.body.serie).toHaveProperty("direction")
-        expect(response.body.serie).toHaveProperty("description")
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('Rating not found');
+    expect(response.status).toBe(404);
+  });
 
-        expect(response.status).toBe(200)
-      })
+  test('DELELE /ratings/:id - Should not be able to delete a movie rating without authentication', async () => {
+    const invalidUUID = 'd3fa00e4-bcd9-4c59-9609-c7ac9a931074';
+    const response = await request(app).delete(`/ratings/${invalidUUID}`);
 
-      test("GET /ratings/movies - Must be able to list all ratings in all movies", async () => {
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('Missing authorization token');
+    expect(response.status).toBe(401);
+  });
 
-        const response = await request(app).get('/ratings/movies')
-        expect(response.body).toHaveLength(1)
-        expect(response.status).toBe(200)
+  test('DELELE /ratings/:id - Able to delete rate', async () => {
+    const listRating = await request(app)
+      .get('/ratings/movies')
+      .set('Authorization', `Bearer ${tokenADM}`);
 
-      })
+    const response = await request(app)
+      .delete(`/ratings/${listRating.body[0].id}`)
+      .set('Authorization', `Bearer ${tokenADM}`);
 
-      test("GET /ratings/series - Must be able to list all ratings in all series", async () => {
-        
-        const response = await request(app).get('/ratings/series')
-        expect(response.body).toHaveLength(1)
-        expect(response.status).toBe(200)
-      
-      })
-
-      test("DELELE /ratings/:movieId/:userId - Should not be able to delete a movie rating with invalid ids", async () => {
-
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const listUsers = await request(app).get("/users").set
-        ("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-
-        const loginResponse = await request(app).post("/login").send(temporaryMockednotAdm);
-        
-        const userId = listUsers.body[1].id
-        
-        const response = await request(app).delete(`/ratings/13970660-5dbe-423a-9a9d-5c23b37943cf/${userId}`).set("Authorization", `Bearer ${loginResponse.body.token}`)
-
-        expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(404)
-      })
-
-      test("DELELE /ratings/:movieId/:userId - Should not be able to delete a movie rating without authentication", async () => {
-                
-        const listMovies = await request(app).get("/movies")
-
-        const movieId = listMovies.body[0].id
-
-        const response = await request(app).delete(`/ratings/${movieId}/$13970660-5dbe-423a-9a9d-5c23b37943cf`)
-
-        expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(404)
-
-      })
-
-      test("DELELE /ratings/:movieId/:userId - Should not be able to delete a movie rating without admin authentication", async () => {
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const listUsers = await request(app).get("/users").set
-        ("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-
-        const idNotAdmin2 = await request(app).post("/login").send(temporaryMockednotAdm2);
-
-        const listMovies = await request(app).get("/movies")
-        const movieId = listMovies.body[0].id
-        const userId = listUsers.body[2].id
-        
-        const response = await request(app).delete(`/ratings/${movieId}/${userId}`).set("Authorization", `Bearer ${idNotAdmin2.body.token}`)
-
-        expect(response.body).toHaveProperty("message")
-        expect(response.status).toBe(404)
-      })
-
-      test("DELELE /ratings/:movieId/:userId - Able to delete a movie rate", async () => {
-
-        const adminLoginResponse = await request(app).post("/login").send(temporaryMockedAdm);
-        const listUsers = await request(app).get("/users").set
-        ("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-
-        const userId = listUsers.body[0].id
-
-        const listMovies = await request(app).get("/movies")
-        const movieId = listMovies.body[0].id
-        
-        const response = await request(app).delete(`/ratings/${movieId}/${userId}`).set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-
-        expect(response.status).toBe(204)
-
-      })
-
-})
+    expect(response.status).toBe(204);
+    expect(response.body).not.toHaveProperty('message');
+    expect(response.body).not.toHaveProperty('id');
+  });
+});

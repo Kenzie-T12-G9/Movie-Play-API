@@ -13,22 +13,28 @@ export default class UsersService {
   static async create({ name, email, password, isAdm, paymentMethods }: IUserRequestBody): Promise<Users> {
     const user = await this.repository.findOneBy({ email });
 
-    if (user) {
+    if (user && user.isActive) {
       throw new AppError('This email is already being used', 400);
-    } else if (expired(paymentMethods)) {
-      throw new AppError('The payment card\'s due date has passed. Please try another method', 400);
     } else if (!paymentMethods) {
       throw new AppError('Payment method is required', 402);
+    } else if (expired(paymentMethods)) {
+      throw new AppError('The payment card\'s due date has passed. Please try another method', 400);
     }
 
-    const newPayment = this.paymentRepo.create(paymentMethods);
-    const savedPayment = await this.paymentRepo.save(newPayment);
-
-    const hashedKey = await hash(password, 10);
-    const newUser = this.repository.create({ name, email, password: hashedKey, isAdm, paymentMethods: savedPayment });
-    const savedUser = await this.repository.save(newUser);
-
-    return savedUser;
+    if (user) {
+      await this.repository.update(user.id, { isAdm, isActive: true });
+      const oldUser = await this.update(user.id, { name, email, password, paymentMethods });
+      return oldUser;
+    } else {
+      const newPayment = this.paymentRepo.create(paymentMethods);
+      const savedPayment = await this.paymentRepo.save(newPayment);
+  
+      const hashedKey = await hash(password, 10);
+      const newUser = this.repository.create({ name, email, password: hashedKey, isAdm, paymentMethods: savedPayment });
+      const savedUser = await this.repository.save(newUser);
+  
+      return savedUser;
+    }
   }
 
   static async read(): Promise<Users[]> {
@@ -39,6 +45,7 @@ export default class UsersService {
   static async readById(id: string): Promise<Users> {
     const specificUser = await this.repository.findOneBy({
       id,
+      isActive: true,
     });
     if (!specificUser) {
       throw new AppError('User not found', 404);
@@ -51,7 +58,7 @@ export default class UsersService {
     id: string,
     { name, email, password, paymentMethods }: IUserUpdateRequest
   ): Promise<Users> {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id, isActive: true });
     if (!user) {
       throw new AppError('User not found', 404);
     } else if (paymentMethods && partialUpdates(paymentMethods)) {
@@ -61,7 +68,7 @@ export default class UsersService {
       );
     }
 
-    let newPayment: PaymentMethods | null = null;
+    let newPayment: PaymentMethods;
     if (paymentMethods) {
       if (expired(paymentMethods)) {
         throw new AppError(
@@ -78,20 +85,23 @@ export default class UsersService {
       name: name ? name : user.name,
       email: email ? email : user.email,
       password: password ? await hash(password, 10) : user.password,
-      paymentMethods: newPayment ? newPayment : user.paymentMethods,
+      paymentMethods: newPayment! ? newPayment : user.paymentMethods,
     });
-    await this.paymentRepo.delete({ id: user.paymentMethods.id });
+    newPayment! &&
+      (await this.paymentRepo.delete({ id: user.paymentMethods.id }));
     const updatedUser = await this.repository.findOneBy({ id });
 
     return updatedUser!;
   }
 
   static async delete(id: string) {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id, isActive: true });
     if (!user) {
       throw new AppError('User not found', 404);
     }
 
-    await this.repository.delete(id);
+    await this.repository.update(id, {
+      isActive: false,
+    });
   }
 }

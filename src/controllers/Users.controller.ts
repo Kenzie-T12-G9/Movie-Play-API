@@ -1,5 +1,4 @@
 import { instanceToPlain } from 'class-transformer';
-// import { instanceToPlain } from '../interfaces/users'
 import { Request, Response } from 'express';
 // prettier-ignore
 import { IUserDelete, IUserRequestBody, IUserResponse, IUserUpdate } from '../interfaces/users';

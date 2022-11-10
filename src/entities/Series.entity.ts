@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Episodes } from './Episodes.entity';
+import { History } from './History.entity';
 import { WatchLater } from './Watch_later.entity';
 
 @Entity('Series')
@@ -10,7 +11,7 @@ class Series {
   @Column()
   name: string;
 
-  @Column( { length:4 } )
+  @Column({ length: 4 })
   year: string;
 
   @Column()
@@ -22,11 +23,14 @@ class Series {
   @Column()
   direction: string;
 
-  @OneToMany(() => Episodes, (episodes) => episodes.serie)
+  @OneToMany(() => Episodes, (episodes) => episodes.series)
   episodes: Episodes[];
 
   @OneToMany(() => WatchLater, (watchlater) => watchlater.series)
-  series: WatchLater;
+  series: WatchLater[];
+
+  @OneToMany(() => History, (history) => history.series)
+  history: History[];
 }
 
 export { Series };

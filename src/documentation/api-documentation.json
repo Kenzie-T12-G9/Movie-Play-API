@@ -175,7 +175,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/Error" },
+                    { "$ref": "#/components/schemas/ErrorList" }
+                  ]
                 },
                 "examples": {
                   "Email em uso": {
@@ -185,17 +188,19 @@
                   },
                   "Atributo 'dueDate' fora do formato padrão": {
                     "value": {
-                      "message": "dueDate attribute must be in the standart Date format (yyyy-mm-dd)"
+                      "message": [
+                        "dueDate attribute must be in the standart Date format (yyyy-mm-dd)"
+                      ]
                     }
                   },
                   "Argumentos ausentes": {
                     "value": {
-                      "message": "isAdm is a required field"
+                      "message": ["isAdm is a required field"]
                     }
                   },
                   "Argumentos inválidos": {
                     "value": {
-                      "message": "this field has unspecified keys: unspecifiedArgument"
+                      "message": ["this field has unspecified keys: invalidArg"]
                     }
                   },
                   "Cartão com a validade expirada": {
@@ -799,6 +804,11 @@
                       "message": "name is a required field"
                     }
                   },
+                  "Filme já exite": {
+                    "value": {
+                      "message": "Movie already exists."
+                    }
+                  },
                   "Argumentos inválidos": {
                     "value": {
                       "message": "this field has unspecified keys: InvalidArg"
@@ -1008,178 +1018,6 @@
         }
       }
     },
-    "/movies/{ movieId }/ratings": {
-      "post": {
-        "tags": ["Movies"],
-        "security": [{ "bearerToken": [] }],
-        "summary": "Criar uma avaliação sobre um filme",
-        "description": "Método responsável pela criação de uma avaliação. Todos os tipos de usuários podem acessar esta rota. O usuário logado apenas poderá enviar uma única avaliação com o seu id de usuário, sendo administrador ou não. Rota privada, onde um token de autenticação de usuário é solicitado",
-        "parameters": [
-          {
-            "name": "movieId",
-            "in": "path",
-            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do filme a ser editado",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "requestBody": {
-          "description": "Todos os campos do exemplo são obrigatórios. O campo `rate` deverá receber um valor numérico inteiro entre 1 e 5",
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMovieRating"
-              },
-              "examples": {
-                "Padrão": {
-                  "value": {
-                    "rate": 5,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-                  }
-                },
-                "Valor de 'rate' inválido": {
-                  "value": {
-                    "rate": 6,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-                  }
-                },
-                "Argumentos ausentes": {
-                  "value": {
-                    "rate": 5,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!"
-                  }
-                },
-                "Argumentos Inválidos": {
-                  "value": {
-                    "InvalidArg": null,
-                    "rate": 5,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "**CREATED:** Avaliação enviada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MovieRating"
-                },
-                "example": {
-                  "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
-                  "rate": 5,
-                  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                  "user": {
-                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
-                    "name": "Francisco Stenico",
-                    "email": "francisco@teste.com"
-                  },
-                  "movie": {
-                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
-                    "name": "Avengers: Endgame",
-                    "year": 2019,
-                    "duration": 182,
-                    "direction": "Anthony Russo, Joe Russo",
-                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Valor de 'rate' inválido": {
-                    "value": {
-                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
-                    }
-                  },
-                  "Argumentos ausentes": {
-                    "value": {
-                      "message": "name is a required field"
-                    }
-                  },
-                  "Argumentos inválidos": {
-                    "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "**UNAUTHORIZED:** Erro de autenticação",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Token Ausente": {
-                    "value": {
-                      "message": "Missing Authorization headers"
-                    }
-                  },
-                  "Token Inválido": {
-                    "value": {
-                      "message": "Invalid token"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "message": "This user has already submitted a rating about this movie"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "**NOT FOUND:** usuário ou filme não encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Usuário não encontrado": {
-                    "value": {
-                      "message": "User not found"
-                    }
-                  },
-                  "Filme não encontrado": {
-                    "value": {
-                      "message": "Movie not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/series": {
       "post": {
         "tags": ["Series"],
@@ -1252,6 +1090,11 @@
                   "Argumentos ausentes": {
                     "value": {
                       "message": "name is a required field"
+                    }
+                  },
+                  "Série já exite": {
+                    "value": {
+                      "message": "Series already exists."
                     }
                   },
                   "Argumentos inválidos": {
@@ -1619,178 +1462,6 @@
         }
       }
     },
-    "/series/{ seriesId }/ratings": {
-      "post": {
-        "tags": ["Series"],
-        "security": [{ "bearerToken": [] }],
-        "summary": "Criar uma avaliação sobre uma série",
-        "description": "Método responsável pela criação de uma avaliação. Todos os tipos de usuários podem acessar esta rota. O usuário logado apenas poderá enviar uma única avaliação com o seu id de usuário, sendo administrador ou não. Rota privada, onde um token de autenticação de usuário é solicitado",
-        "parameters": [
-          {
-            "name": "movieId",
-            "in": "path",
-            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser criada uma avaliação",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "requestBody": {
-          "description": "Todos os campos do exemplo são obrigatórios. O campo `rate` deverá receber um valor numérico inteiro entre 1 e 5",
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMovieRating"
-              },
-              "examples": {
-                "Padrão": {
-                  "value": {
-                    "rate": 5,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-                  }
-                },
-                "Valor de 'rate' inválido": {
-                  "value": {
-                    "rate": 6,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-                  }
-                },
-                "Argumentos ausentes": {
-                  "value": {
-                    "rate": 5,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!"
-                  }
-                },
-                "Argumentos Inválidos": {
-                  "value": {
-                    "InvalidArg": null,
-                    "rate": 5,
-                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "**CREATED:** Avaliação enviada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MovieRating"
-                },
-                "example": {
-                  "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
-                  "rate": 5,
-                  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
-                  "user": {
-                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
-                    "name": "Francisco Stenico",
-                    "email": "francisco@teste.com"
-                  },
-                  "movie": {
-                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
-                    "name": "Avengers: Endgame",
-                    "year": 2019,
-                    "duration": 182,
-                    "direction": "Anthony Russo, Joe Russo",
-                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Valor de 'rate' inválido": {
-                    "value": {
-                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
-                    }
-                  },
-                  "Argumentos ausentes": {
-                    "value": {
-                      "message": "name is a required field"
-                    }
-                  },
-                  "Argumentos inválidos": {
-                    "value": {
-                      "message": "this field has unspecified keys: InvalidArg"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "**UNAUTHORIZED:** Erro de autenticação",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Token Ausente": {
-                    "value": {
-                      "message": "Missing Authorization headers"
-                    }
-                  },
-                  "Token Inválido": {
-                    "value": {
-                      "message": "Invalid token"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "message": "This user has already submitted a rating about this movie"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "**NOT FOUND:** usuário ou filme não encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Usuário não encontrado": {
-                    "value": {
-                      "message": "User not found"
-                    }
-                  },
-                  "Filme não encontrado": {
-                    "value": {
-                      "message": "Movie not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/history": {
       "post": {
         "tags": ["History"],
@@ -1811,13 +1482,11 @@
               "examples": {
                 "Histórico de um filme": {
                   "value": {
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331",
                     "movieId": "e0150833-89fc-436c-aa10-d2a68b0fa32f"
                   }
                 },
                 "Histórico de uma série": {
                   "value": {
-                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331",
                     "seriesId": "e0150833-89fc-436c-aa10-d2a68b0fa32f"
                   }
                 }
@@ -1886,11 +1555,6 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
-                  "Argumentos ausentes": {
-                    "value": {
-                      "message": "description is a required field"
-                    }
-                  },
                   "Argumentos inválidos": {
                     "value": {
                       "message": "this field has unspecified keys: InvalidArg"
@@ -2235,7 +1899,7 @@
         "description": "Esta método é responsável por trazer o registro de atividades de uma série específica no histórico de séries. Esta rota pode ser acessada por qualquer usuário.",
         "parameters": [
           {
-            "name": "movieId",
+            "name": "seriesId",
             "in": "path",
             "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser listado o histórico de atividades",
             "required": true,
@@ -2251,7 +1915,7 @@
                   "$ref": "#/components/schemas/SingleSeriesHistory"
                 },
                 "example": {
-                  "movie": {
+                  "series": {
                     "id": "q1528a90-34r1-87ad-112p-28skd029845f",
                     "name": "Jessica Jones",
                     "year": 2015,
@@ -2313,7 +1977,529 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
-                  "message": "Movie register not found"
+                  "message": "Series register not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ratings/movies/{ movieId }": {
+      "post": {
+        "tags": ["Ratings"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Criar uma avaliação sobre um filme",
+        "description": "Método responsável pela criação de uma avaliação. Todos os tipos de usuários podem acessar esta rota. O usuário logado apenas poderá enviar uma única avaliação com o seu id de usuário, sendo administrador ou não. Rota privada, onde um token de autenticação de usuário é solicitado",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do filme a ser editado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "Todos os campos do exemplo são obrigatórios. O campo `rate` deverá receber um valor numérico inteiro entre 1 e 5",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMovieRating"
+              },
+              "examples": {
+                "Padrão": {
+                  "value": {
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                },
+                "Valor de 'rate' inválido": {
+                  "value": {
+                    "rate": 6,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!"
+                  }
+                },
+                "Argumentos Inválidos": {
+                  "value": {
+                    "InvalidArg": null,
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED:** Avaliação enviada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieRating"
+                },
+                "example": {
+                  "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
+                  "rate": 5,
+                  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                  "user": {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com"
+                  },
+                  "movie": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Avengers: Endgame",
+                    "year": 2019,
+                    "duration": 182,
+                    "direction": "Anthony Russo, Joe Russo",
+                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Valor de 'rate' inválido": {
+                    "value": {
+                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
+                    }
+                  },
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "name is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "This user has already submitted a rating about this movie"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** usuário ou filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Usuário não encontrado": {
+                    "value": {
+                      "message": "User not found"
+                    }
+                  },
+                  "Filme não encontrado": {
+                    "value": {
+                      "message": "Movie not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Ratings"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Listagem da avaliações de um unico filme",
+        "description": "Método responsavel pela listagem de todas as avaliações sobre um filme específico presente no catálogo. Todos os usuários tem acesso a rota. A rota precisa de um token de autenticação.",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem das avaliações de uma filme específico",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieRatingActivity"
+                },
+                "example": {
+                  "movie": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Avengers: Endgame",
+                    "year": 2019,
+                    "duration": 182,
+                    "direction": "Anthony Russo, Joe Russo",
+                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
+                  },
+                  "ratings": [
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 3,
+                      "comment": "Deixou a desejar em muitos pontos e me deu sono na maioria do tempo",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Francisco C Stenico",
+                        "email": "francisco@teste.com"
+                      }
+                    },
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 5,
+                      "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Guilherme Bernardo",
+                        "email": "guilherme@teste.com"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Movie not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ratings/series/{ seriesId }": {
+      "post": {
+        "tags": ["Ratings"],
+        "security": [{ "bearerToken": [] }],
+        "summary": "Criar uma avaliação sobre uma série",
+        "description": "Método responsável pela criação de uma avaliação. Todos os tipos de usuários podem acessar esta rota. O usuário logado apenas poderá enviar uma única avaliação com o seu id de usuário, sendo administrador ou não. Rota privada, onde um token de autenticação de usuário é solicitado",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser criada uma avaliação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "Todos os campos do exemplo são obrigatórios. O campo `rate` deverá receber um valor numérico inteiro entre 1 e 5",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMovieRating"
+              },
+              "examples": {
+                "Padrão": {
+                  "value": {
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                },
+                "Valor de 'rate' inválido": {
+                  "value": {
+                    "rate": 6,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                },
+                "Argumentos ausentes": {
+                  "value": {
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!"
+                  }
+                },
+                "Argumentos Inválidos": {
+                  "value": {
+                    "InvalidArg": null,
+                    "rate": 5,
+                    "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                    "userId": "1127f3f2-0057-4d67-b68a-a689c3447331"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**CREATED:** Avaliação enviada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieRating"
+                },
+                "example": {
+                  "id": "c4181302-b2d7-495b-bc70-ada2d110acbf",
+                  "rate": 5,
+                  "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                  "user": {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "name": "Francisco Stenico",
+                    "email": "francisco@teste.com"
+                  },
+                  "movie": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Avengers: Endgame",
+                    "year": 2019,
+                    "duration": 182,
+                    "direction": "Anthony Russo, Joe Russo",
+                    "description": "Após Thanos eliminar metade das criaturas vivas, os Vingadores têm de lidar com a perda de amigos e entes queridos. Com Tony Stark vagando perdido no espaço sem água e comida, Steve Rogers e Natasha Romanov lideram a resistência contra o titã louco."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "**BAD REQUEST:** Erro com o corpo de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Valor de 'rate' inválido": {
+                    "value": {
+                      "message": "Value of argument 'rate' must be an integer between 1 and 5"
+                    }
+                  },
+                  "Argumentos ausentes": {
+                    "value": {
+                      "message": "name is a required field"
+                    }
+                  },
+                  "Argumentos inválidos": {
+                    "value": {
+                      "message": "this field has unspecified keys: InvalidArg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "**FORBIDDEN:**: O usuário já enviou uma avaliação sobre este filme",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "This user has already submitted a rating about this movie"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** usuário ou filme não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Usuário não encontrado": {
+                    "value": {
+                      "message": "User not found"
+                    }
+                  },
+                  "Filme não encontrado": {
+                    "value": {
+                      "message": "Movie not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Ratings"],
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Listagem da avaliações de uma única série",
+        "description": "Método responsavel pela listagem de todas as avaliações sobre uma série específica presente no catálogo. Todos os usuários tem acesso a rota. A rota precisa de um token de autenticação.",
+        "parameters": [
+          {
+            "name": "seriesId",
+            "in": "path",
+            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser criada uma avaliação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem das avaliações de uma série específico",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesRatingActivity"
+                },
+                "example": {
+                  "series": {
+                    "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                    "name": "Jessica Jones",
+                    "year": 2015,
+                    "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                    "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                  },
+                  "ratings": [
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 3,
+                      "comment": "Deixou a desejar em muitos pontos e me deu sono na maioria do tempo",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Francisco C Stenico",
+                        "email": "francisco@teste.com"
+                      }
+                    },
+                    {
+                      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "rate": 5,
+                      "comment": "Filme simplesmente incrível, indico a todos com certeza!",
+                      "user": {
+                        "id": "f7128efb-9455-4b94-85b7-779808584786",
+                        "name": "Guilherme Bernardo",
+                        "email": "guilherme@teste.com"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "**NOT FOUND:** Série não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Series not found"
                 }
               }
             }
@@ -2407,15 +2593,85 @@
         "tags": ["Ratings"],
         "security": [{ "bearerAuth": [] }],
         "summary": "Listagem de todas as avaliações sobre séries do catálogo",
-        "description": "Método responsável pela listagem de todas as avaliações feitas sobre as séries presentes no catálogo. A rota necessita de um token de autorização e pode ser acessada por qualquer usuário"
+        "description": "Método responsável pela listagem de todas as avaliações feitas sobre as séries presentes no catálogo. A rota necessita de um token de autorização e pode ser acessada por qualquer usuário",
+        "responses": {
+          "200": {
+            "description": "**OK:** Listagem da avaliação de série específica",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesRatingList"
+                },
+                "example": [
+                  {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "rate": 5,
+                    "comment": "Série simplesmente incrível, indico a todos com certeza!",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Myke Macedo",
+                      "email": "myke@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "Jessica Jones",
+                      "year": 2015,
+                      "description": "Depois de um fim trágico para sua carreira de super-heroína, Jessica Jones se torna uma detetive na cidade de Nova York.",
+                      "direction": " Melissa Rosenberg, Jane Espenson, Scott Reynolds, others..."
+                    }
+                  },
+                  {
+                    "id": "1127f3f2-0057-4d67-b68a-a689c3447331",
+                    "rate": 5,
+                    "comment": "Série simplesmente incrível, indico a todos com certeza!",
+                    "user": {
+                      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "name": "Queren Hope",
+                      "email": "queren@teste.com"
+                    },
+                    "series": {
+                      "id": "q1528a90-34r1-87ad-112p-28skd029845f",
+                      "name": "What if...",
+                      "year": 2021,
+                      "description": "O que aconteceria se os eventos do MCU ocorressem de outra forma",
+                      "direction": "Anthony Russo, Joe Russo"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "**UNAUTHORIZED:** Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Token Ausente": {
+                    "value": {
+                      "message": "Missing Authorization headers"
+                    }
+                  },
+                  "Token Inválido": {
+                    "value": {
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/ratings/{ movieId }/{ userId }": {
+    "/ratings/{ ratingId }": {
       "delete": {
         "tags": ["Ratings"],
         "security": [{ "bearerToken": [] }],
         "summary": "Deleção de uma avaliação sobre um filme",
-        "description": "Deleção de uma avaliação sobre um filme. Pode ser acessado para deleção pelo próprio dono da avaliação, ou até mesmo avaliações feitas por terceiros, caso o usuário logado seja um administrador, visando o controle de linguagem imprópria ou afins",
+        "description": "Deleção de uma avaliação sobre um filme. Pode ser acessado para deleção pelo próprio dono da avaliação, ou até mesmo avaliações feitas por terceiros, caso o usuário logado seja um administrador, visando o controle de linguagem imprópria ou afins.",
         "parameters": [
           {
             "name": "movieId",
@@ -2474,79 +2730,6 @@
                   "Filme não encontrado": {
                     "value": {
                       "message": "Movie not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ratings/{ seriesId }/{ userId }": {
-      "delete": {
-        "tags": ["Ratings"],
-        "security": [{ "bearerToken": [] }],
-        "summary": "Deleção de uma avaliação sobre uma série",
-        "description": "Deleção de uma avaliação sobre uma série. Pode ser acessado para deleção pelo próprio dono da avaliação, ou até mesmo avaliações feitas por terceiros, caso o usuário logado seja um administrador, visando o controle de linguagem imprópria ou afins",
-        "parameters": [
-          {
-            "name": "seriesId",
-            "in": "path",
-            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) da série a ser deletada",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "[`UUID`](https://developer.mozilla.org/en-US/docs/Glossary/UUID) do usuário a ser deletado",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "**NO CONTENT:** Avaliação excluída com sucesso!"
-          },
-          "401": {
-            "description": "**UNAUTHORIZED:** Erro de autenticação",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Token Ausente": {
-                    "value": {
-                      "message": "Missing Authorization headers"
-                    }
-                  },
-                  "Token Inválido": {
-                    "value": {
-                      "message": "Invalid token"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "**NOT FOUND:** usuário ou filme não encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "Usuário não encontrado": {
-                    "value": {
-                      "message": "User not found"
-                    }
-                  },
-                  "Filme não encontrado": {
-                    "value": {
-                      "message": "Series not found"
                     }
                   }
                 }
@@ -2829,6 +3012,26 @@
           }
         }
       },
+      "SeriesRating": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "rate": { "type": "integer" },
+          "comment": { "type": "string" },
+          "user": {
+            "$ref": "#/components/schemas/SummaryProfile"
+          },
+          "series": {
+            "$ref": "#/components/schemas/CreateSeriesResponse"
+          }
+        }
+      },
+      "SeriesRatingList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SeriesRating"
+        }
+      },
       "SeriesHistoryList": {
         "type": "array",
         "items": {
@@ -2859,10 +3062,60 @@
           }
         }
       },
+      "MovieRatingActivity": {
+        "type": "object",
+        "properties": {
+          "movie": {
+            "$ref": "#/components/schemas/CreateMovieResponse"
+          },
+          "ratings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "rate": { "type": "integer" },
+                "comment": { "type": "string" },
+                "user": {
+                  "$ref": "#/components/schemas/SummaryProfile"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SeriesRatingActivity": {
+        "type": "object",
+        "properties": {
+          "series": {
+            "$ref": "#/components/schemas/CreateSeriesResponse"
+          },
+          "ratings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "rate": { "type": "integer" },
+                "comment": { "type": "string" },
+                "user": {
+                  "$ref": "#/components/schemas/SummaryProfile"
+                }
+              }
+            }
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "properties": {
           "message": { "type": "string" }
+        }
+      },
+      "ErrorList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Error"
         }
       }
     },

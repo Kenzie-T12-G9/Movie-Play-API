@@ -4,8 +4,12 @@ import 'dotenv/config';
 
 import { AppError } from '../error/AppError';
 import { SchemaOf, ValidationError } from 'yup';
+import {
+  schemaValidIdContentParams,
+  schemaValidIdParams,
+} from '../serializers/methods.serializer';
 
-export default class Ensuraces {
+export default class Ensurances {
   static serializerData =
     (serializer: SchemaOf<any>) =>
     async (request: Request, _: Response, next: NextFunction) => {
@@ -79,6 +83,71 @@ export default class Ensuraces {
     );
 
     request.body = remove;
+
+    next();
+  }
+
+  static validIdParams = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id } = req.params;
+
+    try {
+      await schemaValidIdParams.validate(
+        { id },
+        {
+          stripUnknown: true,
+          abortEarly: false,
+        }
+      );
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+
+  static validIdContentParams = async (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const { movieId } = req.params;
+    const { seriesId } = req.params;
+    let selectorId;
+
+    if (!movieId) {
+      selectorId = movieId;
+    } else selectorId = seriesId;
+
+    try {
+      await schemaValidIdContentParams.validate(
+        { selectorId },
+        {
+          stripUnknown: true,
+          abortEarly: false,
+        }
+      );
+
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new AppError(error.errors[0], 400);
+      }
+    }
+  };
+
+  static partialPermissions(req: Request, _: Response, next: NextFunction) {
+    const { id, isAdm } = req.token;
+    const { id: userId } = req.params;
+
+    if (!isAdm && id !== userId) {
+      throw new AppError('User is not admin', 403);
+    }
 
     next();
   }

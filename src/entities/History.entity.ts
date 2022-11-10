@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, Column } from 'typeorm';
 import { Movies } from './Movies.entity';
 import { Series } from './Series.entity';
 import { Users } from './Users.entity';
@@ -11,14 +11,17 @@ class History {
   @CreateDateColumn()
   watchedAt: Date;
 
-  @OneToOne(() => Users, (users) => users.id)
+  @Column()
+  isActive: boolean;
+
+  @ManyToOne(() => Users, { eager:true }) 
   user: Users;
 
-  @ManyToOne(() => Series, (series) => series.id, { nullable: true })
-  series: Series;
+  @ManyToOne(() => Series, { eager: true })
+  series?: Series;
 
-  @ManyToOne(() => Movies, (movies) => movies.id, { nullable: true })
-  movie: Movies;
+  @ManyToOne(() => Movies, { eager: true })
+  movie?: Movies;
 }
 
 export { History };

@@ -8,23 +8,25 @@ export default class EpisodeService {
 
   static async update( id:string, data:IUpdatedEpisodes ) {
 
-    const episodes = await this.episodesRepository.find()
-    
-    if( !episodes.find( ep => ep.id == id ) ){
-      throw new AppError("Episode not exists", 401)
-    }
+    await this.checkEpisodeExists( id )
 
     await this.episodesRepository.update(id, data)
 
     return await this.episodesRepository.findOneBy({ id })
   }
+  
   static async delete( id:string ) {
-    const episodes = await this.episodesRepository.find()
-    
-    if( !episodes.find( ep => ep.id == id ) ){
-      throw new AppError("Episode not exists", 401)
-    }
+
+    await this.checkEpisodeExists( id )
 
     await this.episodesRepository.delete(id)
+  }
+
+  static checkEpisodeExists = async ( id:string ) => {
+    const serieExist = await this.episodesRepository.findOneBy({ id });
+
+    if (!serieExist) {
+      throw new AppError('Episode not found', 404);
+    }
   }
 }
